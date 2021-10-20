@@ -282,7 +282,7 @@ public class AdminRequoteController {
      * @return
      */
     @RequiresPermissions("admin:requote:update")
-    @RequiresPermissionsDesc(menu = {"供应商管理", "报价管理"}, button = "修改")
+    @RequiresPermissionsDesc(menu = {"供应商管理", "报价管理"}, button = "报价")
     @PostMapping("/update")
     public Object update(@RequestBody Quoteinone quoteinone) {
         logger.info(quoteinone);

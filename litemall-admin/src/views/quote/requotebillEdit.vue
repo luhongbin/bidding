@@ -24,7 +24,7 @@
           <el-table-column property="mouldCharge" label="模具费" />
           <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
             <template slot-scope="scope">
-              <el-button v-if="scope.row.status === 3" type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
+              <el-button v-if="scope.row.status === 3 || scope.row.status === 5" type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -105,7 +105,7 @@
           <el-table-column property="certificate" label="证书情况" />
           <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
             <template slot-scope="scope">
-              <el-button v-if="scope.row.status === 3" type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
+              <el-button v-if="scope.row.status === 3 || scope.row.status === 5" type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -183,7 +183,7 @@
           <el-table-column property="price" label="产品报价" />
           <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
             <template slot-scope="scope">
-              <el-button v-if="scope.row.status === 3" type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
+              <el-button v-if="scope.row.status === 3 || scope.row.status === 5" type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -269,7 +269,7 @@
           <el-table-column property="processingCharge" label="产品加工费" />
           <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
             <template slot-scope="scope">
-              <el-button v-if="scope.row.status === 3" type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
+              <el-button v-if="scope.row.status === 3 || scope.row.status === 5" type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -651,6 +651,7 @@ export default {
         find(row.id, modelId)
           .then(response => {
             this.detailForm = response.data.data.detail
+            this.detailForm.allname = this.detailForm.code + ':' + this.detailForm.name + ':' + this.detailForm.spec
             console.log(JSON.stringify(response))
           }).catch(response => { this.$notify.error({ title: '失败', message: response.data.errmsg }) })
         this.attributeAdd = false

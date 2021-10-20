@@ -34,7 +34,7 @@
       <el-table-column align="center" label="操作" width="250" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button v-if="(scope.row.status===0 || scope.row.status===10) && scope.row.status!==6" v-permission="['POST /admin/requote/update']" type="primary" size="mini" @click="getApprove(scope.row)">签收</el-button>
-          <el-button v-if="(scope.row.status===1) && scope.row.status!==6" v-permission="['POST /admin/requote/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">修改</el-button>
+          <el-button v-if="(scope.row.status===1) && scope.row.status!==6" v-permission="['POST /admin/requote/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">报价</el-button>
           <el-button v-if="scope.row.status >= 1" v-permission="['POST /admin/requote/submit']" type="primary" size="mini" @click="getApprove(scope.row)">详情及审批</el-button>
         </template>
       </el-table-column>
