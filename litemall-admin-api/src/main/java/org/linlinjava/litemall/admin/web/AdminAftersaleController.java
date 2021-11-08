@@ -24,6 +24,7 @@ import org.linlinjava.litemall.db.service.*;
 import org.linlinjava.litemall.db.util.AftersaleConstant;
 import org.linlinjava.litemall.db.util.OrderUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 

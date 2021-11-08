@@ -17,7 +17,7 @@ public class LitemallQuoteElectronicService {
     public List<LitemallQuoteElectronic> queryByGid(Integer goodsId,Boolean reId) {
         LitemallQuoteElectronicExample example = new LitemallQuoteElectronicExample();
         example.or().andQuoteIdEqualTo(goodsId).andBillIdEqualTo(reId).andDeletedEqualTo(false);
-        return quoteElectronicMapper.selectByExample(example);
+        return quoteElectronicMapper.selectByExampleWithBLOBs(example);
     }
 
     public void add(LitemallQuoteElectronic goodsAttribute) {

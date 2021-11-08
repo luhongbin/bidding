@@ -27,7 +27,7 @@
           <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.adminId) }} </el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="中标通知时间" prop="quoteDate" />
+      <el-table-column align="center" label="定" prop="quoteDate" />
       <el-table-column align="center" label="报价截止日期" prop="deadDate" />
       <el-table-column align="center" label="提交报价日期" prop="submitDate" />
       <el-table-column align="center" label="操作" width="250" class-name="small-padding fixed-width">

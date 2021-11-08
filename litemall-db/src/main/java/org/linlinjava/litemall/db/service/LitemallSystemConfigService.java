@@ -78,6 +78,9 @@ public class LitemallSystemConfigService {
     public LitemallSystem getHours() {
         return systemMapper.selectByPrimaryKey(1);
     }
+    public LitemallSystem getReHours() {
+        return systemMapper.selectByPrimaryKey(37);
+    }
 
     public LitemallSystem getCapacity() {
         return systemMapper.selectByPrimaryKey(3);

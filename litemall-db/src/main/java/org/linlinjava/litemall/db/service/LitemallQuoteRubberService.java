@@ -17,7 +17,7 @@ public class LitemallQuoteRubberService {
     public List<LitemallQuoteRubber> queryByGid(Integer goodsId,Boolean reId ) {
         LitemallQuoteRubberExample example = new LitemallQuoteRubberExample();
         example.or().andQuoteIdEqualTo(goodsId).andBillIdEqualTo(reId).andDeletedEqualTo(false);
-        return quoteRubberMapper.selectByExample(example);
+        return quoteRubberMapper.selectByExampleWithBLOBs(example);
     }
 
     public void add(LitemallQuoteRubber goodsAttribute) {

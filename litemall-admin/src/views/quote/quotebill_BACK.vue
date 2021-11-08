@@ -11,7 +11,7 @@
       </el-select>
       <el-button v-permission="['GET /admin/quoteBill/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">询价员查询</el-button>
       <el-button v-permission="['GET /admin/quoteBill/listCeo']" class="filter-item" type="primary" icon="el-icon-search" @click="getListCeo">询价领导查询</el-button>
-      <el-button v-permission="['POST /admin/quoteBill/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
+      <el-button v-permission="['POST /admin/quoteBill/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">新建</el-button>
       <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
     </div>
 
@@ -80,7 +80,7 @@
             </el-form-item>
             <el-form-item v-show=" quote.status === 2 && dutyShow" label="是否会签" prop="toCeo">
               <el-radio-group v-model="quote.isCeo" @change="changeHandler1">
-                <el-radio :label="true">评估小组会签</el-radio>
+                <el-radio :label="true">提交评估小组</el-radio>
                 <el-radio :label="false">直接总经理审批</el-radio>
               </el-radio-group>
             </el-form-item>
@@ -181,6 +181,7 @@
           <el-table-column align="center" label="动作" prop="action" />
         </el-table>
       </el-card>
+
     </el-dialog>
 
     <!--修改详情对话框 -->
@@ -243,7 +244,7 @@
       </el-form>
       <div class="op-container">
         <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button v-if="dialogStatus==='create'" type="primary" @click="createData">确定</el-button>
+        <el-button v-if="detailEdit" type="primary" @click="createData">确定</el-button>
         <el-button v-else type="primary" @click="updateData">确定</el-button>
       </div>
     </el-dialog>

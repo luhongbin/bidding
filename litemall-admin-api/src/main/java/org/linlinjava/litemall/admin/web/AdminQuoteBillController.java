@@ -1,14 +1,12 @@
 package org.linlinjava.litemall.admin.web;
 
+import com.github.pagehelper.PageHelper;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.subject.support.DefaultSubjectContext;
 import org.linlinjava.litemall.admin.annotation.RequiresPermissionsDesc;
-import org.linlinjava.litemall.admin.dto.GoodsAllinone;
 import org.linlinjava.litemall.admin.dto.Quoteinone;
 import org.linlinjava.litemall.core.util.ResponseUtil;
 import org.linlinjava.litemall.core.validator.Order;
@@ -19,6 +17,7 @@ import org.linlinjava.litemall.db.service.LitemallQuoteBillService;
 import org.linlinjava.litemall.admin.service.AdminQuoteService;
 import org.linlinjava.litemall.db.service.LitemallQuoteModelService;
 import org.linlinjava.litemall.admin.service.AdminQuoteBillService;
+import org.linlinjava.litemall.db.service.ImaalTService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
@@ -33,10 +32,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import org.apache.commons.codec.binary.Base64;
-import javax.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping("/admin/quoteBill")
@@ -54,12 +49,17 @@ public class AdminQuoteBillController {
     private LitemallQuoteModelService quoteModelService;
     @Autowired
     private AdminQuoteBillService adminQuoteBillService;
+    @Autowired
+    private LitemallAdminService AdminService;
+    @Autowired
+    private ImaalTService T100Service;
+
     /**
      * 查询询价单
      *
-     * @param purchaser
-     * @param quoteSupplyName
-     * @param quoteStatusArray
+     * @param id
+     * @param dutyid
+     * @param status
      * @param page
      * @param limit
      * @param sort
@@ -67,22 +67,22 @@ public class AdminQuoteBillController {
      * @return
      */
     @RequiresPermissions("admin:quoteBill:list")
-    @RequiresPermissionsDesc(menu = {"采购员管理", "询价单制作审批"}, button = "询价员查询")
+    @RequiresPermissionsDesc(menu = {"采购管理", "询价单制作审批"}, button = "查询")
     @GetMapping("/list")
 
-    public Object list(Integer id, String purchaser, String quoteSupplyName,
-                      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
+    public Object list(Integer id, Integer dutyid,
+                       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
-                       @RequestParam(required = false) List<Short> quoteStatusArray,
+                       @RequestParam(required = false) List<Short> status,
                        @RequestParam(defaultValue = "1") Integer page,
                        @RequestParam(defaultValue = "10") Integer limit,
                        @Sort @RequestParam(defaultValue = "add_time") String sort,
                        @Order @RequestParam(defaultValue = "desc") String order) {
 
         LitemallAdmin adminList = (LitemallAdmin) SecurityUtils.getSubject().getPrincipal();
-
+        System.out.println(start);
         Integer adminId = adminList.getId();
-        List<LitemallQuoteBill> roleList = quoteBillService.querySelective(id,adminId, purchaser, quoteSupplyName, start, end, quoteStatusArray,page, limit, sort, order);
+        List<LitemallQuoteBill> roleList = quoteBillService.querySelective(id,adminId, dutyid, start, end, status,page, limit, sort, order);
 
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("list", ResponseUtil.okList(roleList));
@@ -124,19 +124,94 @@ public class AdminQuoteBillController {
         return ResponseUtil.ok(data);
     }
 
+    @GetMapping("/listSupply")
+    public Object listSupply(String name,
+                             @RequestParam(defaultValue = "1") Integer page,
+                             @RequestParam(defaultValue = "10") Integer limit,
+                             @Sort @RequestParam(defaultValue = "add_time") String sort,
+                             @Order @RequestParam(defaultValue = "desc") String order) {
+        if (name == null || name.isEmpty()) { name = "1"; }
+        List<Map<String, Object>> data = new ArrayList<>();
+        System.out.println(name);
+        List logLists  = T100Service.querySupply(name,page, limit, sort, order);
+        List logListtot  = T100Service.queryTotalSupply(name);
+        String total1 = "";
+        for(int i=0; i<logListtot.size(); i++) {
+            Map userMap= (Map) logListtot.get(i);
+            total1 = userMap.get("total").toString();
+        }
+        for(int i=0; i<logLists.size(); i++) {
+            Map<String, Object> adminnames = new HashMap<>();
+            Map userMap= (Map) logLists.get(i);
+            System.out.println(userMap.get("pmaal004"));
+            String phone = (String) userMap.get("oofc012");
+            String simname = (String) userMap.get("pmaal004");
+            String classid = (String) userMap.get("pmaa084");
+            String code = (String) userMap.get("pmaa001");
+
+            List<LitemallAdmin> adminList = AdminService.findPhone(phone);
+            LitemallAdmin adminInfo = new LitemallAdmin();
+
+            for (LitemallAdmin admin : adminList) {
+                System.out.println(admin.getMobile());
+//                System.out.println(phone);
+//                System.out.println(classid+"类供应商["+simname+"]");
+
+                adminInfo.setId(admin.getId());
+                adminInfo.setJobnumber(code);
+//                    adminInfo.setDept(logList.getImaal003());
+                adminInfo.setCapacity(classid+"类供应商["+simname+"]");
+                AdminService.updateById(adminInfo);
+                adminnames.put("phone", phone);
+                adminnames.put("nickname", admin.getNickname());
+                adminnames.put("name", simname);
+                adminnames.put("note", classid+"类供应商["+simname+"]");
+                adminnames.put("id", admin.getId());
+                adminnames.put("total", total1);
+                data.add(adminnames);
+            }
+        }
+
+//        for (ImaalT logList : logLists) {
+//            String phone = logList.getImaal005();
+//            List<LitemallAdmin> adminList = AdminService.findPhone(phone);
+//            LitemallAdmin adminInfo = new LitemallAdmin();
+//            String classid = logList.getImaal004();
+//            if (logList.getImaal004() == null) { classid = "-"; }
+//            System.out.println(phone);
+//
+//            for (LitemallAdmin admin : adminList) {
+//                if (admin.getMobile() == phone) {
+//                    adminInfo.setId(admin.getId());
+//                    adminInfo.setJobnumber(logList.getImaal001());
+////                    adminInfo.setDept(logList.getImaal003());
+//                    adminInfo.setCapacity(classid+"类供应商["+logList.getImaal003()+"]");
+//                    AdminService.updateById(adminInfo);
+//                    data.put("phone", phone);
+//                    data.put("nickname", admin.getNickname());
+//                    data.put("name", logList.getImaal002());
+//                    data.put("note", classid+"类供应商["+logList.getImaal003()+"]");
+//                    data.put("id", admin.getId());
+//                }
+//            }
+//        }
+        PageHelper.startPage(page, limit);
+        return ResponseUtil.okList(data);
+    }
     @RequiresPermissions("admin:quoteBill:listCeo")
-    @RequiresPermissionsDesc(menu = {"采购员管理", "询价单制作审批"}, button = "领导查询")
+    @RequiresPermissionsDesc(menu = {"采购管理", "询价单制作审批"}, button = "领导查询")
     @GetMapping("/listCeo")
 
-    public Object listCeo(Integer id, Integer adminId, String purchaser, String quoteSupplyName,
+    public Object listCeo(Integer id, Integer adminid, Integer dutyid,
                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
-                       @RequestParam(required = false) List<Short> quoteStatusArray,
+                       @RequestParam(required = false) List<Short> status,
                        @RequestParam(defaultValue = "1") Integer page,
                        @RequestParam(defaultValue = "10") Integer limit,
                        @Sort @RequestParam(defaultValue = "add_time") String sort,
                        @Order @RequestParam(defaultValue = "desc") String order) {
-        List<LitemallQuoteBill> roleList = quoteBillService.querySelective(id, adminId, purchaser, quoteSupplyName, start, end, quoteStatusArray,page, limit, sort, order);
+
+        List<LitemallQuoteBill> roleList = quoteBillService.querySelective(id, adminid, dutyid, start, end, status,page, limit, sort, order);
 
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("list", ResponseUtil.okList(roleList));
@@ -179,27 +254,27 @@ public class AdminQuoteBillController {
     }
 
     @RequiresPermissions("admin:quoteBill:listBrowser")
-    @RequiresPermissionsDesc(menu = {"采购员管理", "询价商品浏览"}, button = "查询")
+    @RequiresPermissionsDesc(menu = {"采购管理", "询价商品浏览"}, button = "个人查询")
     @GetMapping("/listBrowser")
     public Object listBrowser(Integer adminId, Integer supplyId, String codeId,  @RequestParam(required = false) List<Short> status) {
         return ResponseUtil.ok(adminQuoteBillService.totalGoogs(1, adminId, supplyId, codeId, status));
     }
     @RequiresPermissions("admin:quoteBill:listBrowserCeo")
-    @RequiresPermissionsDesc(menu = {"采购员管理", "询价商品浏览"}, button = "全部查询")
+    @RequiresPermissionsDesc(menu = {"采购管理", "询价商品浏览"}, button = "全部查询")
     @GetMapping("/listBrowserCeo")
 
     public Object listBrowserCeo(Integer adminId, Integer supplyId, String codeId, @RequestParam(required = false) List<Short> status) {
         return ResponseUtil.ok(adminQuoteBillService.totalGoogs(0, adminId, supplyId, codeId,status));
     }
     @RequiresPermissions("admin:quoteBill:listBrowserOK")
-    @RequiresPermissionsDesc(menu = {"采购员管理", "询价商品浏览"}, button = "查询中标商品")
+    @RequiresPermissionsDesc(menu = {"采购管理", "询价商品浏览"}, button = "查询中标商品")
     @GetMapping("/listBrowserOK")
     public Object listBrowserOK(Integer adminId, Integer supplyId, String codeId, @RequestParam(required = false)  List<Short> status) {
         return ResponseUtil.ok(adminQuoteBillService.totalGoogs(2,adminId, supplyId, codeId,status));
     }
 
     @RequiresPermissions("admin:quoteBill:detail")
-    @RequiresPermissionsDesc(menu = {"采购员管理", "询价单管理"}, button = "详情")
+    @RequiresPermissionsDesc(menu = {"采购管理", "询价单制作审批"}, button = "详情")
     @GetMapping("/detail")
     public Object detail(@NotNull Integer id)  {
         LitemallQuoteBill reQuote = quoteBillService.findById(id);
@@ -207,16 +282,16 @@ public class AdminQuoteBillController {
     }
 
     @RequiresPermissions("admin:quoteBill:update")
-    @RequiresPermissionsDesc(menu = {"采购员管理", "询价单管理"}, button = "修改")
+    @RequiresPermissionsDesc(menu = {"采购管理", "询价单制作审批"}, button = "修改")
     @PostMapping("/update")
     public Object update(@RequestBody Quoteinone quoteinone) {
-        logger.info(quoteinone);
+//        logger.info(quoteinone);
 
         return adminQuoteBillService.update(quoteinone);
     }
 
     @RequiresPermissions("admin:quoteBill:submit")
-    @RequiresPermissionsDesc(menu = {"采购员管理", "询价单管理"}, button = "详情及审批")
+    @RequiresPermissionsDesc(menu = {"采购管理", "询价单制作审批"}, button = "详情及审批")
     @PostMapping("/submit")
     public Object submit(@RequestBody String body) { return adminQuoteService.submitById(body);}
 //
@@ -239,7 +314,7 @@ public class AdminQuoteBillController {
      * @return
      */
     @RequiresPermissions("admin:quoteBill:delete")
-    @RequiresPermissionsDesc(menu = {"采购员管理", "询价单管理"}, button = "删除")
+    @RequiresPermissionsDesc(menu = {"采购管理", "询价单制作审批"}, button = "删除")
     @PostMapping("/delete")
     public Object delete(@RequestBody LitemallQuoteBill quote) {
         Integer id = quote.getId();
@@ -263,7 +338,7 @@ public class AdminQuoteBillController {
     }
 
     @RequiresPermissions("admin:quoteBill:create")
-    @RequiresPermissionsDesc(menu = {"采购员管理", "询价单管理"}, button = "添加")
+    @RequiresPermissionsDesc(menu = {"采购管理", "询价单制作审批"}, button = "新建")
     @PostMapping("/create")
     public Object create(@RequestBody Quoteinone quoteinone) {
         adminQuoteBillService.create(quoteinone);
@@ -272,14 +347,14 @@ public class AdminQuoteBillController {
 
     @PostMapping("/readquote")
     public Object readquote(Integer id) {
-        logger.info("read:"+String.valueOf(id));
+//        logger.info("read:"+String.valueOf(id));
         return adminQuoteBillService.detail(id);
     }
     @RequiresPermissions("admin:quoteBill:find")
-    @RequiresPermissionsDesc(menu = {"采购员管理", "询价单管理"}, button = "编辑")
+    @RequiresPermissionsDesc(menu = {"采购管理", "询价单制作审批"}, button = "编辑")
     @PostMapping("/find")
     public Object find(Integer id,Integer modelId) {
-        logger.info("find:"+String.valueOf(id));
+//        logger.info("find:"+String.valueOf(id));
         return adminQuoteBillService.find(id, modelId);
     }
 //    @PostMapping("/approve")

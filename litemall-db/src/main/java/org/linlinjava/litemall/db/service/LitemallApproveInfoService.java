@@ -45,13 +45,14 @@ public class LitemallApproveInfoService {
 
         return approveInfoMapper.selectByExample(example);
     }
-    public List<LitemallApproveInfo> queryQuoteApprove(Integer billId, Integer billCode ) {
+    public List<LitemallApproveInfo> queryQuoteApprove(Integer billId, Integer billCode , Integer adminId) {
 
         LitemallApproveInfoExample example = new LitemallApproveInfoExample();
         example.setOrderByClause(LitemallRequote.Column.addTime.desc());
         LitemallApproveInfoExample.Criteria criteria = example.createCriteria();
         if (billCode > 0 ) {
             criteria.andBillIdEqualTo(billId);
+            criteria.andAdminIdEqualTo(adminId);
             criteria.andBillCodeEqualTo(billCode);
         }
         if (billCode == 0 ) {

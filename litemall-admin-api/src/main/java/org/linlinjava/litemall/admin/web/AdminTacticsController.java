@@ -23,7 +23,6 @@ import java.util.List;
 public class AdminTacticsController {
     private final Log logger = LogFactory.getLog(AdminTacticsController.class);
 
-    @Autowired
     private LitemallTacticsService tacticsService;
 
     @RequiresPermissions("admin:tactics:list")

@@ -75,7 +75,7 @@ public class AdminQuoteModelController {
     }
 
     @RequiresPermissions("admin:quoteModel:create")
-    @RequiresPermissionsDesc(menu = {"配置管理", "询价单模板配置"}, button = "添加")
+    @RequiresPermissionsDesc(menu = {"配置管理", "询价单模板配置"}, button = "新建")
     @PostMapping("/create")
     public Object create(@RequestBody LitemallQuoteModel quoteModel) {
         Object error = validate(quoteModel);

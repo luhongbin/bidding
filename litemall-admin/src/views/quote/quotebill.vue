@@ -3,15 +3,15 @@
     <!-- 查询和其他操作 -->
     <div class="filter-container">
       <el-input v-model="listQuery.id" clearable class="filter-item" style="width: 160px;" placeholder="请输入询价单ID" />
-      <el-input v-model="listQuery.purchaser" clearable class="filter-item" style="width: 160px;" placeholder="请输入采购员名字" />
-      <el-input v-model="listQuery.quoteSupplyName" clearable class="filter-item" style="width: 160px;" placeholder="请输入供应商名称" />
-      <el-date-picker v-model="listQuery.timeArray" type="datetimerange" value-format="yyyy-MM-dd HH:mm:ss" class="filter-item" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions" />
-      <el-select v-model="listQuery.orderStatusArray" multiple style="width: 200px" class="filter-item" placeholder="请选择询价单状态">
+      <el-input v-model="listQuery.adminid" clearable class="filter-item" style="width: 160px;" placeholder="请输入采购员ID" />
+      <el-input v-model="listQuery.dutyid" clearable class="filter-item" style="width: 160px;" placeholder="请输入负责人ID" />
+      <el-date-picker v-if="show1" v-model="listQuery.timeArray" type="datetimerange" value-format="yyyy-MM-dd HH:mm:ss" class="filter-item" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions" />
+      <el-select v-model="listQuery.status" multiple style="width: 200px" class="filter-item" placeholder="请选择询价单状态">
         <el-option v-for="(key, value) in statusMap" :key="key" :label="key" :value="value" />
       </el-select>
       <el-button v-permission="['GET /admin/quoteBill/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查询</el-button>
       <el-button v-permission="['GET /admin/quoteBill/listCeo']" class="filter-item" type="primary" icon="el-icon-search" @click="getListCeo">领导查询</el-button>
-      <el-button v-permission="['POST /admin/quoteBill/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
+      <el-button v-permission="['POST /admin/quoteBill/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">新建</el-button>
       <el-button v-permission="['GET /admin/quoteBill/search']" class="filter-item" type="primary" icon="el-icon-search" @click="handleSearch">商品浏览</el-button>
       <!--<el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>-->
     </div>
@@ -41,6 +41,11 @@
         </template>
       </el-table-column>
       <el-table-column v-if="show" align="center" label="供应商名称" prop="quoteSupplyCode" />
+      <el-table-column align="center" property="quoteModelExcel" label="询价单附件" prop="quoteModelExcel">
+        <template slot-scope="scope">
+          <el-button v-if="scope.row.quoteModelExcel !== undefined && scope.row.quoteModelExcel !== null" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(scope.row.quoteModelExcel,'询价ID'+(scope.row.id).toString()+'.xlsx')">下载</el-button>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="建档时间" prop="addTime" />
       <el-table-column align="center" label="报价截止日期" prop="deadDate" />
       <el-table-column align="center" label="询价单状态" prop="quoteStatusFilter">
@@ -51,8 +56,8 @@
       <el-table-column align="center" label="操作" width="250" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button v-if="scope.row.status===0" v-permission="['POST /admin/quoteBill/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">修改</el-button>
-          <el-button v-if="scope.row.status===0" v-permission="['POST /admin/quoteBill/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
-          <el-button v-permission="['POST /admin/quoteBill/submit']" type="primary" size="mini" @click="handleApprove(scope.row)">详情及审批</el-button>
+          <!--          <el-button v-if="scope.row.status===0" v-permission="['POST /admin/quoteBill/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>-->
+          <el-button v-permission="['POST /admin/quoteBill/submit']" type="primary" size="mini" @click="handleApprove(scope.row)">详情</el-button>
           <!--          <el-button v-if="scope.row.status===1||scope.row.status===2" v-permission="['POST /admin/quoteBill/cancle']" type="primary" size="mini" @click="handleRefund(scope.row)">撤销</el-button>-->
         </template>
       </el-table-column>
@@ -91,18 +96,21 @@ const statusMap = {
   6: 'ceo审批',
   7: '重新提交',
   8: '重新提交完毕',
-  9: '会审中'
+  9: '会审中',
+  10: '终止询价'
 }
 const statusMap1 = {
   0: '询价',
   1: '签收',
   2: '制作报价单',
   3: '提交报价单',
-  4: '甲方审批中',
-  5: '撤销报价',
+  4: '取消报价',
+  5: '报价',
   6: '报价超时作废',
-  8: '未中标',
-  9: '中标'
+  8: '流标',
+  9: '开标',
+  10: '重新询价',
+  11: '终止询价'
 }
 
 export default {
@@ -118,6 +126,7 @@ export default {
   },
   data() {
     return {
+      show1: false,
       show: false,
       ceoShow: false,
       dutyShow: false,
@@ -150,25 +159,24 @@ export default {
         quoteId: 0,
         billCode: 1 },
       listQuery: {
-        id: undefined,
-        purchaser: '',
-        quoteSupplyName: '',
-        status: undefined,
-        orderStatusArray: undefined,
-        page: undefined,
-        limit: undefined,
-        sort: undefined,
-        order: undefined
-      },
-      listCeoQuery: {
-        id: undefined,
-        adminId: undefined,
-        purchaser: '',
-        quoteSupplyName: '',
-        timeArray: [],
-        orderStatusArray: [],
         page: 1,
         limit: 20,
+        id: undefined,
+        adminid: undefined,
+        dutyid: undefined,
+        timeArray: [],
+        status: [],
+        sort: 'add_time',
+        order: 'desc'
+      },
+      listCeoQuery: {
+        page: 1,
+        limit: 20,
+        id: undefined,
+        adminId: undefined,
+        dutyid: undefined,
+        timeArray: [],
+        status: [],
         sort: 'add_time',
         order: 'desc'
       },
@@ -240,7 +248,6 @@ export default {
         this.listQuery.start = this.listQuery.timeArray[0]; this.listQuery.end = this.listQuery.timeArray[1]
       } else { this.listQuery.start = null; this.listQuery.end = null }
       listQuote(this.listQuery).then(response => {
-        console.log(response)
         this.list = response.data.data.list.data.list
         this.total = response.data.data.list.data.total
         this.current = Object.assign({}, response.data.data.currentUser)

@@ -17,7 +17,7 @@
       </el-card>
       <el-card v-show="rubberCardVisiable" class="box-card">
         <h3>塑料橡胶类商品信息</h3>
-        <el-button type="primary" @click="rubberShow">添加</el-button>
+        <el-button type="primary" @click="rubberShowNew">新建</el-button>
         <el-table :data="detail">
           <el-table-column property="id" label="id" />
           <el-table-column property="code" label="品号" />
@@ -34,16 +34,21 @@
           </el-table-column>
         </el-table>
 
-        <el-dialog :visible.sync="rubberVisiable" :title="detailAdd ? '添加商品' : '编辑商品'">
+        <el-dialog :visible.sync="rubberVisiable" :title="detailAdd ? '新建商品' : '编辑商品'">
           <el-form ref="attributeForm" :rules="rules" :model="detailForm" status-icon label-position="left" label-width="100px" style="margin-left:50px;">
-            <el-form-item label="品号" prop="code">
-              <el-input v-model="detailForm.code" maxlength="60" />
-            </el-form-item>
-            <el-form-item label="品名" prop="name">
-              <el-input v-model="detailForm.name" maxlength="100" />
-            </el-form-item>
-            <el-form-item label="规格" prop="spec">
-              <el-input v-model="detailForm.spec" maxlength="60" />
+            <!--            <el-form-item label="品号" prop="code">-->
+            <!--              <el-input v-model="detailForm.code" maxlength="60" :readonly="true" />-->
+            <!--            </el-form-item>-->
+            <!--            <el-form-item label="品名" prop="name">-->
+            <!--              <el-input v-model="detailForm.name" maxlength="100" :readonly="true" />-->
+            <!--            </el-form-item>-->
+            <!--            <el-form-item label="规格" prop="spec">-->
+            <!--              <el-input v-model="detailForm.spec" maxlength="60" :readonly="true" />-->
+            <!--            </el-form-item>-->
+            <el-form-item label="产品名称">
+              <span>(品号) {{ detailForm.code }} (品名) {{ detailForm.name }}</span>
+              <span>(规格) {{ detailForm.spec }}</span>
+              <el-button type="primary" @click="rubberShow">修改品号</el-button>
             </el-form-item>
             <el-form-item label="理论重量" prop="weight">
               <el-input v-model="detailForm.weight" type="number" class="input-width" @keydown="handleInput">
@@ -68,7 +73,7 @@
       </el-card>
       <el-card v-show="electronicCardVisiable" class="box-card">
         <h3>电子电器类商品信息</h3>
-        <el-button type="primary" @click="rubberShow">添加</el-button>
+        <el-button type="primary" @click="rubberShowNew">新建</el-button>
         <el-table :data="detail">
           <el-table-column property="id" label="id" />
           <el-table-column property="code" label="品号" />
@@ -84,17 +89,14 @@
           </el-table-column>
         </el-table>
 
-        <el-dialog :visible.sync="electronicVisiable" :title="detailAdd ? '添加商品' : '编辑商品'">
+        <el-dialog :visible.sync="electronicVisiable" :title="detailAdd ? '新建商品' : '编辑商品'">
           <el-form ref="attributeForm" :rules="rules" :model="detailForm" status-icon label-position="left" label-width="100px" style="margin-left:50px;">
-            <el-form-item label="品号" prop="code">
-              <el-input v-model="detailForm.code" maxlength="60" />
+            <el-form-item label="产品名称">
+              <span>(品号) {{ detailForm.code }} (品名) {{ detailForm.name }}</span>
+              <span>(规格) {{ detailForm.spec }}</span>
+              <el-button type="primary" @click="rubberShow">修改品号</el-button>
             </el-form-item>
-            <el-form-item label="品名" prop="name">
-              <el-input v-model="detailForm.name" maxlength="100" />
-            </el-form-item>
-            <el-form-item label="规格" prop="spec">
-              <el-input v-model="detailForm.spec" maxlength="60" />
-            </el-form-item>
+
             <el-form-item label="年预估量" prop="quantityYear">
               <el-input v-model="detailForm.quantityYear" type="number" class="input-width" @keydown="handleInput">
                 <template slot="append">只</template>
@@ -113,7 +115,7 @@
       </el-card>
       <el-card v-show="hardwareCardVisiable" class="box-card">
         <h3>五金类商品信息</h3>
-        <el-button type="primary" @click="rubberShow">添加</el-button>
+        <el-button type="primary" @click="rubberShowNew">新建</el-button>
         <el-table :data="detail">
           <el-table-column property="id" label="id" />
           <el-table-column property="code" label="品号" />
@@ -131,16 +133,12 @@
           </el-table-column>
         </el-table>
 
-        <el-dialog :visible.sync="hardwareVisiable" :title="detailAdd ? '添加商品' : '编辑商品'">
+        <el-dialog :visible.sync="hardwareVisiable" :title="detailAdd ? '新建商品' : '编辑商品'">
           <el-form ref="attributeForm" :rules="rules" :model="detailForm" status-icon label-position="left" label-width="100px" style="margin-left:50px;">
-            <el-form-item label="品号" prop="code">
-              <el-input v-model="detailForm.code" maxlength="60" />
-            </el-form-item>
-            <el-form-item label="品名" prop="name">
-              <el-input v-model="detailForm.name" maxlength="100" />
-            </el-form-item>
-            <el-form-item label="规格" prop="spec">
-              <el-input v-model="detailForm.spec" maxlength="60" />
+            <el-form-item label="产品名称">
+              <span>(品号) {{ detailForm.code }} (品名) {{ detailForm.name }}</span>
+              <span>(规格) {{ detailForm.spec }}</span>
+              <el-button type="primary" @click="rubberShow">修改品号</el-button>
             </el-form-item>
             <el-form-item label="材质" prop="material">
               <el-input v-model="detailForm.material" maxlength="60" />
@@ -168,7 +166,7 @@
       </el-card>
       <el-card v-show="dieCastingCardVisiable" class="box-card">
         <h3>压铸模具类商品信息</h3>
-        <el-button type="primary" @click="rubberShow">添加</el-button>
+        <el-button type="primary" @click="rubberShowNew">新建</el-button>
         <el-table :data="detail">
           <el-table-column property="id" label="id" />
           <el-table-column property="code" label="品号" />
@@ -185,16 +183,12 @@
           </el-table-column>
         </el-table>
 
-        <el-dialog :visible.sync="dieCastingVisiable" :title="detailAdd ? '添加商品' : '编辑商品'">
+        <el-dialog :visible.sync="dieCastingVisiable" :title="detailAdd ? '新建商品' : '编辑商品'">
           <el-form ref="attributeForm" :rules="rules" :model="detailForm" status-icon label-position="left" label-width="100px" style="margin-left:50px;">
-            <el-form-item label="品号" prop="code">
-              <el-input v-model="detailForm.code" maxlength="60" />
-            </el-form-item>
-            <el-form-item label="品名" prop="name">
-              <el-input v-model="detailForm.name" maxlength="100" />
-            </el-form-item>
-            <el-form-item label="规格" prop="spec">
-              <el-input v-model="detailForm.spec" maxlength="60" />
+            <el-form-item label="产品名称">
+              <span>(品号) {{ detailForm.code }} (品名) {{ detailForm.name }}</span>
+              <span>(规格) {{ detailForm.spec }}</span>
+              <el-button type="primary" @click="rubberShow">修改品号</el-button>
             </el-form-item>
             <el-form-item label="产品尺寸" prop="size">
               <el-input v-model="detailForm.size" class="input-width">
@@ -240,6 +234,7 @@
           <el-select v-model="dataForm.quoteSupplyCode" multiple placeholder="请选择" clear @change="selectDuty($event)">
             <el-option v-for="item in listAdmin" :key="item.value" :label="item.deptname" :value="item.value" />
           </el-select>
+          <el-button style="float:left;" size="mini" type="primary" @click="handleCreate()">选择供应商</el-button>
         </el-form-item>
         <el-form-item label="添加核价小组成员" prop="approveCode">
           <el-select v-model="dataForm.approveCode" disabled multiple placeholder="请选择" clear>
@@ -271,6 +266,42 @@
       <el-button v-if="dialogStatus==='create'" type="primary" @click="createData">确定</el-button>
       <el-button v-else type="primary" @click="updateData">确定</el-button>
     </div>
+    <el-dialog :visible.sync="addCodeVisiable" title="查询产品">
+      <div class="search">
+        <el-input v-model="listQueryCode.code" class="filter-item" style="width: 200px;" placeholder="请输入品号\品名\规格" />
+        <el-button class="filter-item" type="primary" icon="el-icon-search" @click="searchCode">查找</el-button>
+        <el-table v-loading="CodelistLoading" :data="listCode" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+          <el-table-column align="center" label="品号" prop="imaal001" />
+          <el-table-column align="center" label="品名" prop="imaal003" />
+          <el-table-column align="center" label="规格" prop="imaal004" />
+          <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
+            <template slot-scope="scope">
+              <el-button type="primary" size="mini" @click="confirmAdd(scope.row)">选择</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <pagination v-show="total>0" :total="total" :page.sync="listQueryCode.page" :limit.sync="listQueryCode.limit" @pagination="searchCode" />
+      </div>
+
+    </el-dialog>
+    <el-dialog :visible.sync="addSupplyVisiable" title="添加供应商">
+      <div class="search">
+        <el-input v-model="listPhoneQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入手机|供应商" />
+        <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+        <el-table v-loading="listLoading" :data="supplyList" element-loading-text="正在查询中。。。" border fit highlight-current-row @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55" />
+          <el-table-column align="center" label="ID" prop="id" />
+          <el-table-column align="center" label="姓名" prop="name" />
+          <el-table-column align="center" label="手机" prop="phone" />
+          <el-table-column align="center" label="单位" prop="note" />
+        </el-table>
+<!--        <pagination v-show="totalCode>=0" :total="totalCode" :page.sync="listPhoneQuery.page" :limit.sync="listPhoneQuery.limit" @pagination="handleFilter" />-->
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addSupplyVisiable = false">取消</el-button>
+        <el-button type="primary" @click="confirmCodeAdd">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <style>
@@ -289,21 +320,25 @@
 </style>
 <script>
 import { createStorage, uploadPath } from '@/api/storage'
-import { readquote, createQuote } from '@/api/quote'
+import { readquote, createQuote, readCode, listSupply } from '@/api/quote'
 import { read } from '@/api/quotemodel'
+import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { getToken } from '@/utils/auth'
 import Editor from '@tinymce/tinymce-vue'
 
 export default {
   name: 'QuoteBill',
-  components: { Editor },
+  components: { Editor, Pagination },
 
   data() {
     return {
       show: false,
       uploadPath,
       setstatus: 0,
+      total: 0,
+      totalCode: 0,
       quoteDialogVisible: false,
+      CodelistLoading: false,
       userid: 0,
       rubberCardVisiable: false,
       electronicCardVisiable: false,
@@ -314,8 +349,27 @@ export default {
       hardwareVisiable: false,
       dieCastingVisiable: false,
       AppriveCardVisiable: false,
+      addCodeVisiable: false,
+      addSupplyVisiable: false,
+      attributeAdd: false,
       detailAdd: false,
       url: '',
+      selectedlist: [],
+      listPhoneQuery: {
+        name: "1",
+        page: 1,
+        limit: 10
+      },
+      listQueryCode: {
+        code: '1',
+        page: 1,
+        limit: 10
+      },
+      Code: {
+        code: undefined,
+        name: undefined,
+        spec: undefined
+      },
       dataForm: [],
       current: [],
       purchaser: '',
@@ -332,6 +386,7 @@ export default {
       detail: [],
       quoteModelId: '',
       modelId: 0,
+      listCode: [],
       listLoading: true,
       dialogFormVisible: true,
       dialogStatus: 'create',
@@ -350,7 +405,6 @@ export default {
         processingCostSingle: [{ required: true, message: '必须输入单个产品加工费', trigger: 'blur' }],
         moldNumber: [{ required: true, message: '必须输入模穴数', trigger: 'blur' }],
         looseCore: [{ required: true, message: '必须输入抽芯数', trigger: 'blur' }],
-        quantityYear: [{ required: true, message: '必须输入年预估产量', trigger: 'blur' }],
         materialPrice: [{ required: true, message: '必须输入材料价', trigger: 'blur' }]
       },
       shipDialogVisible: false,
@@ -392,6 +446,8 @@ export default {
     this.getList()
   },
   mounted() {
+    this.$set(this.listPhoneQuery, "name", "1")
+    this.$set(this.listQueryCode, "code", "1")
   },
 
   methods: {
@@ -415,6 +471,90 @@ export default {
       console.log(JSON.stringify(response))
 
       this.dataForm.quoteModelExcel = response.data.url
+    },
+    confirmAdd(row) {
+      this.addCodeVisiable = false
+      this.detailForm.code = row.imaal001
+      this.detailForm.name = row.imaal003
+      this.detailForm.spec = row.imaal004
+      this.total = row.total
+      if (this.dialogStatus === 'create') { this.handleFilterAdmin() } else { this.detailEdit() }
+    },
+    handleSelectionChange(val) {
+      this.selectedlist = val
+    },
+    handleFilter() {
+      this.listLoading = true
+
+      listSupply(this.listPhoneQuery).then(response => {
+        console.log(response)
+        if (this.listCode.length>0) { this.totalCode = parseInt(response.data.data.list[0].total) }
+        this.supplyList = response.data.data.list
+        this.listLoading = false
+      }).catch(() => {
+        this.supplyList = []
+        this.listLoading = false
+        this.totalCode = 0
+      })
+    },
+    rubberShowNew() {
+      this.dialogStatus = 'create'
+      if (this.dialogStatus === 'create' ) { this.detailForm = []; this.detailForm.appendix = this.quoteModelId; }
+      this.detailAdd = true
+      this.addCodeVisiable = true
+    },
+    handleCreate() {
+      this.listPhoneQuery = {
+        name: "",
+        page: 1,
+        limit: 10
+      }
+      this.list = []
+      this.selectedlist = []
+      this.addSupplyVisiable = true
+    },
+    confirmCodeAdd() {
+      const newGoodsIds = []
+      const newGoodsList = []
+      this.selectedlist.forEach(item => {
+        const id = item.id
+        let found = false
+        this.dataForm.quoteSupplyCode.forEach(SupplyId => {
+          if (id === SupplyId) {
+            found = true
+          }
+        })
+        if (!found) {
+          newGoodsIds.push(id)
+          newGoodsList.push(item)
+        }
+      })
+
+      if (newGoodsIds.length > 0) {
+        this.dataForm.quoteSupplyCode = this.dataForm.quoteSupplyCode.concat(newGoodsIds)
+        this.supplyList = this.supplyList.concat(newGoodsList)
+      }
+      this.addSupplyVisiable = false
+    },
+
+    rubberShow() {
+      this.dialogStatus = 'update'
+      this.detailAdd = false
+      this.addCodeVisiable = true
+    },
+    searchCode() {
+      this.CodelistLoading = true
+      readCode(this.listQueryCode).then(response => {
+        console.log(JSON.stringify(response))
+        this.listCode = response.data.data.list
+        if (this.listCode.length>=0) { this.total = parseInt(response.data.data.list[0].total) }
+        this.CodelistLoading = false
+      }).catch(() => {
+        console.log('无数据')
+        this.listCode = []
+        this.total = 0
+        this.CodelistLoading = false
+      })
     },
     handleCancel: function() {
       this.$store.dispatch('tagsView/delView', this.$route)
@@ -480,17 +620,17 @@ export default {
       if (modelId === 6) { quoteInOne.quoteElectronic = quoteInOne.quoteElectronic.concat(this.detail) }
       quoteInOne.quoteBill = this.dataForm
 
-      this.$refs['attributeForm'].validate(valid => {
-        if (valid) {
-          createQuote(quoteInOne)
-            .then(response => {
-              this.dialogFormVisible = false
-              this.$notify.success({ title: '成功', message: '新增询价单成功' })
-              this.$store.dispatch('tagsView/delView', this.$route)
-              this.$router.push({ path: '/quoteManage/quotebill' })
-            }).catch(response => { console.log(JSON.stringify(response)); this.$notify.error({ title: '失败', message: response.data.errmsg }) })
-        }
-      })
+      // this.$refs['attributeForm'].validate(valid => {
+      //   if (valid) {
+      createQuote(quoteInOne)
+        .then(response => {
+          this.dialogFormVisible = false
+          this.$notify.success({ title: '成功', message: '新增询价单成功' })
+          this.$store.dispatch('tagsView/delView', this.$route)
+          this.$router.push({ path: '/quoteManage/quotebill' })
+        }).catch(response => { console.log(JSON.stringify(response)); this.$notify.error({ title: '失败', message: response.data.errmsg }) })
+      //   }
+      // })
     },
     handleUpdate(row) {
       var index = this.detail.length - 1
@@ -546,13 +686,13 @@ export default {
       //   }
       // })
     },
-    rubberShow(row) {
+    handleFilterAdmin() {
       this.detailAdd = true
       this.rubberVisiable = false
       this.electronicVisiable = false
       this.hardwareVisiable = false
       this.dieCastingVisiable = false
-      this.detailForm = Object.assign({}, row)
+      // this.detailForm = Object.assign({}, row)
       const modelId = this.dataForm.modelName
       if (modelId === 3) { this.rubberVisiable = true }
       if (modelId === 4) { this.dieCastingVisiable = true }
@@ -604,12 +744,15 @@ export default {
       }
     },
     handleAttributeShow(row) {
-      if (row.id) {
+      if (row.id > 0) {
         this.detailForm = Object.assign({}, row)
         this.attributeAdd = false
+        this.detailAdd = false
       } else {
-        this.detailForm = {}
+        this.detailForm = Object.assign({}, row)
+        // this.detailForm = {}
         this.attributeAdd = true
+        this.detailAdd = false
       }
       const modelId = this.dataForm.modelName
 

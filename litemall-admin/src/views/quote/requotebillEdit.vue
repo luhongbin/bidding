@@ -330,7 +330,7 @@
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
-            <el-button @click="rubberVisiable = false">取消</el-button>
+            <el-button @click="dieCastingVisiable = false">取消</el-button>
             <el-button v-if="detailAdd" type="primary" @click="handleAttributeAdd">确定</el-button>
             <el-button v-else type="primary" @click="detailEdit">确定</el-button>
           </div>
@@ -341,7 +341,7 @@
         <h3>上传附件</h3>
         <el-form-item v-if="dataForm.requoteExcel !== '' && dataForm.requoteExcel !== null" label="上传报价单" prop="requoteExcel">
           <el-upload :headers="headers" :limit="1" :action="uploadPath" :on-success="uploadUrl" :file-list="fileList" :before-upload="checkFileSize" accept=".xlsx">
-            <el-button style="margin-left: 10px;" size="small" type="success">重新询价单</el-button>
+            <el-button style="margin-left: 10px;" size="small" type="success">重新上传报价单</el-button>
             <div slot="tip" class="el-upload__tip">只能上传一个xlsx文件，且不超过20M</div>
           </el-upload>
         </el-form-item>
@@ -359,7 +359,8 @@
     </el-form>
     <div class="op-container">
       <el-button @click="handleCancel">取消</el-button>
-      <el-button type="primary" @click="updateData">确定</el-button>
+      <el-button type="primary" @click="updateData">保存</el-button>
+      <el-button type="primary" @click="handleSubmit">确定提交</el-button>
     </div>
   </div>
 </template>
@@ -382,14 +383,16 @@ import { createStorage, uploadPath } from '@/api/storage'
 import { getToken } from '@/utils/auth'
 import Editor from '@tinymce/tinymce-vue'
 import { myRead, updateRequote as updateQuote } from '@/api/requote'
-import { find } from '@/api/quote'
+import { find, submitQuote } from '@/api/quote'
+import _ from 'lodash'
 const statusMap2 = {
   0: '中标',
   1: '未中标',
   2: '重新报价',
   3: '未报价',
   4: '流标',
-  5: '报价'
+  5: '报价',
+  6: '提交报价'
 }
 const statusMap3 = {
   0: '选中',
@@ -438,6 +441,7 @@ export default {
       fileList: [],
       ListQuote: [],
       detailForm: [],
+      approverow: [],
       detail: [],
       modelId: 0,
       listLoading: true,
@@ -508,10 +512,13 @@ export default {
         return
       }
       const Id = this.$route.query.id
+      this.approverow=this.$route.query.row
       myRead(Id).then(response => {
-        console.log('myRead:' + JSON.stringify(response))
+        // console.log('myRead:' + JSON.stringify(response))
         this.current = Object.assign({}, response.data.data.currentUser)
-        this.detail = response.data.data.redetail
+        let newArr = response.data.data.redetail.filter(item => item.status !== 2);
+        this.detail = newArr
+        // this.detail = response.data.data.redetail
         this.dataForm = response.data.data.reQuote
         this.listAdmin = response.data.data.optionsAdmin
         this.modelNameList = response.data.data.quoteModel
@@ -529,7 +536,6 @@ export default {
       }).catch(() => { this.list = []; this.total = 0; this.$notify.error({ title: '失败', message: '基础数据没取出来数据' }) })
     },
     trueCard(modelId) {
-      alert(modelId)
       this.rubberCardVisiable = false
       this.dieCastingCardVisiable = false
       this.hardwareCardVisiable = false
@@ -542,7 +548,7 @@ export default {
     uploadUrl: function(response) {
       console.log(JSON.stringify(response))
 
-      this.dataForm.quoteModelExcel = response.data.url
+      this.dataForm.requoteExcel = response.data.url
     },
     checkFileSize: function(file) {
       if (file.size > 20485760) {
@@ -551,43 +557,29 @@ export default {
       }
       return true
     },
-    selectSupply(val) {
-      console.log(val)
-      for (let i = 0; i < this.modelNameList.length; i++) {
-        if (this.modelNameList[i]['value'] === val) {
-          this.$set(this.dataForm, 'quoteSupplyCode', this.modelNameList[i].supply)
-          this.$set(this.dataForm, 'approveCode', this.modelNameList[i].approveCode)
-          this.$set(this.dataForm, 'dutyCode', this.modelNameList[i].duty)
-          this.$set(this.dataForm, 'ceoCode', this.modelNameList[i].ceoCode)
-          this.$set(this.dataForm, 'notice', this.modelNameList[i].notice)
-          this.$set(this.dataForm, 'ceoChoice', this.modelNameList[i].supply)
-          this.$set(this.dataForm, 'dutyChoice', this.modelNameList[i].supply)
-        }
-      }
-    },
-    selectDuty(val) {
-      this.$set(this.dataForm, 'dutyChoice', this.quote.dutyChoice)
-    },
-    selectCeo(val) {
-      this.$set(this.quote, 'ceoChoice', this.quote.dutyChoice)
-    },
+
     handleInput(e) {
       const a = e.key.replace(/[^\d]/g, '')
       if (!a) { e.preventDefault() }
     },
     handleUpdate(row) {
-      this.dataForm = Object.assign({}, row)
-      this.dataForm.adminId = sessionStorage.getItem('userid')
-      this.dataForm.purchaser = this.formatAdmin(this.dataForm.adminId)
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
+      this.$refs['dataForm'].validate(valid => {
+        if (valid) {
+          this.dataForm = Object.assign({}, row)
+          this.dataForm.adminId = sessionStorage.getItem('userid')
+          this.dataForm.purchaser = this.formatAdmin(this.dataForm.adminId)
+          this.dialogStatus = 'update'
+          this.dialogFormVisible = true
+          this.$nextTick(() => {
+            this.$refs['dataForm'].clearValidate()
+          }) .catch(response => { this.$notify.error({ title: '失败', message: response.data.errmsg }) })
+        }
       })
     },
     updateData() {
       this.dataForm.modify = sessionStorage.getItem('userId')
       const quoteInOne = { quoteRubber: [], quoteDieCasting: [], quoteHardware: [], quoteElectronic: [], quoteBill: {}, reQuote: {}}
+      quoteInOne.reQuote = this.dataForm
       const modelId = this.quote.modelName
       console.log('this.dataForm:' + JSON.stringify(this.dataForm))
       if (modelId === 3) { quoteInOne.quoteRubber = quoteInOne.quoteRubber.concat(this.detail) }
@@ -595,20 +587,13 @@ export default {
       if (modelId === 5) { quoteInOne.quoteHardware = quoteInOne.quoteHardware.concat(this.detail) }
       if (modelId === 6) { quoteInOne.quoteElectronic = quoteInOne.quoteElectronic.concat(this.detail) }
       quoteInOne.quoteBill = this.quote
-      quoteInOne.reQuote = this.dataForm
-      this.$refs['dataForm'].validate(valid => {
-        if (valid) {
-          console.log('quoteinone:' + JSON.stringify(quoteInOne))
-          updateQuote(quoteInOne)
-            .then(() => {
-              this.dialogFormVisible = false; this.$notify.success({ title: '成功', message: '更新成功' })
-              this.$store.dispatch('tagsView/delView', this.$route)
-
-              this.$router.push({ path: '/supplyManage/requote' })
-            })
-            .catch(response => { this.$notify.error({ title: '失败', message: response.data.errmsg }) })
-        }
-      })
+      console.log('quoteinone:' + JSON.stringify(quoteInOne))
+      updateQuote(quoteInOne)
+        .then(() => { this.$notify.success({ title: '成功', message: '更新成功' })
+          // this.$store.dispatch('tagsView/delView', this.$route)
+          // this.dialogFormVisible = false
+          // this.$router.push({ path: '/supplyManage/requote' })
+        })
     },
     handleCancel: function() {
       this.$store.dispatch('tagsView/delView', this.$route)
@@ -642,21 +627,27 @@ export default {
         }
       })
     },
-    handleAttributeShow(row) {
-      const modelId = this.quote.modelName
-      this.detailForm = {}
+    handleSubmit() {
+      this.updateData()
+      this.$store.dispatch('tagsView/delView', this.$route)
+      this.dialogFormVisible = false
+      this.$router.push({ path: '/supplyManage/requote-approve', query: { row: this.approverow }})
+    },
 
+    handleAttributeShow(row) {
+      // const modelId = this.quote.modelName
+      // this.detailForm = {}
       if (row.id) {
-        // this.detailForm = Object.assign({}, row)
-        find(row.id, modelId)
-          .then(response => {
-            this.detailForm = response.data.data.detail
-            this.detailForm.allname = this.detailForm.code + ':' + this.detailForm.name + ':' + this.detailForm.spec
-            console.log(JSON.stringify(response))
-          }).catch(response => { this.$notify.error({ title: '失败', message: response.data.errmsg }) })
+        this.detailForm = Object.assign({}, row)
+        // find(row.id, modelId)
+        //   .then(response => {
+        //     this.detailForm = response.data.data.detail
+        //     this.detailForm.allname = this.detailForm.code + ':' + this.detailForm.name + ':' + this.detailForm.spec
+        //     console.log(JSON.stringify(response))
+        //   }).catch(response => { this.$notify.error({ title: '失败', message: response.data.errmsg }) })
         this.attributeAdd = false
       } else {
-        this.detailForm = {}
+        // this.detailForm = {}
         this.attributeAdd = true
       }
       this.trueVisiable()

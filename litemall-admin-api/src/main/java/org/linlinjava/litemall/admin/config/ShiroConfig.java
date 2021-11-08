@@ -12,18 +12,17 @@ import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreato
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Lazy;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Configuration
 public class ShiroConfig {
-
     @Bean
     public Realm realm() {
         return new AdminAuthorizingRealm();
     }
-
     @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
@@ -44,13 +43,11 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;
     }
-
     @Bean
     public SessionManager sessionManager() {
 
         return new AdminWebSessionManager();
     }
-
     @Bean
     public DefaultWebSecurityManager defaultWebSecurityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
@@ -58,7 +55,6 @@ public class ShiroConfig {
         securityManager.setSessionManager(sessionManager());
         return securityManager;
     }
-
     @Bean
     public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {
         AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor =
@@ -66,7 +62,6 @@ public class ShiroConfig {
         authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
         return authorizationAttributeSourceAdvisor;
     }
-
     @Bean
     @DependsOn("lifecycleBeanPostProcessor")
     public static DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {

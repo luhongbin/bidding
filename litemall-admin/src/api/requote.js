@@ -1,18 +1,23 @@
 import request from '@/utils/request'
+import Qs from 'qs'
 
 export function listReQuote(query) {
   return request({
     url: '/requote/list',
     method: 'get',
-    params: query
-  })
+    params: query,
+    paramsSerializer: function(params) {
+      return Qs.stringify(params, { arrayFormat: 'repeat' })
+    }  })
 }
 export function listReCeo(query) {
   return request({
     url: '/requote/listCeo',
     method: 'get',
-    params: query
-  })
+    params: query,
+    paramsSerializer: function(params) {
+      return Qs.stringify(params, { arrayFormat: 'repeat' })
+    }  })
 }
 export function find(id, modelId) {
   return request({
@@ -53,15 +58,19 @@ export function listBrowserCeo(query) {
   return request({
     url: '/requote/listBrowserCeo',
     method: 'get',
-    params: query
-  })
+    params: query,
+    paramsSerializer: function(params) {
+      return Qs.stringify(params, { arrayFormat: 'repeat' })
+    }  })
 }
 export function listBrowserOK(query) {
   return request({
     url: '/requote/listBrowserOK',
     method: 'get',
-    params: query
-  })
+    params: query,
+    paramsSerializer: function(params) {
+      return Qs.stringify(params, { arrayFormat: 'repeat' })
+    }  })
 }
 export function myRead(id) {
   return request({

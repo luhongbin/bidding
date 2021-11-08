@@ -20,6 +20,7 @@ import org.linlinjava.litemall.db.service.LitemallPermissionService;
 import org.linlinjava.litemall.db.service.LitemallRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -36,10 +37,13 @@ import static org.linlinjava.litemall.admin.util.AdminResponseCode.ROLE_USER_EXI
 public class AdminRoleController {
     private final Log logger = LogFactory.getLog(AdminRoleController.class);
 
+    @Lazy
     @Autowired
     private LitemallRoleService roleService;
+    @Lazy
     @Autowired
     private LitemallPermissionService permissionService;
+    @Lazy
     @Autowired
     private LitemallAdminService adminService;
 

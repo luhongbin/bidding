@@ -28,7 +28,7 @@ export const constantRoutes = [
   {
     path: '/redirect',
     component: Layout,
-    hidden: true,
+    hidden: false,
     children: [
       {
         path: '/redirect/:path(.*)',
@@ -90,7 +90,7 @@ export const asyncRoutes = [
         component: () => import('@/views/quote/quotebill'),
         name: 'quotebill',
         meta: {
-          perms: ['GET /admin/quotebill/list', 'GET /admin/quoteBill/listCeo', 'POST /admin/quotebill/delete'],
+          perms: ['GET /admin/quoteBill/list', 'GET /admin/quoteBill/listCeo', 'POST /admin/quoteBill/delete', 'POST /admin/quoteBill/create', 'POST /admin/quoteBill/update', 'POST /admin/quoteBill/submit'],
           title: '询价单制作审批',
           noCache: true
         }
@@ -100,7 +100,7 @@ export const asyncRoutes = [
         component: () => import('@/views/quote/quotebilllist'),
         name: 'QuoteList',
         meta: {
-          perms: ['GET /admin/quotebill/search'],
+          perms: ['GET /admin/quoteBill/search'],
           title: '商品浏览',
           noCache: true
         },
@@ -111,8 +111,8 @@ export const asyncRoutes = [
         component: () => import('@/views/quote/quotebillCreate'),
         name: 'quotebillCreate',
         meta: {
-          perms: ['POST /admin/quotebill/create'],
-          title: '询价单创建',
+          perms: ['POST /admin/quoteBill/create'],
+          title: '新建',
           noCache: true
         },
         hidden: true
@@ -122,8 +122,8 @@ export const asyncRoutes = [
         component: () => import('@/views/quote/quotebillEdit'),
         name: 'quotebillEdit',
         meta: {
-          perms: ['GET /admin/quotebill/read', 'POST /admin/quotebill/update'],
-          title: '询价单编辑',
+          perms: ['POST /admin/quoteBill/update'],
+          title: '编辑',
           noCache: true
         },
         hidden: true
@@ -133,8 +133,8 @@ export const asyncRoutes = [
         component: () => import('@/views/quote/quotebillApprove'),
         name: 'quotebillApprove',
         meta: {
-          perms: ['GET /admin/quotebill/submit', 'POST /admin/quotebill/resubmit'],
-          title: '询价单审批',
+          perms: ['POST /admin/quoteBill/submit'],
+          title: '详情及审批',
           noCache: true
         },
         hidden: true
@@ -188,7 +188,7 @@ export const asyncRoutes = [
         component: () => import('@/views/quote/requote'),
         name: 'requote',
         meta: {
-          perms: ['GET /admin/requote/detail', 'GET /admin/requote/list'],
+          perms: ['GET /admin/requote/list', 'GET /admin/requote/listCeo', 'POST /admin/requote/delete', 'POST /admin/requote/create', 'POST /admin/requote/update', 'POST /admin/requote/submit', 'GET /admin/requote/submit'],
           title: '报价管理',
           noCache: true
         }
@@ -209,7 +209,7 @@ export const asyncRoutes = [
         component: () => import('@/views/quote/requotebillEdit'),
         name: 'requoteEdit',
         meta: {
-          perms: ['GET /admin/requote/read', 'POST /admin/requote/update'],
+          perms: ['POST /admin/requote/update'],
           title: '报价单编辑',
           noCache: true
         },
@@ -220,8 +220,8 @@ export const asyncRoutes = [
         component: () => import('@/views/quote/requoteApprove'),
         name: 'requoteApprove',
         meta: {
-          perms: ['GET /admin/quote/submit', 'POST /admin/requote/resubmit', 'POST /admin/requote/myRead'],
-          title: '报价单审批',
+          perms: ['POST /admin/requote/submit'],
+          title: '详情',
           noCache: true
         },
         hidden: true
@@ -231,7 +231,7 @@ export const asyncRoutes = [
         component: () => import('@/views/quote/approve'),
         name: 'approve',
         meta: {
-          perms: ['GET /admin/requote/detail', 'POST /admin/requote/update', 'POST /admin/requote/catAndBrand'],
+          perms: ['GET /admin/purchase/list'],
           title: '供应商交期质量查询',
           noCache: true
         },
@@ -272,7 +272,7 @@ export const asyncRoutes = [
         // component: () => import('@/views/quote/invoice'),
         name: 'invoiTce',
         meta: {
-          perms: ['GET /admin/invoice/list'],
+          perms: ['GET /admin/purchase/list'],
           title: '供应商排产计划',
           noCache: true
         }
@@ -370,6 +370,7 @@ export const asyncRoutes = [
         component: () => import('@/views/mall/region'),
         name: 'region',
         meta: {
+          perms: ['GET /admin/brand/list', 'POST /admin/brand/create', 'GET /admin/brand/read', 'POST /admin/brand/update', 'POST /admin/brand/delete'],
           title: '行政区域',
           noCache: true
         }
@@ -763,7 +764,7 @@ export const asyncRoutes = [
         component: () => import('@/views/config/quotemodel'),
         name: 'configQuoteMode;',
         meta: {
-          perms: ['GET /admin/config/quotemodel', 'POST /admin/config/quotemodel'],
+          perms: ['GET /admin/quoteModel/list', 'POST /admin/quoteModel/create'],
           title: '询价单样式配置',
           noCache: true
         }
@@ -773,7 +774,7 @@ export const asyncRoutes = [
         component: () => import('@/views/config/quotemodelCreate'),
         name: 'quotemodelCreate',
         meta: {
-          perms: ['POST /admin/config/quotemodel'],
+          perms: ['POST /admin/quoteModel/create'],
           title: '询价单样式创建',
           noCache: true
         },
@@ -784,7 +785,7 @@ export const asyncRoutes = [
         component: () => import('@/views/config/quotemodelEdit'),
         name: 'quotemodelEdit',
         meta: {
-          perms: ['GET /admin/config/quotemodel', 'POST /admin/config/quotemodel'],
+          perms: ['POST /admin/quoteModel/update'],
           title: '询价单样式编辑',
           noCache: true
         },

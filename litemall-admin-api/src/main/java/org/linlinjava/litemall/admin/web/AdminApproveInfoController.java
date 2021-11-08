@@ -12,6 +12,7 @@ import org.linlinjava.litemall.db.domain.LitemallApproveInfo;
 import org.linlinjava.litemall.db.service.LitemallApproveInfoService;
 //import org.linlinjava.litemall.db.dao.ApproveInfoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,7 +45,7 @@ public class AdminApproveInfoController {
 
     @GetMapping("/quoteread")
     public Object quoteread(Integer billId , Integer billCode) {
-        List<LitemallApproveInfo> ApproveInfoList = approveInfoService.queryQuoteApprove(billId, billCode);
+        List<LitemallApproveInfo> ApproveInfoList = approveInfoService.queryQuoteApprove(billId, billCode,0);
         return ResponseUtil.okList(ApproveInfoList);
     }
 

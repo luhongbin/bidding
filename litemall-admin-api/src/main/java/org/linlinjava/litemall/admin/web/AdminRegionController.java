@@ -9,6 +9,7 @@ import org.linlinjava.litemall.core.util.ResponseUtil;
 import org.linlinjava.litemall.db.domain.LitemallRegion;
 import org.linlinjava.litemall.db.service.LitemallRegionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +26,6 @@ import java.util.stream.Collectors;
 @Validated
 public class AdminRegionController {
     private final Log logger = LogFactory.getLog(AdminRegionController.class);
-
     @Autowired
     private LitemallRegionService regionService;
 

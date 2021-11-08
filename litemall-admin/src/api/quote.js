@@ -1,10 +1,14 @@
 import request from '@/utils/request'
+import Qs from 'qs'
 
 export function listQuote(query) {
   return request({
     url: '/quoteBill/list',
     method: 'get',
-    params: query
+    params: query,
+    paramsSerializer: function(params) {
+      return Qs.stringify(params, { arrayFormat: 'repeat' })
+    }
   })
 }
 
@@ -14,32 +18,51 @@ export function sign() {
     method: 'get'
   })
 }
+export function listSupply(query) {
+  return request({
+    url: '/quoteBill/listSupply',
+    method: 'get',
+    params: query
+  })
+}
 export function listCeo(query) {
   return request({
     url: '/quoteBill/listCeo',
     method: 'get',
-    params: query
+    params: query,
+    paramsSerializer: function(params) {
+      return Qs.stringify(params, { arrayFormat: 'repeat' })
+    }
   })
 }
 export function listBrowser(query) {
   return request({
     url: '/quoteBill/listBrowser',
     method: 'get',
-    params: query
+    params: query,
+    paramsSerializer: function(params) {
+      return Qs.stringify(params, { arrayFormat: 'repeat' })
+    }
   })
 }
 export function listBrowserCeo(query) {
   return request({
     url: '/quoteBill/listBrowserCeo',
     method: 'get',
-    params: query
+    params: query,
+    paramsSerializer: function(params) {
+      return Qs.stringify(params, { arrayFormat: 'repeat' })
+    }
   })
 }
 export function listBrowserOK(query) {
   return request({
     url: '/quoteBill/listBrowserOK',
     method: 'get',
-    params: query
+    params: query,
+    paramsSerializer: function(params) {
+      return Qs.stringify(params, { arrayFormat: 'repeat' })
+    }
   })
 }
 export function createQuote(data) {
@@ -106,5 +129,12 @@ export function readquote(id) {
     url: '/quoteBill/readquote',
     method: 'post',
     params: { id }
+  })
+}
+export function readCode(query) {
+  return request({
+    url: '/imaalT/listCode',
+    method: 'get',
+    params: query
   })
 }

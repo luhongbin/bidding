@@ -17,6 +17,7 @@ import org.linlinjava.litemall.core.validator.Sort;
 import org.linlinjava.litemall.db.domain.*;
 import org.linlinjava.litemall.db.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -78,7 +79,7 @@ public class AdminRequoteController {
         LitemallAdmin admint = (LitemallAdmin) SecurityUtils.getSubject().getPrincipal();
         Integer adminId = admint.getId();
         List<LitemallRequote> reQuote = reQuoteService.querySelectivelist(adminId, orderStatusArray,page, limit, sort, order);
-        logger.info("test file " + String.valueOf(adminId));
+//        logger.info("test file " + String.valueOf(adminId));
 
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("list", ResponseUtil.okList(reQuote));
@@ -126,7 +127,7 @@ public class AdminRequoteController {
                        @RequestParam(defaultValue = "10") Integer limit,
                        @Sort @RequestParam(defaultValue = "add_time") String sort,
                        @Order @RequestParam(defaultValue = "desc") String order) {
-        logger.info("test file " + String.valueOf(adminId));
+//        logger.info("test file " + String.valueOf(adminId));
 
         List<LitemallRequote> reQuote = reQuoteService.querySelectiveCeolist(adminId, orderStatusArray,page, limit, sort, order);
         Map<String, Object> data = new HashMap<String, Object>();
@@ -171,15 +172,17 @@ public class AdminRequoteController {
 
     @GetMapping("/myRead")
     public Object read(Integer id) {
-        logger.info("Integer id:"+String.valueOf(id));
+        LitemallAdmin admint = (LitemallAdmin) SecurityUtils.getSubject().getPrincipal();
+        Integer adminId = admint.getId();
+//        logger.info("Integer id:"+String.valueOf(id));
         LitemallRequote reQuote = reQuoteService.findById(id);
-        logger.info("reQuote:"+reQuote);
+//        logger.info("reQuote:"+reQuote);
         LitemallQuoteBill Quote = quoteBillService.findById(reQuote.getQuoteId());
-        logger.info("Quote:"+Quote);
-        List<LitemallApproveInfo> ApproveInfoList = approveInfoService.queryQuoteApprove(reQuote.getQuoteId(), 2);
+//        logger.info("Quote:"+Quote);
+        List<LitemallApproveInfo> ApproveInfoList = approveInfoService.queryQuoteApprove(reQuote.getQuoteId(), 2,adminId);
 
         Integer modelId = Quote.getModelName();
-        logger.info("modelId:"+String.valueOf(modelId));
+//        logger.info("modelId:"+String.valueOf(modelId));
         Map<String, Object> data = new HashMap<>();
 
         if (modelId == 4) {
@@ -238,16 +241,16 @@ public class AdminRequoteController {
         return ResponseUtil.ok(data);
     }
     @RequiresPermissions("admin:requote:submit")
-    @RequiresPermissionsDesc(menu = {"供应商管理", "报价管理"}, button = "详情及审批")
+    @RequiresPermissionsDesc(menu = {"供应商管理", "报价管理"}, button = "详情")
     @PostMapping("/submit")
     public Object submit(@RequestBody String body) { return adminQuoteService.submitById(body);}
 
     @GetMapping("/readQuote")
     public Object readQuote(Integer quoteId, Integer billCode) {
-        logger.info("quoteId file " + String.valueOf(quoteId));
+//        logger.info("quoteId file " + String.valueOf(quoteId));
         LitemallQuoteBill  Quote = quoteBillService.findById(quoteId);
         List<LitemallRequote> reQuote = reQuoteService.readQuote(quoteId);
-        List<LitemallApproveInfo> ApproveInfoList = approveInfoService.queryQuoteApprove(quoteId, billCode);
+        List<LitemallApproveInfo> ApproveInfoList = approveInfoService.queryQuoteApprove(quoteId, billCode,0);
 
         Map<String, Object> data = new HashMap<>();
         data.put("Quote", Quote);
@@ -256,7 +259,7 @@ public class AdminRequoteController {
         return ResponseUtil.ok(data);
     }
     @RequiresPermissions("admin:requote:listBrowser")
-    @RequiresPermissionsDesc(menu = {"供应商管理", "报价管理"}, button = "查询")
+    @RequiresPermissionsDesc(menu = {"供应商管理", "报价管理"}, button = "个人查询")
     @GetMapping("/listBrowser")
     public Object listBrowser(Integer adminId,  String codeId, @RequestParam(required = false) List<Short> status) {
         return ResponseUtil.ok(adminQuoteBillService.supplyGoogs(1, adminId, codeId,status));

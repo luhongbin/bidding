@@ -4,6 +4,7 @@ import com.alibaba.druid.util.StringUtils;
 import org.apache.shiro.web.servlet.ShiroHttpServletRequest;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.apache.shiro.web.util.WebUtils;
+import org.springframework.context.annotation.Lazy;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -13,7 +14,6 @@ public class AdminWebSessionManager extends DefaultWebSessionManager {
 
     public static final String LOGIN_TOKEN_KEY = "X-Litemall-Admin-Token";
     private static final String REFERENCED_SESSION_ID_SOURCE = "Stateless request";
-
     @Override
     protected Serializable getSessionId(ServletRequest request, ServletResponse response) {
         String id = WebUtils.toHttp(request).getHeader(LOGIN_TOKEN_KEY);

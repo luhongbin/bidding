@@ -57,11 +57,12 @@ public class LitemallQuoteBillService {
         quoteBill.setUpdateTime(LocalDateTime.now());
         return quoteMapper.updateWithOptimisticLocker(preUpdateTime, quoteBill);
     }
-    public List<LitemallQuoteBill> querySelective(Integer id,Integer adminId, String purchaser, String quoteSupplyName, LocalDateTime start, LocalDateTime end, List<Short> quoteStatusArray, Integer page, Integer limit, String sort, String order) {
+    public List<LitemallQuoteBill> querySelective(Integer id,Integer adminId, Integer dutyid, LocalDateTime start, LocalDateTime end, List<Short> status, Integer page, Integer limit, String sort, String order) {
 
         LitemallQuoteBillExample example = new LitemallQuoteBillExample();
-        example.setOrderByClause(LitemallQuoteBill.Column.addTime.desc());
         LitemallQuoteBillExample.Criteria criteria = example.createCriteria();
+
+        System.out.println(start);
 
         if (adminId != null && adminId > 0) {
             criteria.andAdminIdEqualTo(adminId);
@@ -70,12 +71,8 @@ public class LitemallQuoteBillService {
         if (id != null && id > 0) {
             criteria.andIdEqualTo(id);
         }
-        if (!com.alibaba.druid.util.StringUtils.isEmpty(quoteSupplyName)) {
-            criteria.andQuoteSupplyNameLike("%" + quoteSupplyName + "%");
-        }
-
-        if (!com.alibaba.druid.util.StringUtils.isEmpty(purchaser)) {
-            criteria.andPurchaserLike("%" + purchaser+ "%");
+        if (dutyid != null && dutyid > 0) {
+            criteria.andDutyCodeEqualTo(dutyid);
         }
 
         if (start != null) {
@@ -85,10 +82,8 @@ public class LitemallQuoteBillService {
             criteria.andAddTimeLessThanOrEqualTo(end);
         }
 
-        criteria.andDeletedEqualTo(false);
-
-        if (quoteStatusArray != null && quoteStatusArray.size() != 0) {
-            criteria.andStatusIn(quoteStatusArray);
+        if (status != null && status.size() != 0) {
+            criteria.andStatusIn(status);
         }
 
         criteria.andDeletedEqualTo(false);
@@ -98,7 +93,8 @@ public class LitemallQuoteBillService {
         }
 
         PageHelper.startPage(page, limit);
-        logger.info("----querySelective--------------"+ example);
+//        logger.info("----querySelective--------------");
+//        System.out.println("ENDI");
 
         return quoteBillMapper.selectByExample(example);
     }
@@ -148,7 +144,7 @@ public class LitemallQuoteBillService {
     }
 
     public LitemallQuoteBill findById(Integer id) {
-        System.out.print("Quot  ");
+//        System.out.print("Quot  ");
         return quoteBillMapper.selectByPrimaryKey(id);
     }
 

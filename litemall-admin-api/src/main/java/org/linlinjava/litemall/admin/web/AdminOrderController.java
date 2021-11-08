@@ -53,6 +53,8 @@ public class AdminOrderController {
                        @RequestParam(defaultValue = "10") Integer limit,
                        @Sort @RequestParam(defaultValue = "add_time") String sort,
                        @Order @RequestParam(defaultValue = "desc") String order) {
+        System.out.println(start);
+
         return adminOrderService.list(userId, orderSn, start, end, orderStatusArray, page, limit, sort, order);
     }
 

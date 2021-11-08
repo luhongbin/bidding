@@ -112,7 +112,7 @@ public class AdminQuoteService {
         LitemallQuoteBillExample example = new LitemallQuoteBillExample();
         example.or().andIdEqualTo(id);
         quoteBillMapper.updateByExampleSelective(quoteBill, example);
-        logger.info("询价单");
+//        logger.info("询价单");
 
         LitemallRequote reQuote = new LitemallRequote();
 
@@ -130,10 +130,10 @@ public class AdminQuoteService {
         approveInfo.setAdminId(adminId);
         approveInfo.setBillCode(billcode);
         approveInfo.setBillId(quoteId);
-        logger.info("报价单");
+//        logger.info("报价单");
 
         for (int code:supplyCode) {
-            logger.info(code);
+//            logger.info(code);
             Integer qid = code;
             approveInfo.setReceiver(code);
             approveInfoService.add(approveInfo);
@@ -156,7 +156,7 @@ public class AdminQuoteService {
         List<Integer> choiceValue = JacksonUtil.parseIntegerList(body, "choicevalue");
         List<Integer> ids = JacksonUtil.parseIntegerList(body, "ids");
 
-        logger.info("submitbody:"+body);
+//        logger.info("submitbody:"+body);
 
         if (id == null) {
             return ResponseUtil.badArgument();
@@ -171,7 +171,7 @@ public class AdminQuoteService {
         approveInfo.setNextAction(nextaction);
         approveInfo.setAdminId(adminId);
 
-        logger.info("报价单");
+//        logger.info("报价单");
         LitemallRequote reQuote = new LitemallRequote();
 
         if (idcard == 1) {
@@ -196,7 +196,7 @@ public class AdminQuoteService {
                 Integer modelId = quote.getModelName();
 //                logger.info("sese"+JacksonUtil.parseString(body, "quoteSupplyCode"));
                 Integer[] supplyCode = quote.getQuoteSupplyCode();
-                System.out.println(supplyCode);
+//                System.out.println(supplyCode);
 
                 reQuote.setStatus((short) 0);
                 reQuote.setQuoteId(quoteId);
@@ -262,7 +262,7 @@ public class AdminQuoteService {
                     String msg = "["+admin.getDept()+':'+admin.getNickname()+':'+admin.getId()+"]你好:\n\n"+"第["+reQuote.getQuoteId()+"]号询价单已经发送给您,意见:"+approveNote+"\n\n请在报价截止日期之前,前去钉钉工作台的耀泰供应链平台提供报价";
                     String infoSend = "{ \"userid_list\": \""+admin.getUsername()+"\", \"agent_id\": \"1231569276\", msg:{ \"msgtype\": \"markdown\", \"markdown\": { \"title\": \"LUTEC询价单\", " +
                             "\"text\":\"" + msg + "\"} } }";
-                    System.out.println(infoSend);
+//                    System.out.println(infoSend);
                     try { DingtalkApi.asyncsend(infoSend); } catch (Exception e) {  e.printStackTrace(); }
                 }
             }
@@ -320,7 +320,7 @@ public class AdminQuoteService {
                 String msg = "["+admin.getNickname()+"]你好:\n\n"+"第["+quote.getId()+"]号询价单,["+admin1.getNickname()+"]已经提交您审批\n\n,注意:"+approveNote+"\n\n前去钉钉工作台确定中标商家";
                 String infoSend = "{ \"userid_list\": \""+admin.getUsername()+"\", \"agent_id\": \"1231569276\", msg:{ \"msgtype\": \"markdown\", \"markdown\": { \"title\": \"LUTEC询价单\", " +
                         "\"text\":\""+ msg +"\"} } }";
-                System.out.println(infoSend);
+//                System.out.println(infoSend);
                 try { DingtalkApi.asyncsend(infoSend); } catch (Exception e) {  e.printStackTrace(); }
             }
             //负责人提交会审
@@ -333,7 +333,7 @@ public class AdminQuoteService {
                 approveInfo.setChildId(quoteId);
                 approveInfoService.add(approveInfo);
                 for (int code : quote.getApproveCode()) {
-                    logger.info(code);
+//                    logger.info(code);
                     Integer qid = code;
 
                     LitemallAdmin admin = adminService.findById(qid);
@@ -342,7 +342,7 @@ public class AdminQuoteService {
                     String msg = "["+admin.getNickname()+"]你好:\n\n"+"第["+quote.getId()+"]号询价单,["+admin1.getNickname()+"]已经提交您参加会审,意见:"+approveNote+"\n\n前去钉钉工作台的耀泰供应链平台会审";
                     String infoSend = "{ \"userid_list\": \""+admin.getUsername()+"\", \"agent_id\": \"1231569276\", msg:{ \"msgtype\": \"markdown\", \"markdown\": { \"title\": \"LUTEC询价单\", " +
                             "\"text\":\""+ msg +"\"} } }";
-                    System.out.println(infoSend);
+//                    System.out.println(infoSend);
                     try { DingtalkApi.asyncsend(infoSend); } catch (Exception e) {  e.printStackTrace(); }
                 }
             }
@@ -426,7 +426,7 @@ public class AdminQuoteService {
                 String msg = "["+admin.getNickname()+"]你好:\n\n"+"第["+quote.getId()+"]号询价单,经过会审,["+admin1.getNickname()+"]已经提交您审批,意见:"+approveNote+"\n\n前去钉钉工作台的耀泰供应链平台确定中标商家";
                 String infoSend = "{ \"userid_list\": \""+admin.getUsername()+"\", \"agent_id\": \"1231569276\", msg:{ \"msgtype\": \"markdown\", \"markdown\": { \"title\": \"LUTEC询价单\", " +
                         "\"text\":\""+ msg +"\"} } }";
-                System.out.println(infoSend);
+//                System.out.println(infoSend);
                 try { DingtalkApi.asyncsend(infoSend); } catch (Exception e) {  e.printStackTrace(); }
             }
             //会审
@@ -448,7 +448,7 @@ public class AdminQuoteService {
                 String msg = "["+admin.getNickname()+"]你好:\n\n"+"第["+quote.getId()+"]号询价单,["+admin1.getNickname()+"]会审意见:"+approveNote;
                 String infoSend = "{ \"userid_list\": \""+admin.getUsername()+"\", \"agent_id\": \"1231569276\", msg:{ \"msgtype\": \"markdown\", \"markdown\": { \"title\": \"LUTEC询价单\", " +
                         "\"text\":\""+ msg +"\"} } }";
-                System.out.println(infoSend);
+//                System.out.println(infoSend);
                 try { DingtalkApi.asyncsend(infoSend); } catch (Exception e) {  e.printStackTrace(); }
             }
             //会审后CEO终审
@@ -500,7 +500,7 @@ public class AdminQuoteService {
                             DingtalkApi.asyncsend(infoSend);
                             Robot r = new Robot();
                             r.delay(5000);
-                        } catch (Exception e) {  e.printStackTrace(); }                        //把中标通知供应商
+                        } catch (Exception e) {  e.printStackTrace(); }                        //把定标通知供应商
                         String noticer = "";
                         for (int noticeCode : quote.getNoticeCode() ) {
                             noticer = noticer + adminService.findById(noticeCode).getUsername()+ ',';
@@ -589,7 +589,7 @@ public class AdminQuoteService {
                         String msg = "["+admin.getNickname()+"]你好:\n\n"+"第["+ quoteHardwares.getQuoteId() +"]号询价单的产品:"+quoteHardwares.getCode()+":"+quoteHardwares.getName()+":"+quoteHardwares.getSpec()+",贵司被确认中标";
                         String infoSend = "{ \"userid_list\": \""+admin.getUsername()+"\", \"agent_id\": \"1231569276\", msg:{ \"msgtype\": \"markdown\", \"markdown\": { \"title\": \"LUTEC询价单\", " +
                                 "\"text\":\""+ msg +"\"} } }";
-                        System.out.println("中标"+infoSend);
+//                        System.out.println("中标"+infoSend);
                         try {
                             DingtalkApi.asyncsend(infoSend);
                             Robot r = new Robot();
@@ -649,7 +649,7 @@ public class AdminQuoteService {
                         String msg = "["+admin.getNickname()+"]你好:\n\n"+"第["+ quoteRubbers.getQuoteId() +"]号询价单的产品:"+quoteRubbers.getCode()+":"+quoteRubbers.getName()+":"+quoteRubbers.getSpec()+",贵司被确认中标";
                         String infoSend = "{ \"userid_list\": \""+admin.getUsername()+"\", \"agent_id\": \"1231569276\", msg:{ \"msgtype\": \"markdown\", \"markdown\": { \"title\": \"LUTEC询价单\", " +
                                 "\"text\":\""+ msg +"\"} } }";
-                        System.out.println("中标"+infoSend);
+//                        System.out.println("中标"+infoSend);
                         try {
                             DingtalkApi.asyncsend(infoSend);
                             Robot r = new Robot();
@@ -663,10 +663,10 @@ public class AdminQuoteService {
                         }
                         noticer = noticer + adminService.findById(quote.getAdminId()).getUsername();
                         String msg1 = "[通知]:\n\n[" + adminService.findById(requote.getAdminId()).getDept() + ':' + adminService.findById(requote.getAdminId()).getNickname() + "]第"+quote.getId()+"号询价单的产品:["+quoteRubbers.getCode()+":"+quoteRubbers.getName()+":"+quoteRubbers.getSpec()+"]中标";
-                        System.out.println("msg:"+msg1 + "noticer:" + noticer);
+//                        System.out.println("msg:"+msg1 + "noticer:" + noticer);
                         String infoSend1 = "{ \"userid_list\": \""+noticer+"\", \"agent_id\": \"1231569276\", msg:{ \"msgtype\": \"markdown\", \"markdown\": { \"title\": \"LUTEC询价单\", " +
                                 "\"text\":\""+ msg1 +"\"} } }";
-                        System.out.println("中标"+infoSend1);
+//                        System.out.println("中标"+infoSend1);
                         try {
                             DingtalkApi.asyncsend(infoSend1);
                             Robot r = new Robot();
@@ -689,6 +689,7 @@ public class AdminQuoteService {
                 quote.setStatus((short) 7);
                 quoteBillMapper.updateByPrimaryKey(quote);
                 String dutyChoice ="";
+
                 for(Integer idt : ids) {
                     if (modelId == 3) {
                         LitemallQuoteRubber quoteRubbers = quoteRubberService.findById(idt);
@@ -697,10 +698,10 @@ public class AdminQuoteService {
                         quoteRubberService.add(quoteRubbers);
                         quoteRubbers.setStatus((short) 3);
                         quoteRubberService.updateById(quoteRubbers);
-                        quoteRubberMapper.updateByPrimaryKey(quoteRubbers);
-                        LitemallRequote requote = reQuoteService.findById(quoteRubbers.getQuoteId());
-                        quoteRubbers.setStatus((short) 5);
-                        reQuoteService.updateById(requote);
+//                        quoteRubberMapper.updateByPrimaryKey(quoteRubbers);
+//                        quoteRubbers.setStatus((short) 5);
+//                        LitemallRequote requote = reQuoteService.findById(quoteRubbers.getQuoteId());
+//                        reQuoteService.updateById(requote);
                     }
                     if (modelId == 4) {
                         LitemallQuoteDieCasting quoteRubbers = quoteDieCastingService.findById(idt);
@@ -709,7 +710,10 @@ public class AdminQuoteService {
                         quoteDieCastingService.add(quoteRubbers);
                         quoteRubbers.setStatus((short) 3);
                         quoteDieCastingService.updateById(quoteRubbers);
-                        quoteDieCastingMapper.updateByPrimaryKey(quoteRubbers);
+//                        quoteDieCastingMapper.updateByPrimaryKey(quoteRubbers);
+//                        quoteRubbers.setStatus((short) 5);
+//                        LitemallRequote requote = reQuoteService.findById(quoteRubbers.getQuoteId());
+//                        reQuoteService.updateById(requote);
                     }
                     if (modelId == 5) {
                         LitemallQuoteHardware quoteRubbers = quoteHardwareService.findById(idt);
@@ -718,7 +722,10 @@ public class AdminQuoteService {
                         quoteHardwareService.add(quoteRubbers);
                         quoteRubbers.setStatus((short) 3);
                         quoteHardwareService.updateById(quoteRubbers);
-                        quoteHardwareMapper.updateByPrimaryKey(quoteRubbers);
+//                        quoteHardwareMapper.updateByPrimaryKey(quoteRubbers);
+//                        quoteRubbers.setStatus((short) 5);
+//                        LitemallRequote requote = reQuoteService.findById(quoteRubbers.getQuoteId());
+//                        reQuoteService.updateById(requote);
                     }
                     if (modelId == 6) {
                         LitemallQuoteElectronic quoteRubbers = quoteElectronicService.findById(idt);
@@ -746,8 +753,43 @@ public class AdminQuoteService {
                 String msg = "["+admin1.getNickname()+"]通知您:\n\n"+"第["+quote.getId()+"]号询价单,请修改该单据的报价供应商,要求重新提交报价\\n\\n意见:"+approveNote+"";
                 String infoSend = "{ \"userid_list\": \""+admin.getUsername()+"\", \"agent_id\": \"1231569276\", msg:{ \"msgtype\": \"markdown\", \"markdown\": { \"title\": \"LUTEC询价单\", " +
                         "\"text\":\""+ msg +"\"} } }";
-                System.out.println(infoSend);
+//                System.out.println(infoSend);
                 try { DingtalkApi.asyncsend(infoSend); } catch (Exception e) {  e.printStackTrace(); }
+            }
+            //终止询价
+
+            if (status == 10) {
+                LitemallQuoteBill quote = QuoteService.findById(quoteId);
+                approveInfo.setAdminId(adminId);
+                approveInfo.setReceiver(adminId);
+                approveInfo.setBillId(id);
+                approveInfo.setChildId(quoteId);
+                approveInfoService.add(approveInfo);
+
+                quote.setStatus((short) 10);
+                quoteBillMapper.updateByPrimaryKey(quote);
+
+                LitemallRequoteExample example2 = new LitemallRequoteExample();
+
+                //把本次报价单设置成取消
+                reQuote.setStatus((short) 11);
+                reQuote.setQuoteDate(LocalDateTime.now());
+                example2.or().andQuoteIdEqualTo(id);
+                requoteMapper.updateByExampleSelective(reQuote, example2);
+
+                for (int code : quote.getQuoteSupplyCode()) {
+//                    logger.info(code);
+                    Integer qid = code;
+
+                    LitemallAdmin admin = adminService.findById(qid);
+                    LitemallAdmin admin1 = adminService.findById(approveInfo.getAdminId());
+
+                    String msg = "["+admin.getNickname()+"]你好:\n\n"+"第["+quote.getId()+"]号询价单,["+admin1.getNickname()+"]我方终止询价,意见:"+approveNote+"\n\n特此通知";
+                    String infoSend = "{ \"userid_list\": \""+admin.getUsername()+"\", \"agent_id\": \"1231569276\", msg:{ \"msgtype\": \"markdown\", \"markdown\": { \"title\": \"LUTEC询价单\", " +
+                            "\"text\":\""+ msg +"\"} } }";
+//                    System.out.println(infoSend);
+                    try { DingtalkApi.asyncsend(infoSend); } catch (Exception e) {  e.printStackTrace(); }
+                }
             }
             //            和供应商议价后,重新提交供应商报价
             if (status == 8) {
@@ -757,12 +799,23 @@ public class AdminQuoteService {
                 quote.setStatus((short) 1);
                 quoteBillMapper.updateByPrimaryKey(quote);
 
-                LitemallSystem system = systemConfigService.getHours();
+                LitemallSystem system = systemConfigService.getReHours();
                 LocalDateTime dead = LocalDateTime.now().plusHours(Integer.valueOf(system.getKeyValue()));
                 quoteBill.setDeadDate(dead);
                 quoteBill.setSubmitDate(LocalDateTime.now());
                 example.or().andIdEqualTo(id);
                 quoteBillMapper.updateByExampleSelective(quoteBill, example);
+
+                LitemallRequoteExample example2 = new LitemallRequoteExample();
+                //把本次报价单设置成未中标
+                reQuote.setQuoteDate(LocalDateTime.now());
+                example2.or().andQuoteIdEqualTo(id);
+                reQuote.setStatus((short) 10);
+                reQuote.setQuoteId(quoteId);
+
+                reQuote.setSubmitDate(LocalDateTime.now());
+                reQuote.setDeadDate(dead);
+                requoteMapper.updateByExampleSelective(reQuote, example2);
 
                 List<LitemallRequote> reQuotes = reQuoteService.readQuote(id);
 
@@ -786,7 +839,7 @@ public class AdminQuoteService {
                                 String msg = "["+admin.getDept()+':'+admin.getNickname()+':'+admin.getId()+"]你好:\n\n"+"第["+idt.getQuoteId()+"]号报价单 请重新报价"+"\n\n请在报价截止日期之前,前去钉钉工作台的耀泰供应链平台提供报价";
                                 String infoSend = "{ \"userid_list\": \""+admin.getUsername()+"\", \"agent_id\": \"1231569276\", msg:{ \"msgtype\": \"markdown\", \"markdown\": { \"title\": \"LUTEC询价单\", " +
                                         "\"text\":\"" + msg + "\"} } }";
-                                System.out.println(infoSend);
+//                                System.out.println(infoSend);
                                 try {
                                     DingtalkApi.asyncsend(infoSend);
                                     Robot r = new Robot();
@@ -815,7 +868,7 @@ public class AdminQuoteService {
                                 String msg = "[" + admin.getDept() + ':' + admin.getNickname() + ':' + admin.getId() + "]你好:\n\n" + "第[" + idt.getQuoteId() + "]号报价单 请重新报价" + "\n\n请在报价截止日期之前,前去钉钉工作台的耀泰供应链平台提供报价";
                                 String infoSend = "{ \"userid_list\": \"" + admin.getUsername() + "\", \"agent_id\": \"1231569276\", msg:{ \"msgtype\": \"markdown\", \"markdown\": { \"title\": \"LUTEC询价单\", " +
                                         "\"text\":\"" + msg + "\"} } }";
-                                System.out.println(infoSend);
+//                                System.out.println(infoSend);
                                 try {
                                     DingtalkApi.asyncsend(infoSend);
                                     Robot r = new Robot();
@@ -846,7 +899,7 @@ public class AdminQuoteService {
                                 String msg = "[" + admin.getDept() + ':' + admin.getNickname() + ':' + admin.getId() + "]你好:\n\n" + "第[" + idt.getQuoteId() + "]号报价单 请重新报价" + "\n\n请在报价截止日期之前,前去钉钉工作台的耀泰供应链平台提供报价";
                                 String infoSend = "{ \"userid_list\": \"" + admin.getUsername() + "\", \"agent_id\": \"1231569276\", msg:{ \"msgtype\": \"markdown\", \"markdown\": { \"title\": \"LUTEC询价单\", " +
                                         "\"text\":\"" + msg + "\"} } }";
-                                System.out.println(infoSend);
+//                                System.out.println(infoSend);
                                 try {
                                     DingtalkApi.asyncsend(infoSend);
                                     Robot r = new Robot();
@@ -877,7 +930,7 @@ public class AdminQuoteService {
                                 String msg = "[" + admin.getDept() + ':' + admin.getNickname() + ':' + admin.getId() + "]你好:\n\n" + "第[" + idt.getQuoteId() + "]号报价单 请重新报价" + "\n\n请在报价截止日期之前,前去钉钉工作台的耀泰供应链平台提供报价";
                                 String infoSend = "{ \"userid_list\": \"" + admin.getUsername() + "\", \"agent_id\": \"1231569276\", msg:{ \"msgtype\": \"markdown\", \"markdown\": { \"title\": \"LUTEC询价单\", " +
                                         "\"text\":\"" + msg + "\"} } }";
-                                System.out.println(infoSend);
+//                                System.out.println(infoSend);
                                 try {
                                     DingtalkApi.asyncsend(infoSend);
                                     Robot r = new Robot();
@@ -904,11 +957,11 @@ public class AdminQuoteService {
 
             LitemallAdmin admin = adminService.findById(receiver);
             LitemallAdmin admin1 = adminService.findById(adminId);
-            if (status == 1) {
+            if (status == 1 ) {
                 String msg = "[" + admin.getNickname() + "]:\n\n" + "第[" +  String.valueOf(quoteId) + "]号询价单,供应商[" + admin1.getDept()+':'+admin1.getNickname() + "]已经签收询价单,意见:" + approveNote + "\n\n静等提交报价单";
                 String infoSend = "{ \"userid_list\": \"" + admin.getUsername() + "\", \"agent_id\": \"1231569276\", msg:{ \"msgtype\": \"markdown\", \"markdown\": { \"title\": \"LUTEC询价单\", " +
                         "\"text\":\"" + msg + "\"} } }";
-                System.out.println(infoSend);
+//                System.out.println(infoSend);
                 try {
                     DingtalkApi.asyncsend(infoSend);
                 } catch (Exception e) {
@@ -919,13 +972,25 @@ public class AdminQuoteService {
                 String msg = "[" + admin.getNickname() + "]:\n\n" + "第[" + String.valueOf(quoteId) + "]号询价单,供应商[" + admin1.getDept()+':'+admin1.getNickname() + "]提交了报价单,意见:" + approveNote + "\n\n静等系统通知您打开标书时间";
                 String infoSend = "{ \"userid_list\": \"" + admin.getUsername() + "\", \"agent_id\": \"1231569276\", msg:{ \"msgtype\": \"markdown\", \"markdown\": { \"title\": \"LUTEC询价单\", " +
                         "\"text\":\"" + msg + "\"} } }";
-                System.out.println(infoSend);
+//                System.out.println(infoSend);
                 try {
                     DingtalkApi.asyncsend(infoSend);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
+            if (status == 10 ) {
+                String msg = "[" + admin.getNickname() + "]:\n\n" + "第[" +  String.valueOf(quoteId) + "]号询价单,重新询价,供应商[" + admin1.getDept()+':'+admin1.getNickname() + "]已经签收询价单,意见:" + approveNote + "\n\n静等提交报价单";
+                String infoSend = "{ \"userid_list\": \"" + admin.getUsername() + "\", \"agent_id\": \"1231569276\", msg:{ \"msgtype\": \"markdown\", \"markdown\": { \"title\": \"LUTEC询价单\", " +
+                        "\"text\":\"" + msg + "\"} } }";
+//                System.out.println(infoSend);
+                try {
+                    DingtalkApi.asyncsend(infoSend);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
         }
         if (idcard == 3) {
             reQuote.setStatus(status);
@@ -937,7 +1002,7 @@ public class AdminQuoteService {
             approveInfo.setReceiver(receiver);
             approveInfoService.add(approveInfo);
 
-            LitemallQuoteBill quote = QuoteService.findById(id);
+            LitemallQuoteBill quote = QuoteService.findById(quoteId);
             Integer modelId = quote.getModelName();
 
             List<LitemallRequote> reQuotes = reQuoteService.readQuote(id);

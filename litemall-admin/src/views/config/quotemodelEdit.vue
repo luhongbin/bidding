@@ -209,6 +209,7 @@ export default {
           this.listLoading = false
         })
     },
+
     purchaseCreate(bill) {
       this.bill = bill
       this.listQuery = {

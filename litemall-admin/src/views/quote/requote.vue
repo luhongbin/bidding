@@ -17,6 +17,11 @@
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" bquote fit highlight-current-row>
       <el-table-column align="center" min-width="100" label="报价ID" prop="id" />
       <el-table-column align="center" min-width="100" label="询价ID" prop="quoteId" />
+      <el-table-column align="center" label="询价单附件" prop="quoteModelExcelSupply">
+        <template slot-scope="scope">
+          <el-button v-if="scope.row.quoteModelExcelSupply !== undefined && scope.row.quoteModelExcelSupply !== null" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(scope.row.quoteModelExcelSupply, '询价ID'+(scope.row.quoteId).toString()+'.xlsx')">下载</el-button>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="简单描述" prop="note" />
       <el-table-column align="center" label="报价单状态" prop="quoteStatusFilter">
         <template slot-scope="scope">
@@ -28,14 +33,19 @@
           <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.adminId) }} </el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="中标通知时间" prop="quoteDate" />
+      <el-table-column align="center" label="报价单附件" prop="requoteExcel">
+        <template slot-scope="scope">
+          <el-button v-if="scope.row.requoteExcel !== undefined && scope.row.requoteExcel !== null && scope.row.requoteExcel.length !== 0" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(scope.row.requoteExcel, '报价ID'+(scope.row.id).toString()+'.xlsx')">下载</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="定标通知时间" prop="quoteDate" />
       <el-table-column align="center" label="报价截止日期" prop="deadDate" />
       <el-table-column align="center" label="提交报价日期" prop="submitDate" />
       <el-table-column align="center" label="操作" width="250" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button v-if="(scope.row.status===0 || scope.row.status===10) && scope.row.status!==6" v-permission="['POST /admin/requote/update']" type="primary" size="mini" @click="getApprove(scope.row)">签收</el-button>
           <el-button v-if="(scope.row.status===1) && scope.row.status!==6" v-permission="['POST /admin/requote/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">报价</el-button>
-          <el-button v-if="scope.row.status >= 1" v-permission="['POST /admin/requote/submit']" type="primary" size="mini" @click="getApprove(scope.row)">详情及审批</el-button>
+          <el-button v-if="scope.row.status >= 1" v-permission="['POST /admin/requote/submit']" type="primary" size="mini" @click="getApprove(scope.row)">详情</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -71,9 +81,10 @@ const statusMap = {
   4: '甲方审批中',
   5: '报价',
   6: '报价超时作废',
-  8: '未中标',
-  9: '中标',
-  10: '重新报价'
+  8: '流标',
+  9: '开标',
+  10: '重新报价',
+  11: '终止询价'
 }
 
 export default {
@@ -246,7 +257,7 @@ export default {
       this.getList()
     },
     handleUpdate(row) {
-      this.$router.push({ path: '/supplyManage/requote-edit', query: { id: row.id }})
+      this.$router.push({ path: '/supplyManage/requote-edit', query: { id: row.id, row: row }})
     },
     getApprove(row) {
       this.$router.push({ path: '/supplyManage/requote-approve', query: { row: row }})

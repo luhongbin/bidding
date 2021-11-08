@@ -45,7 +45,7 @@
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column property="quoteDate" label="中标通知时间" sortable />
+        <el-table-column property="quoteDate" label="定标通知时间" sortable />
         <el-table-column property="deadDate" label="报价截止日期" sortable />
         <el-table-column property="submitDate" label="提交报价日期" sortable />
         <el-table-column align="center" label="报价商家">
@@ -104,7 +104,7 @@
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column property="quoteDate" label="中标通知时间" sortable />
+        <el-table-column property="quoteDate" label="定标通知时间" sortable />
         <el-table-column property="deadDate" label="报价截止日期" sortable />
         <el-table-column property="submitDate" label="提交报价日期" sortable />
         <el-table-column align="center" label="报价商家">
@@ -162,7 +162,7 @@
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column property="quoteDate" label="中标通知时间" sortable />
+        <el-table-column property="quoteDate" label="定标通知时间" sortable />
         <el-table-column property="deadDate" label="报价截止日期" sortable />
         <el-table-column property="submitDate" label="提交报价日期" sortable />
         <el-table-column align="center" label="报价商家">
@@ -219,7 +219,7 @@
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column property="quoteDate" label="中标通知时间" sortable />
+        <el-table-column property="quoteDate" label="定标通知时间" sortable />
         <el-table-column property="deadDate" label="报价截止日期" sortable />
         <el-table-column property="submitDate" label="提交报价日期" sortable />
         <el-table-column align="center" label="报价商家">

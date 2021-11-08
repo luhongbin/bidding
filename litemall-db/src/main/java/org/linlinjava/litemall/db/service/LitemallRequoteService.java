@@ -96,7 +96,7 @@ public class LitemallRequoteService {
         return reQuoteMapper.selectByPrimaryKeySelective(id, columns);
     }
     public LitemallRequote findById(Integer id) {
-        System.out.print("Quot  ");
+//        System.out.print("Quot  ");
         return reQuoteMapper.selectByPrimaryKey(id);
     }
     public int add(LitemallRequote role) {

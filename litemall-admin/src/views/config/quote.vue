@@ -7,12 +7,12 @@
         </el-input>
         <span class="info">供应商未提交报价单，则询价单自动失效,只能输入整数</span>
       </el-form-item>
-      <!--      <el-form-item label="战略采购核价人员是"  prop="quote_approve_group">-->
-      <!--        <el-input v-model="dataForm.quote_approve_group" class="input-width">-->
-      <!--          <template slot="append">人</template>-->
-      <!--        </el-input>-->
-      <!--        <span class="info">这个我们还没想好用途 暂时放着吧</span>-->
-      <!--      </el-form-item>-->
+      <el-form-item label="重新询价提交询价单后超时" prop="quote_reUnReply_hours">
+        <el-input v-model="dataForm.quote_reUnReply_hours" type="number" class="input-width" @keydown="handleInput">
+          <template slot="append">小时</template>
+        </el-input>
+        <span class="info">重新询价，则询价单自动失效时长,只能输入整数</span>
+      </el-form-item>
       <el-form-item label="操作员身份种类" prop="quote_end_approve">
         <el-input v-model="dataForm.quote_end_approve" class="input-width" />
         <span class="info">这里录入的内容 将作为管理员设置中的:身份,选择项目.用逗号分开 注意不要改默认的内容 因为程序中起作用,会导致运行不正常</span>
@@ -39,11 +39,15 @@ export default {
       UserList: [],
       dataForm: {
         quote_unReply_hours: 0,
+        quote_reUnReply_hours: 0,
         // quote_approve_group:[],
         quote_end_approve: ''
       },
       rules: {
         quote_unReply_hours: [
+          { required: true, message: '不能为空', trigger: 'blur' }
+        ],
+        quote_reUnReply_hours: [
           { required: true, message: '不能为空', trigger: 'blur' }
         ],
         quote_end_approve: [
@@ -63,11 +67,11 @@ export default {
 
       listQuote().then(response => {
         this.dataForm.quote_unReply_hours = response.data.data.quote_unReply_hours
+        this.dataForm.quote_reUnReply_hours = response.data.data.quote_reUnReply_hours
         this.dataForm.quote_end_approve = response.data.data.quote_end_approve
-        // this.dataForm.quote_approve_group = response.data.data.quote_approve_group
+        this.dataForm.quote_approve_group = response.data.data.quote_approve_group
+        optionsAdmin().then(response => { this.UserList = response.data.data.list })
       }).catch(response => { this.$notify.error({ title: 'listQuote失败', message: response.data.errmsg }) })
-      optionsAdmin().then(response => { this.UserList = response.data.data.list })
-        .catch(response => { this.$notify.error({ title: 'optionsAdmin失败', message: response.data.errmsg }) })
       this.listLoading = false
     },
     formatRole(roleId) {

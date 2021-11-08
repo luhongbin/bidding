@@ -5,7 +5,7 @@
       <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入模板名称" />
       <el-input v-model="listQuery.version" clearable class="filter-item" style="width: 200px;" placeholder="请输入版本号" />
       <el-button v-permission="['GET /admin/quoteModel/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <!--<el-button v-permission="['POST /admin/quoteModel/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>-->
+      <!--<el-button v-permission="['POST /admin/quoteModel/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">新建</el-button>-->
       <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
     </div>
     <!-- 查询结果 -->

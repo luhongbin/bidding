@@ -21,7 +21,11 @@
     </el-tabs>
     <!-- 查询结果 -->
     <el-dialog :visible.sync="DialogVisiable" title="询价单明细">
-      <editor v-model="goodsDetail" :init="editorInit" />
+      <el-form status-icon label-position="left" style="margin-left:0px;">
+        <el-form-item>
+          <editor v-model="goodsDetail" :init="editorInit" />
+        </el-form-item>
+      </el-form>
     </el-dialog>
     <el-card v-show="rubberCardVisiable" class="box-card">
       <h3>塑料橡胶类商品信息</h3>
@@ -43,7 +47,7 @@
                   <el-tag>{{ scope.row.reQuotestatus | quoteStatus1Filter }}</el-tag>
                 </template>
               </el-form-item>
-              <el-form-item label="中标通知时间">
+              <el-form-item label="定标通知时间">
                 <span>{{ props.row.reQuotequoteDate }}</span>
               </el-form-item>
               <el-form-item label="报价截止日期">
@@ -56,6 +60,9 @@
                 <template slot-scope="scope">
                   <el-button size="mini" type="info" icon="el-icon-download" plain @click="openExcel(scope.row.requoteExcel,'报价单ID' + (scope.row.quoteId).toString() + '.xlsx')">下载</el-button>
                 </template>
+              </el-form-item>
+              <el-form-item>
+                <editor v-model="props.row.appendix" :init="editorInit" />
               </el-form-item>
             </el-form>
           </template>
@@ -95,11 +102,11 @@
             <el-tag>{{ scope.row.status | quoteStatus2Filter }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="备注" prop="id">
-          <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="showDetail(scope.row.id, scope.row.quoteBillModelName)">查看</el-button>
-          </template>
-        </el-table-column>
+<!--        <el-table-column align="center" label="备注" prop="appendix">-->
+<!--          <template slot-scope="scope">-->
+<!--            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
       </el-table>
       <pagination v-show="quoteRubberstotal>0" :total="quoteRubberstotal" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
     </el-card>
@@ -118,19 +125,27 @@
               <el-form-item label="报价概要">
                 <span>{{ props.row.note }}</span>
               </el-form-item>
-              <el-form-item label="中标通知时间">
-                <span>{{ props.row.quoteDate }}</span>
+              <el-form-item label="报价单状态">
+                <template slot-scope="scope">
+                  <el-tag>{{ scope.row.reQuotestatus | quoteStatus1Filter }}</el-tag>
+                </template>
+              </el-form-item>
+              <el-form-item label="定标通知时间">
+                <span>{{ props.row.reQuotequoteDate }}</span>
               </el-form-item>
               <el-form-item label="报价截止日期">
-                <span>{{ props.row.deadDate }}</span>
+                <span>{{ props.row.reQuotedeadDate }}</span>
               </el-form-item>
               <el-form-item label="提交报价日期">
-                <span>{{ props.row.submitDate }}</span>
+                <span>{{ props.row.reQuotesubmitDate }}</span>
               </el-form-item>
               <el-form-item v-if="props.row.requoteExcel !== undefined && props.row.requoteExcel !== null && props.row.requoteExcel !== ''" label="报价单附件">
                 <template slot-scope="scope">
                   <el-button size="mini" type="info" icon="el-icon-download" plain @click="openExcel(scope.row.requoteExcel,'报价单ID' + (scope.row.quoteId).toString() + '.xlsx')">下载</el-button>
                 </template>
+              </el-form-item>
+              <el-form-item>
+                <editor v-model="props.row.appendix" :init="editorInit" />
               </el-form-item>
             </el-form>
           </template>
@@ -169,11 +184,11 @@
             <el-tag>{{ scope.row.status | quoteStatus2Filter }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="备注" prop="id">
-          <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="showDetail(scope.row.id, scope.row.quoteBillModelName)">查看</el-button>
-          </template>
-        </el-table-column>
+<!--        <el-table-column align="center" label="备注" prop="id">-->
+<!--          <template slot-scope="scope">-->
+<!--            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
       </el-table>
       <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" />
     </el-card>
@@ -194,22 +209,25 @@
               </el-form-item>
               <el-form-item label="报价单状态">
                 <template slot-scope="scope">
-                  <el-tag>{{ scope.row.status | quoteStatus1Filter }}</el-tag>
+                  <el-tag>{{ scope.row.reQuotestatus | quoteStatus1Filter }}</el-tag>
                 </template>
               </el-form-item>
-              <el-form-item label="中标通知时间">
-                <span>{{ props.row.quoteDate }}</span>
+              <el-form-item label="定标通知时间">
+                <span>{{ props.row.reQuotequoteDate }}</span>
               </el-form-item>
               <el-form-item label="报价截止日期">
-                <span>{{ props.row.deadDate }}</span>
+                <span>{{ props.row.reQuotedeadDate }}</span>
               </el-form-item>
               <el-form-item label="提交报价日期">
-                <span>{{ props.row.submitDate }}</span>
+                <span>{{ props.row.reQuotesubmitDate }}</span>
               </el-form-item>
               <el-form-item v-if="props.row.requoteExcel !== undefined && props.row.requoteExcel !== null && props.row.requoteExcel !== ''" label="报价单附件">
                 <template slot-scope="scope">
                   <el-button size="mini" type="info" icon="el-icon-download" plain @click="openExcel(scope.row.requoteExcel,'报价单ID' + (scope.row.quoteId).toString() + '.xlsx')">下载</el-button>
                 </template>
+              </el-form-item>
+              <el-form-item>
+                <editor v-model="props.row.appendix" :init="editorInit" />
               </el-form-item>
             </el-form>
           </template>
@@ -249,11 +267,11 @@
             <el-tag>{{ scope.row.status | quoteStatus2Filter }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="明细" prop="id">
-          <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="showDetail(scope.row.id,scope.row.quoteBillModelName)">查看</el-button>
-          </template>
-        </el-table-column>
+<!--        <el-table-column align="center" label="明细" prop="appendix">-->
+<!--          <template slot-scope="scope">-->
+<!--            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
       </el-table>
       <pagination v-show="quoteHardwarestotal>0" :total="quoteHardwarestotal" :page.sync="listQuery.page" :limit.sync="listQuery.limit" />
     </el-card>
@@ -274,22 +292,25 @@
               </el-form-item>
               <el-form-item label="报价单状态">
                 <template slot-scope="scope">
-                  <el-tag>{{ scope.row.status | quoteStatus1Filter }}</el-tag>
+                  <el-tag>{{ scope.row.reQuotestatus | quoteStatus1Filter }}</el-tag>
                 </template>
               </el-form-item>
-              <el-form-item label="中标通知时间">
-                <span>{{ props.row.quoteDate }}</span>
+              <el-form-item label="定标通知时间">
+                <span>{{ props.row.reQuotequoteDate }}</span>
               </el-form-item>
               <el-form-item label="报价截止日期">
-                <span>{{ props.row.deadDate }}</span>
+                <span>{{ props.row.reQuotedeadDate }}</span>
               </el-form-item>
               <el-form-item label="提交报价日期">
-                <span>{{ props.row.submitDate }}</span>
+                <span>{{ props.row.reQuotesubmitDate }}</span>
               </el-form-item>
               <el-form-item v-if="props.row.requoteExcel !== undefined && props.row.requoteExcel !== null && props.row.requoteExcel !== ''" label="报价单附件">
                 <template slot-scope="scope">
                   <el-button size="mini" type="info" icon="el-icon-download" plain @click="openExcel(scope.row.requoteExcel,'报价单ID' + (scope.row.quoteId).toString() + '.xlsx')">下载</el-button>
                 </template>
+              </el-form-item>
+              <el-form-item>
+                <editor v-model="props.row.appendix" :init="editorInit" />
               </el-form-item>
             </el-form>
           </template>
@@ -333,11 +354,11 @@
             <el-tag>{{ scope.row.status | quoteStatus2Filter }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="备注" prop="id">
-          <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="showDetail(scope.row.id, scope.row.quoteBillModelName)">查看</el-button>
-          </template>
-        </el-table-column>
+<!--        <el-table-column align="center" label="备注" prop="appendix">-->
+<!--          <template slot-scope="scope">-->
+<!--            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
       </el-table>
       <pagination v-show="quoteDieCastingstotal>0" :total="quoteDieCastingstotal" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
     </el-card>
@@ -376,28 +397,31 @@ const statusMap = {
   6: 'ceo审批',
   7: '重新提交',
   8: '重新提交完毕',
-  9: '会审中'
+  9: '会审中',
+  10: '终止询价'
 }
 const statusMap1 = {
   0: '询价',
   1: '签收',
   2: '制作报价单',
   3: '提交报价单',
-  4: '甲方审批中',
+  4: '取消报价',
   5: '报价',
   6: '报价超时作废',
-  8: '未中标',
-  9: '中标',
-  10: '重新报价'
+  8: '流标',
+  9: '开标',
+  10: '重新报价',
+  11: '终止询价'
 }
 const statusMap2 = {
   0: '中标',
   1: '未中标',
-  2: '重新报价',
-  3: '制单',
+  2: '要求重新报价',
+  3: '未报价',
   4: '流标',
   5: '报价',
-  6: '提交报价'
+  6: '提交报价',
+  7: '取消报价'
 }
 const statusMap3 = {
   0: '选中',
@@ -563,13 +587,15 @@ export default {
         this.listLoading = false
       })
     },
-    showDetail(id, modelId) {
-      find(id, modelId)
-        .then(response => {
-          console.log(JSON.stringify(response.data.data.detail.appendix))
-          this.goodsDetail = JSON.stringify(response.data.data.detail.appendix)
-          this.DialogVisiable = true
-        }).catch(response => { this.$notify.error({ title: '失败', message: response.data.errmsg }) })
+    showDetail(row) {
+      this.DialogVisiable = true
+      this.goodsDetail = row
+      // find(id, modelId)
+      //   .then(response => {
+      //     console.log(JSON.stringify(response.data.data.detail.appendix))
+      //     this.goodsDetail = JSON.stringify(response.data.data.detail.appendix)
+      //     this.DialogVisiable = true
+      //   }).catch(response => { this.$notify.error({ title: '失败', message: response.data.errmsg }) })
     },
     getListCeo() {
       this.listLoading = true

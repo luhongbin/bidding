@@ -63,9 +63,10 @@
           <el-input v-model="dataForm.jobnumber" />
         </el-form-item>
         <el-form-item label="操作员身份" prop="capacity">
-          <el-select v-model="dataForm.capacity" multiple clear placeholder="请选择">
-            <el-option v-for="item in capacity" :key="item" :label="item" :value="item" />
-          </el-select>
+          <el-input v-model="dataForm.capacity" />
+<!--          <el-select v-model="dataForm.capacity" multiple clear placeholder="请选择">-->
+<!--            <el-option v-for="item in capacity" :key="item" :label="item" :value="item" />-->
+<!--          </el-select>-->
         </el-form-item>
         <el-form-item label="操作员密码" prop="password">
           <el-input v-model="dataForm.password" type="password" readonly="readonly" auto-complete="off" />

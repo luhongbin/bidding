@@ -8,15 +8,13 @@ import org.linlinjava.litemall.core.util.ResponseUtil;
 import org.linlinjava.litemall.db.domain.*;
 import org.linlinjava.litemall.db.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class AdminQuoteBillService {
@@ -212,6 +210,10 @@ public class AdminQuoteBillService {
 
     @Transactional
     public Object updateRequote(Quoteinone quoteinone) {
+        System.out.println("begin update requote");
+
+        System.out.println(quoteinone.toString());
+
         LitemallRequote requote = quoteinone.getReQuote();
         if (reQuoteService.updateById(requote) == 0) {
             throw new RuntimeException("更新数据失败");
@@ -224,7 +226,7 @@ public class AdminQuoteBillService {
         if (modelId == 4) {
             LitemallQuoteDieCasting[] quoteDieCastings = quoteinone.getQuoteDieCasting();
             for (LitemallQuoteDieCasting quoteDieCasting : quoteDieCastings) {
-                if (quoteDieCasting.getProcessingCharge().compareTo(a) == 1) {
+                if (quoteDieCasting.getProcessingCharge().compareTo(a) == 1  && quoteDieCasting.getStatus()!=2) {
                     quoteDieCasting.setStatus((short) 5);
                     quoteDieCastingService.updateById(quoteDieCasting);
                 }
@@ -233,7 +235,7 @@ public class AdminQuoteBillService {
         if (modelId == 6) {
             LitemallQuoteElectronic[] quoteElectronics = quoteinone.getQuoteElectronic();
             for (LitemallQuoteElectronic quoteElectronic : quoteElectronics) {
-                if (quoteElectronic.getPrice().compareTo(a) == 1) {
+                if (quoteElectronic.getPrice().compareTo(a) == 1 && quoteElectronic.getStatus()!=2) {
                     quoteElectronic.setStatus((short) 5);
                     quoteElectronicService.updateById(quoteElectronic);
                 }
@@ -242,7 +244,7 @@ public class AdminQuoteBillService {
         if (modelId == 5) {
             LitemallQuoteHardware[] quoteHardwares = quoteinone.getQuoteHardware();
             for (LitemallQuoteHardware quoteHardware : quoteHardwares) {
-               if (quoteHardware.getPrice().compareTo(a) == 1) {
+               if (quoteHardware.getPrice().compareTo(a) == 1 && quoteHardware.getStatus()!=2) {
                    quoteHardware.setStatus((short) 5);
                    quoteHardwareService.updateById(quoteHardware);
                }
@@ -251,7 +253,7 @@ public class AdminQuoteBillService {
         if (modelId == 3) {
             LitemallQuoteRubber[] quoteRubbers = quoteinone.getQuoteRubber();
             for (LitemallQuoteRubber quoteRubber : quoteRubbers) {
-              if (quoteRubber.getMouldCharge().compareTo(a) == 1) {
+              if (quoteRubber.getMouldCharge().compareTo(a) == 1 && quoteRubber.getStatus()!=2) {
                   quoteRubber.setStatus((short) 5);
                   quoteRubberService.updateById(quoteRubber);
               }
@@ -384,6 +386,8 @@ public class AdminQuoteBillService {
                     quoteModel.put("processingCharge", role.getProcessingCharge());
                     quoteModel.put("status", role.getStatus());
                     quoteModel.put("note", role.getNote());
+                    quoteModel.put("appendix", role.getAppendix());
+                    quoteModel.put("mainId", reQuote.getQuoteId());
                     quoteModel.put("adminId", reQuote.getAdminId());
                     quoteModel.put("quoteDate", reQuote.getQuoteDate());
                     quoteModel.put("qnote", reQuote.getNote());
@@ -431,6 +435,8 @@ public class AdminQuoteBillService {
                     quoteModel.put("certificate", role.getCertificate());
                     quoteModel.put("status", role.getStatus());
                     quoteModel.put("note", role.getNote());
+                    quoteModel.put("appendix", role.getAppendix());
+                    quoteModel.put("mainId", reQuote.getQuoteId());
                     quoteModel.put("adminId", reQuote.getAdminId());
                     quoteModel.put("quoteDate", reQuote.getQuoteDate());
                     quoteModel.put("qnote", reQuote.getNote());
@@ -477,6 +483,8 @@ public class AdminQuoteBillService {
                     quoteModel.put("isCeo", role.getIsCeo());
                     quoteModel.put("status", role.getStatus());
                     quoteModel.put("note", role.getNote());
+                    quoteModel.put("appendix", role.getAppendix());
+                    quoteModel.put("mainId", reQuote.getQuoteId());
                     quoteModel.put("adminId", reQuote.getAdminId());
                     quoteModel.put("quoteDate", reQuote.getQuoteDate());
                     quoteModel.put("qnote", reQuote.getNote());
@@ -531,6 +539,8 @@ public class AdminQuoteBillService {
                     quoteModel.put("mouldCharge", role.getMouldCharge());
                     quoteModel.put("status", role.getStatus());
                     quoteModel.put("note", role.getNote());
+                    quoteModel.put("appendix", role.getAppendix());
+                    quoteModel.put("mainId", reQuote.getQuoteId());
                     quoteModel.put("adminId", reQuote.getAdminId());
                     quoteModel.put("quoteDate", reQuote.getQuoteDate());
                     quoteModel.put("qnote", reQuote.getNote());
@@ -662,6 +672,7 @@ public class AdminQuoteBillService {
                         quoteModel.put("processingCharge", role.getProcessingCharge());
                         quoteModel.put("status", role.getStatus());
                         quoteModel.put("note", role.getNote());
+                        quoteModel.put("appendix", role.getAppendix());
                         quoteModel.put("reQuoteadminId", reQuote.getAdminId());
                         quoteModel.put("reQuotequoteDate", reQuote.getQuoteDate());
                         quoteModel.put("reQuotenote", reQuote.getNote());
@@ -714,6 +725,7 @@ public class AdminQuoteBillService {
                         quoteModel.put("note", role.getNote());
                         quoteModel.put("adminId", reQuote.getAdminId());
                         quoteModel.put("quoteDate", reQuote.getQuoteDate());
+                        quoteModel.put("appendix", role.getAppendix());
                         quoteModel.put("reQuoteadminId", reQuote.getAdminId());
                         quoteModel.put("reQuotequoteDate", reQuote.getQuoteDate());
                         quoteModel.put("reQuotenote", reQuote.getNote());
@@ -763,6 +775,7 @@ public class AdminQuoteBillService {
                         quoteModel.put("isCeo", role.getIsCeo());
                         quoteModel.put("status", role.getStatus());
                         quoteModel.put("note", role.getNote());
+                        quoteModel.put("appendix", role.getAppendix());
                         quoteModel.put("reQuoteadminId", reQuote.getAdminId());
                         quoteModel.put("reQuotequoteDate", reQuote.getQuoteDate());
                         quoteModel.put("reQuotenote", reQuote.getNote());
@@ -813,6 +826,7 @@ public class AdminQuoteBillService {
                         quoteModel.put("mouldCharge", role.getMouldCharge());
                         quoteModel.put("status", role.getStatus());
                         quoteModel.put("note", role.getNote());
+                        quoteModel.put("appendix", role.getAppendix());
                         quoteModel.put("reQuoteadminId", reQuote.getAdminId());
                         quoteModel.put("reQuotequoteDate", reQuote.getQuoteDate());
                         quoteModel.put("reQuotenote", reQuote.getNote());
@@ -929,6 +943,7 @@ public class AdminQuoteBillService {
                     quoteModel.put("processingCharge", role.getProcessingCharge());
                     quoteModel.put("status", role.getStatus());
                     quoteModel.put("note", role.getNote());
+                    quoteModel.put("appendix", role.getAppendix());
                     quoteModel.put("reQuoteadminId", reQuote.getAdminId());
                     quoteModel.put("reQuotequoteDate", reQuote.getQuoteDate());
                     quoteModel.put("reQuotenote", reQuote.getNote());
@@ -981,6 +996,7 @@ public class AdminQuoteBillService {
                     quoteModel.put("note", role.getNote());
                     quoteModel.put("adminId", reQuote.getAdminId());
                     quoteModel.put("quoteDate", reQuote.getQuoteDate());
+                    quoteModel.put("appendix", role.getAppendix());
                     quoteModel.put("reQuoteadminId", reQuote.getAdminId());
                     quoteModel.put("reQuotequoteDate", reQuote.getQuoteDate());
                     quoteModel.put("reQuotenote", reQuote.getNote());
@@ -1032,6 +1048,7 @@ public class AdminQuoteBillService {
                     quoteModel.put("isCeo", role.getIsCeo());
                     quoteModel.put("status", role.getStatus());
                     quoteModel.put("note", role.getNote());
+                    quoteModel.put("appendix", role.getAppendix());
                     quoteModel.put("reQuoteadminId", reQuote.getAdminId());
                     quoteModel.put("reQuotequoteDate", reQuote.getQuoteDate());
                     quoteModel.put("reQuotenote", reQuote.getNote());

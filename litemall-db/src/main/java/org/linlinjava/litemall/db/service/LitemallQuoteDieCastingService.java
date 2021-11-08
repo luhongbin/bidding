@@ -17,7 +17,7 @@ public class LitemallQuoteDieCastingService {
     public List<LitemallQuoteDieCasting> queryByGid(Integer quoteId,Boolean reId ) {
         LitemallQuoteDieCastingExample example = new LitemallQuoteDieCastingExample();
         example.or().andQuoteIdEqualTo(quoteId).andBillIdEqualTo(reId).andDeletedEqualTo(false);
-        return quoteDieCastingMapper.selectByExample(example);
+        return quoteDieCastingMapper.selectByExampleWithBLOBs(example);
     }
 
     public void add(LitemallQuoteDieCasting goodsAttribute) {

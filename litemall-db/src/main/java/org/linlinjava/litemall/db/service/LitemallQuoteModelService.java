@@ -24,7 +24,7 @@ public class LitemallQuoteModelService {
     public List<LitemallQuoteModel> queryAll() {
         LitemallQuoteModelExample example = new LitemallQuoteModelExample();
         example.or().andStatusEqualTo((int) 1).andDeletedEqualTo(false);
-        return quoteModelMapper.selectByExample(example);
+        return quoteModelMapper.selectByExampleWithBLOBs(example);
     }
     public List<LitemallQuoteModel> querySelective(String name, String version, Integer page, Integer limit, String sort, String order) {
         LitemallQuoteModelExample example = new LitemallQuoteModelExample();

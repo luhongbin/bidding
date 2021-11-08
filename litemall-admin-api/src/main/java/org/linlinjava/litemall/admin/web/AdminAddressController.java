@@ -11,6 +11,7 @@ import org.linlinjava.litemall.db.domain.LitemallAddress;
 import org.linlinjava.litemall.db.service.LitemallAddressService;
 import org.linlinjava.litemall.db.service.LitemallRegionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

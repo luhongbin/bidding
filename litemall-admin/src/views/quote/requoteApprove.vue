@@ -22,7 +22,12 @@
       </el-form>
     </el-card>
     <el-dialog :visible.sync="DialogVisiable" title="询价单明细">
-      <editor v-model="goodsDetail" :init="editorInit" />
+<!--      <div v-html="goodsDetail" :init="editorInit" />-->
+      <el-form status-icon label-position="left" style="margin-left:0px;">
+        <el-form-item>
+          <editor v-model="goodsDetail" :init="editorInit" />
+        </el-form-item>
+      </el-form>
     </el-dialog>
 
     <el-card v-show="rubberCardVisiable && reQuote.status===0" class="box-card">
@@ -36,7 +41,7 @@
         <el-table-column property="quantityYear" label="年预估量" />
         <el-table-column align="center" label="备注" prop="id">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="showDetail(scope.row.id)">查看</el-button>
+            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -51,7 +56,7 @@
         <el-table-column property="quantityYear" label="年预估量" />
         <el-table-column align="center" label="备注" prop="id">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="showDetail(scope.row.id)">查看</el-button>
+            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -68,7 +73,7 @@
         <el-table-column property="quantityYear" label="年预估量" />
         <el-table-column align="center" label="明细" prop="id">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="showDetail(scope.row.id)">查看</el-button>
+            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -84,7 +89,7 @@
         <el-table-column property="weight" label="产品理论重量(克)" />
         <el-table-column align="center" label="备注" prop="id">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="showDetail(scope.row.id)">查看</el-button>
+            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -112,7 +117,7 @@
         </el-table-column>
         <el-table-column align="center" label="备注" prop="id">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="showDetail(scope.row.id)">查看</el-button>
+            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -138,7 +143,7 @@
         </el-table-column>
         <el-table-column align="center" label="备注" prop="id">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="showDetail(scope.row.id)">查看</el-button>
+            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -165,7 +170,7 @@
         </el-table-column>
         <el-table-column align="center" label="明细" prop="id">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="showDetail(scope.row.id)">查看</el-button>
+            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -196,7 +201,7 @@
         </el-table-column>
         <el-table-column align="center" label="备注" prop="id">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="showDetail(scope.row.id)">查看</el-button>
+            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -284,14 +289,15 @@ const statusMap = {
   4: '甲方审批中',
   5: '报价',
   6: '报价超时作废',
-  8: '未中标',
-  9: '中标',
-  10: '重新报价'
+  8: '流标',
+  9: '开标',
+  10: '重新报价',
+  11: '终止询价'
 }
 const statusMap2 = {
   0: '中标',
   1: '未中标',
-  2: '重新报价',
+  2: '要求重新报价',
   3: '未报价',
   4: '流标',
   5: '报价',
@@ -403,25 +409,7 @@ export default {
       editorInit: {
         language: 'zh_CN',
         height: '400px',
-        convert_urls: false,
-        plugins: [
-          'advlist anchor autolink autosave code codesample colorpicker colorpicker contextmenu directionality emoticons fullscreen hr image imagetools importcss insertdatetime link lists media nonbreaking noneditable pagebreak paste preview print save searchreplace spellchecker tabfocus table template textcolor textpattern visualblocks visualchars wordcount'
-        ],
-        toolbar: [
-          'searchreplace bold italic underline strikethrough alignleft aligncenter alignright outdent indent  blockquote undo redo removeformat subscript superscript code codesample',
-          'hr bullist numlist link image charmap preview anchor pagebreak insertdatetime media table emoticons forecolor backcolor fullscreen'
-        ],
-        images_upload_handler: function(blobInfo, success, failure) {
-          const formData = new FormData()
-          formData.append('file', blobInfo.blob())
-          createStorage(formData)
-            .then(res => {
-              success(res.data.data.url)
-            })
-            .catch(() => {
-              failure('上传失败，请重新上传')
-            })
-        }
+        convert_urls: false
       }
     }
   },
@@ -441,7 +429,6 @@ export default {
     // checkPermission,
     getList() {
       this.listLoading = true
-
       const Id = this.$route.query.row.id
       myRead(Id).then(response => {
         console.log('myRead:' + JSON.stringify(response))
@@ -501,14 +488,16 @@ export default {
         if (this.modelNameList[i]['value'] === val) { this.$set(this.dataForm, 'quoteSupplyCode', this.modelNameList[i].supply) }
       }
     },
-    showDetail(id) {
-      const modelId = this.quote.modelName
-      find(id, modelId)
-        .then(response => {
-          console.log(JSON.stringify(response.data.data.detail.appendix))
-          this.goodsDetail = JSON.stringify(response.data.data.detail.appendix)
-          this.DialogVisiable = true
-        }).catch(response => { this.$notify.error({ title: '失败', message: response.data.errmsg }) })
+    showDetail(row) {
+      this.DialogVisiable = true
+      this.goodsDetail = row
+      // const modelId = this.quote.modelName
+      // find(id, modelId)
+      //   .then(response => {
+      //     console.log(JSON.stringify(response.data.data.detail.appendix))
+      //     this.goodsDetail = JSON.stringify(response.data.data.detail.appendix)
+      //     this.DialogVisiable = true
+      //   }).catch(response => { this.$notify.error({ title: '失败', message: response.data.errmsg }) })
     },
     formatAdmin(roleId) {
       for (let i = 0; i < this.listAdmin.length; i++) {
@@ -572,7 +561,7 @@ export default {
           }).catch(response => { this.$notify.error({ title: '失败', message: response.data.errmsg }) })
         }
       })
-      this.getList()
+      // this.getList()
     },
     formatModel(modelId) {
       for (let i = 0; i < this.modelNameList.length; i++) {

@@ -35,6 +35,7 @@ public class AdminIssueController {
                        @Sort @RequestParam(defaultValue = "add_time") String sort,
                        @Order @RequestParam(defaultValue = "desc") String order) {
         List<LitemallIssue> issueList = issueService.querySelective(question, page, limit, sort, order);
+
         return ResponseUtil.okList(issueList);
     }
 

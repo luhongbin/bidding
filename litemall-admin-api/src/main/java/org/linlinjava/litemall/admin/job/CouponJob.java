@@ -59,9 +59,9 @@ public class CouponJob {
      * TODO
      * 注意，因为是相隔一个小时检查，因此导致优惠券真正超时时间可能比设定时间延迟1个小时
      */
-    @Scheduled(fixedDelay = 60 * 60 * 1000)
+    @Scheduled(fixedDelay = 60 * 10 * 1000)
     public void checkCouponExpired() {
-        logger.info("系统开启任务询价单是否已经过期");
+//        logger.info("系统开启任务询价单是否已经过期");
         //这个是通过钉钉获取的机器人的连接，需要PC版才可以
 
         List<LitemallQuoteBill> quoteList = quoteBillService.queryExpired();
@@ -215,7 +215,7 @@ public class CouponJob {
             couponUser.setStatus(CouponUserConstant.STATUS_EXPIRED);
             couponUserService.update(couponUser);
         }
-        logger.info("系统结束任务检查询价单是否已经过期");
+//        logger.info("系统结束任务检查询价单是否已经过期");
     }
 
 }

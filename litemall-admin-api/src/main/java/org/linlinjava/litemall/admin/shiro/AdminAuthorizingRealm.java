@@ -13,6 +13,7 @@ import org.linlinjava.litemall.db.service.LitemallAdminService;
 import org.linlinjava.litemall.db.service.LitemallPermissionService;
 import org.linlinjava.litemall.db.service.LitemallRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -20,11 +21,13 @@ import java.util.List;
 import java.util.Set;
 
 public class AdminAuthorizingRealm extends AuthorizingRealm {
-
+    @Lazy
     @Autowired
     private LitemallAdminService adminService;
+    @Lazy
     @Autowired
     private LitemallRoleService roleService;
+    @Lazy
     @Autowired
     private LitemallPermissionService permissionService;
 

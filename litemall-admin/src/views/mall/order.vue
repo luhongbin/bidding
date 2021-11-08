@@ -265,6 +265,7 @@ export default {
         this.list = []
         this.total = 0
         this.listLoading = false
+        alert(JSON.stringify(this.listQuery))
       })
     },
     getChannel() {

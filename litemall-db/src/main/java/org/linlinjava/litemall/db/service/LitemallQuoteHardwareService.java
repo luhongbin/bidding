@@ -17,7 +17,7 @@ public class LitemallQuoteHardwareService {
     public List<LitemallQuoteHardware> queryByGid(Integer quoteId,Boolean reId) {
         LitemallQuoteHardwareExample example = new LitemallQuoteHardwareExample();
         example.or().andQuoteIdEqualTo(quoteId).andBillIdEqualTo(reId).andDeletedEqualTo(false);
-        return quoteHardwareMapper.selectByExample(example);
+        return quoteHardwareMapper.selectByExampleWithBLOBs(example);
     }
 
     public void add(LitemallQuoteHardware quoteHardware) {

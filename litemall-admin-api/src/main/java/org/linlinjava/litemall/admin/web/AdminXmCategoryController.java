@@ -9,6 +9,7 @@ import org.linlinjava.litemall.core.util.ResponseUtil;
 import org.linlinjava.litemall.db.domain.LitemallXmcatalog;
 import org.linlinjava.litemall.db.service.LitemallXmCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,6 @@ import java.util.Map;
 @Validated
 public class AdminXmCategoryController {
     private final Log logger = LogFactory.getLog(AdminCategoryController.class);
-
     @Autowired
     private LitemallXmCategoryService xmcategoryService;
 
