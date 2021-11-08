@@ -1,8 +1,8 @@
 # bidding
 
-集成钉钉的 招投标系统。
+集成钉钉的+T100 招投标系统。
 
-bidding = Spring Boot后端 + Vue管理员前端 + 微信小程序用户前端 + Vue用户移动端
+bidding = Spring Boot后端 + Vue管理员前端 + 微信小程序用户前端 + Vue用户移动端+动态数据库+T100
 
 ## 项目实例
 
