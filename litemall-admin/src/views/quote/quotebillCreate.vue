@@ -9,7 +9,7 @@
             <el-option v-for="item in modelNameList" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
-        <el-form-item v-show="AppriveCardVisiable" label="报价单需求" prop="version">
+        <el-form-item v-show="AppriveCardVisiable" label="报价单主题" prop="version">
           <label>
             <textarea v-model="dataForm.purchaserNote" maxlength="200" style="width: 70%;" placeholder="描述" />
           </label>
@@ -17,12 +17,13 @@
       </el-card>
       <el-card v-show="rubberCardVisiable" class="box-card">
         <h3>塑料橡胶类商品信息</h3>
-        <el-button type="primary" @click="rubberShowNew">新建</el-button>
+        <el-button type="primary" @click="rubberShowNew">新增</el-button>
         <el-table :data="detail">
-          <el-table-column property="id" label="id" />
+          <el-table-column property="id" label="单号" />
           <el-table-column property="code" label="品号" />
           <el-table-column property="name" label="品名" />
           <el-table-column property="spec" label="规格" />
+          <el-table-column property="material" label="材质" />
           <el-table-column property="weight" label="理论重量" />
           <el-table-column property="quantityYear" label="年预估量" />
           <el-table-column property="status" label="状态" />
@@ -34,7 +35,7 @@
           </el-table-column>
         </el-table>
 
-        <el-dialog :visible.sync="rubberVisiable" :title="detailAdd ? '新建商品' : '编辑商品'">
+        <el-dialog :visible.sync="rubberVisiable" :title="detailAdd ? '新增商品' : '编辑商品'">
           <el-form ref="attributeForm" :rules="rules" :model="detailForm" status-icon label-position="left" label-width="100px" style="margin-left:50px;">
             <!--            <el-form-item label="品号" prop="code">-->
             <!--              <el-input v-model="detailForm.code" maxlength="60" :readonly="true" />-->
@@ -48,7 +49,10 @@
             <el-form-item label="产品名称">
               <span>(品号) {{ detailForm.code }} (品名) {{ detailForm.name }}</span>
               <span>(规格) {{ detailForm.spec }}</span>
-              <el-button type="primary" @click="rubberShow">修改品号</el-button>
+              <!--              <el-button type="primary" @click="rubberShow">修改品号</el-button>-->
+            </el-form-item>
+            <el-form-item label="材质" prop="material">
+              <el-input v-model="detailForm.material" maxlength="60" />
             </el-form-item>
             <el-form-item label="理论重量" prop="weight">
               <el-input v-model="detailForm.weight" type="number" class="input-width" @keydown="handleInput">
@@ -73,9 +77,9 @@
       </el-card>
       <el-card v-show="electronicCardVisiable" class="box-card">
         <h3>电子电器类商品信息</h3>
-        <el-button type="primary" @click="rubberShowNew">新建</el-button>
+        <el-button type="primary" @click="rubberShowNew">新增</el-button>
         <el-table :data="detail">
-          <el-table-column property="id" label="id" />
+          <el-table-column property="id" label="单号" />
           <el-table-column property="code" label="品号" />
           <el-table-column property="name" label="品名" />
           <el-table-column property="spec" label="规格" />
@@ -89,12 +93,12 @@
           </el-table-column>
         </el-table>
 
-        <el-dialog :visible.sync="electronicVisiable" :title="detailAdd ? '新建商品' : '编辑商品'">
+        <el-dialog :visible.sync="electronicVisiable" :title="detailAdd ? '新增商品' : '编辑商品'">
           <el-form ref="attributeForm" :rules="rules" :model="detailForm" status-icon label-position="left" label-width="100px" style="margin-left:50px;">
             <el-form-item label="产品名称">
               <span>(品号) {{ detailForm.code }} (品名) {{ detailForm.name }}</span>
               <span>(规格) {{ detailForm.spec }}</span>
-              <el-button type="primary" @click="rubberShow">修改品号</el-button>
+              <!--              <el-button type="primary" @click="rubberShow">修改品号</el-button>-->
             </el-form-item>
 
             <el-form-item label="年预估量" prop="quantityYear">
@@ -115,9 +119,9 @@
       </el-card>
       <el-card v-show="hardwareCardVisiable" class="box-card">
         <h3>五金类商品信息</h3>
-        <el-button type="primary" @click="rubberShowNew">新建</el-button>
+        <el-button type="primary" @click="rubberShowNew">新增</el-button>
         <el-table :data="detail">
-          <el-table-column property="id" label="id" />
+          <el-table-column property="id" label="单号" />
           <el-table-column property="code" label="品号" />
           <el-table-column property="name" label="品名" />
           <el-table-column property="spec" label="规格" />
@@ -133,12 +137,12 @@
           </el-table-column>
         </el-table>
 
-        <el-dialog :visible.sync="hardwareVisiable" :title="detailAdd ? '新建商品' : '编辑商品'">
+        <el-dialog :visible.sync="hardwareVisiable" :title="detailAdd ? '新增商品' : '编辑商品'">
           <el-form ref="attributeForm" :rules="rules" :model="detailForm" status-icon label-position="left" label-width="100px" style="margin-left:50px;">
             <el-form-item label="产品名称">
               <span>(品号) {{ detailForm.code }} (品名) {{ detailForm.name }}</span>
               <span>(规格) {{ detailForm.spec }}</span>
-              <el-button type="primary" @click="rubberShow">修改品号</el-button>
+              <!--              <el-button type="primary" @click="rubberShow">修改品号</el-button>-->
             </el-form-item>
             <el-form-item label="材质" prop="material">
               <el-input v-model="detailForm.material" maxlength="60" />
@@ -166,9 +170,9 @@
       </el-card>
       <el-card v-show="dieCastingCardVisiable" class="box-card">
         <h3>压铸模具类商品信息</h3>
-        <el-button type="primary" @click="rubberShowNew">新建</el-button>
+        <el-button type="primary" @click="rubberShowNew">新增</el-button>
         <el-table :data="detail">
-          <el-table-column property="id" label="id" />
+          <el-table-column property="id" label="单号" />
           <el-table-column property="code" label="品号" />
           <el-table-column property="name" label="品名" />
           <el-table-column property="spec" label="规格" />
@@ -183,12 +187,12 @@
           </el-table-column>
         </el-table>
 
-        <el-dialog :visible.sync="dieCastingVisiable" :title="detailAdd ? '新建商品' : '编辑商品'">
+        <el-dialog :visible.sync="dieCastingVisiable" :title="detailAdd ? '新增商品' : '编辑商品'">
           <el-form ref="attributeForm" :rules="rules" :model="detailForm" status-icon label-position="left" label-width="100px" style="margin-left:50px;">
             <el-form-item label="产品名称">
               <span>(品号) {{ detailForm.code }} (品名) {{ detailForm.name }}</span>
               <span>(规格) {{ detailForm.spec }}</span>
-              <el-button type="primary" @click="rubberShow">修改品号</el-button>
+              <!--              <el-button type="primary" @click="rubberShow">修改品号</el-button>-->
             </el-form-item>
             <el-form-item label="产品尺寸" prop="size">
               <el-input v-model="detailForm.size" class="input-width">
@@ -263,12 +267,13 @@
     </el-form>
     <div class="op-container">
       <el-button @click="handleCancel">取消</el-button>
-      <el-button v-if="dialogStatus==='create'" type="primary" @click="createData">确定</el-button>
-      <el-button v-else type="primary" @click="updateData">确定</el-button>
+      <el-button type="primary" @click="createData">确定</el-button>
     </div>
     <el-dialog :visible.sync="addCodeVisiable" title="查询产品">
       <div class="search">
-        <el-input v-model="listQueryCode.code" class="filter-item" style="width: 200px;" placeholder="请输入品号\品名\规格" />
+        <el-input v-model="listQueryCode.code" class="filter-item" style="width: 100px;" placeholder="请输入品号" />
+        <el-input v-model="listQueryCode.name" class="filter-item" style="width: 200px;" placeholder="请输入品名" />
+        <el-input v-model="listQueryCode.spec" class="filter-item" style="width: 200px;" placeholder="请输入规格" />
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="searchCode">查找</el-button>
         <el-table v-loading="CodelistLoading" :data="listCode" element-loading-text="正在查询中。。。" border fit highlight-current-row>
           <el-table-column align="center" label="品号" prop="imaal001" />
@@ -280,7 +285,7 @@
             </template>
           </el-table-column>
         </el-table>
-        <pagination v-show="total>0" :total="total" :page.sync="listQueryCode.page" :limit.sync="listQueryCode.limit" @pagination="searchCode" />
+        <pagination v-show="totalERPCode>0" :total="totalERPCode" :page.sync="listQueryCode.page" :limit.sync="listQueryCode.limit" @pagination="searchCode" />
       </div>
 
     </el-dialog>
@@ -290,7 +295,7 @@
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
         <el-table v-loading="listLoading" :data="supplyList" element-loading-text="正在查询中。。。" border fit highlight-current-row @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55" />
-          <el-table-column align="center" label="ID" prop="id" />
+          <el-table-column align="center" label="单号" prop="id" />
           <el-table-column align="center" label="姓名" prop="name" />
           <el-table-column align="center" label="手机" prop="phone" />
           <el-table-column align="center" label="单位" prop="note" />
@@ -337,6 +342,7 @@ export default {
       setstatus: 0,
       total: 0,
       totalCode: 0,
+      totalERPCode: 0,
       quoteDialogVisible: false,
       CodelistLoading: false,
       userid: 0,
@@ -354,6 +360,7 @@ export default {
       attributeAdd: false,
       detailAdd: false,
       url: '',
+      supplyList: [],
       selectedlist: [],
       listPhoneQuery: {
         name: "1",
@@ -362,6 +369,8 @@ export default {
       },
       listQueryCode: {
         code: '1',
+        name: '',
+        spec: '',
         page: 1,
         limit: 10
       },
@@ -372,6 +381,7 @@ export default {
       },
       dataForm: [],
       current: [],
+      RNM: [],
       purchaser: '',
       approveNote: '',
       reQuote: [],
@@ -400,12 +410,12 @@ export default {
         ceoChoice: [{ required: true, message: 'ceo必须供应商', trigger: 'blur' }],
         dutyChoice: [{ required: true, message: '责任人必须选择供应商', trigger: 'blur' }],
         code: [{ required: true, message: '必须输入品号', trigger: 'blur' }],
-        name: [{ required: true, message: '必须输入品名', trigger: 'blur' }],
-        mouldCharge: [{ required: true, message: '必须输入模具费', trigger: 'blur' }],
-        processingCostSingle: [{ required: true, message: '必须输入单个产品加工费', trigger: 'blur' }],
-        moldNumber: [{ required: true, message: '必须输入模穴数', trigger: 'blur' }],
-        looseCore: [{ required: true, message: '必须输入抽芯数', trigger: 'blur' }],
-        materialPrice: [{ required: true, message: '必须输入材料价', trigger: 'blur' }]
+        name: [{ required: true, message: '必须输入品名', trigger: 'blur' }]
+        // mouldCharge: [{ required: true, message: '必须输入模具费', trigger: 'blur' }],
+        // processingCostSingle: [{ required: true, message: '必须输入单个产品加工费', trigger: 'blur' }],
+        // moldNumber: [{ required: true, message: '必须输入模穴数', trigger: 'blur' }],
+        // looseCore: [{ required: true, message: '必须输入抽芯数', trigger: 'blur' }],
+        // materialPrice: [{ required: true, message: '必须输入材料价', trigger: 'blur' }]
       },
       shipDialogVisible: false,
       downloadLoading: false,
@@ -473,12 +483,31 @@ export default {
       this.dataForm.quoteModelExcel = response.data.url
     },
     confirmAdd(row) {
+      // this.addCodeVisiable = false
+      // this.detailForm.code = row.imaal001
+      // this.detailForm.name = row.imaal003
+      // this.detailForm.spec = row.imaal004
+      // this.total = parseInt(row.total)
+      // if (this.dialogStatus === 'create') { this.handleFilterAdmin() } else { this.detailEdit() }
       this.addCodeVisiable = false
+      if (this.dialogStatus === 'create' ) { this.detailForm = {}; this.detailForm.appendix = this.quoteModelId; }
       this.detailForm.code = row.imaal001
       this.detailForm.name = row.imaal003
       this.detailForm.spec = row.imaal004
-      this.total = row.total
-      if (this.dialogStatus === 'create') { this.handleFilterAdmin() } else { this.detailEdit() }
+      // alert(this.dialogStatus)
+      if (this.dialogStatus === 'create') { this.handleFilterAdmin() } else {
+        this.detailEdit()
+        this.rubberVisiable = false
+        this.electronicVisiable = false
+        this.hardwareVisiable = false
+        this.dieCastingVisiable = false
+        // this.detailForm = Object.assign({}, row)
+        const modelId = this.dataForm.modelName
+        if (modelId === 3) { this.rubberVisiable = true }
+        if (modelId === 4) { this.dieCastingVisiable = true }
+        if (modelId === 5) { this.hardwareVisiable = true }
+        if (modelId === 6) { this.electronicVisiable = true }
+      }
     },
     handleSelectionChange(val) {
       this.selectedlist = val
@@ -529,10 +558,10 @@ export default {
           newGoodsList.push(item)
         }
       })
-
       if (newGoodsIds.length > 0) {
+        // this.supplyList = []
         this.dataForm.quoteSupplyCode = this.dataForm.quoteSupplyCode.concat(newGoodsIds)
-        this.supplyList = this.supplyList.concat(newGoodsList)
+        // this.supplyList = this.supplyList.concat(newGoodsList)
       }
       this.addSupplyVisiable = false
     },
@@ -547,12 +576,12 @@ export default {
       readCode(this.listQueryCode).then(response => {
         console.log(JSON.stringify(response))
         this.listCode = response.data.data.list
-        if (this.listCode.length>=0) { this.total = parseInt(response.data.data.list[0].total) }
+        if (this.listCode.length>=0) { this.totalERPCode = parseInt(response.data.data.list[0].total) }
         this.CodelistLoading = false
       }).catch(() => {
         console.log('无数据')
         this.listCode = []
-        this.total = 0
+        this.totalERPCode = 0
         this.CodelistLoading = false
       })
     },
@@ -608,45 +637,43 @@ export default {
       if (!a) { e.preventDefault() }
     },
     createData() {
-      this.dataForm.adminId = sessionStorage.getItem('userid')
+      try { console.log(JSON.stringify(this.detailForm)) } catch (e) { alert('日了狗了不行') }
+
+      console.log(JSON.stringify(this.detailForm))
+      console.log('JSON.stringify(this.detail)')
+      console.log(JSON.stringify(this.detail))
+      this.dataForm.adminId = parseInt(sessionStorage.getItem('userid'))
       this.dataForm.status = 0
       this.dataForm.purchaser = this.formatRole(this.dataForm.adminId)
       const quoteInOne = { quoteRubber: [], quoteDieCasting: [], quoteHardware: [], quoteElectronic: [], quoteBill: {}}
       const modelId = this.dataForm.modelName
-
-      if (modelId === 3) { quoteInOne.quoteRubber = quoteInOne.quoteRubber.concat(this.detail) }
-      if (modelId === 4) { quoteInOne.quoteDieCasting = quoteInOne.quoteDieCasting.concat(this.detail) }
-      if (modelId === 5) { quoteInOne.quoteHardware = quoteInOne.quoteHardware.concat(this.detail) }
-      if (modelId === 6) { quoteInOne.quoteElectronic = quoteInOne.quoteElectronic.concat(this.detail) }
+      if (modelId === 3) { quoteInOne.quoteRubber = this.detail }
+      if (modelId === 4) { quoteInOne.quoteDieCasting = this.detail }
+      if (modelId === 5) { quoteInOne.quoteHardware = this.detail }
+      if (modelId === 6) { quoteInOne.quoteElectronic = this.detail }
       quoteInOne.quoteBill = this.dataForm
-
-      // this.$refs['attributeForm'].validate(valid => {
-      //   if (valid) {
-      createQuote(quoteInOne)
-        .then(response => {
-          this.dialogFormVisible = false
-          this.$notify.success({ title: '成功', message: '新增询价单成功' })
-          this.$store.dispatch('tagsView/delView', this.$route)
-          this.$router.push({ path: '/quoteManage/quotebill' })
-        }).catch(response => { console.log(JSON.stringify(response)); this.$notify.error({ title: '失败', message: response.data.errmsg }) })
-      //   }
-      // })
+      this.$refs['attributeForm'].validate(valid => {
+        if (valid) {
+          createQuote(quoteInOne)
+            .then(response => {
+              this.dialogFormVisible = false
+              this.$notify.success({ title: '成功', message: '新增询价单成功' })
+              this.$store.dispatch('tagsView/delView', this.$route)
+              this.$router.push({ path: '/quoteManage/quotebill' })
+            }).catch(response => { console.log(JSON.stringify(response)); this.$notify.error({ title: '失败', message: response.data.errmsg }) })
+        }
+      })
     },
     handleUpdate(row) {
       var index = this.detail.length - 1
       for (var i = 0; i < this.detail.length; i++) {
         const v = this.detail[i]
         if (v.code === this.detailForm.code) {
-          if (v.value === this.detailForm.value) {
-            this.$message({
-              type: 'warning',
-              message: '已经存在品号值:' + v.code
-            })
-            this.detailForm = {}
-            return
-          } else {
-            index = i
-          }
+          this.$message({ type: 'warning', message: '已经存在品号值:' + v.code })
+          this.detailForm = {}
+          return
+        } else {
+          index = i
         }
       }
       this.detail.splice(index + 1, 0, this.detailForm)
@@ -701,6 +728,7 @@ export default {
       this.AppriveCardVisiable = true
       this.detailForm.appendix = this.quoteModelId
     },
+
     handleAttributeAdd() {
       this.$refs['attributeForm'].validate(valid => {
         if (valid) {
@@ -708,16 +736,14 @@ export default {
           for (var i = 0; i < this.detail.length; i++) {
             const v = this.detail[i]
             if (v.code === this.detailForm.code) {
-              if (v.value === this.detailForm.value) {
-                this.$message({
-                  type: 'warning',
-                  message: '已经存在品号值:' + v.code
-                })
-                this.detailForm = {}
-                return
-              } else {
-                index = i
-              }
+              this.$message({
+                type: 'warning',
+                message: '已经存在品号值:' + v.code
+              })
+              this.detailForm = {}
+              return
+            } else {
+              index = i
             }
           }
           this.detail.splice(index + 1, 0, this.detailForm)
@@ -727,7 +753,7 @@ export default {
           this.hardwareVisiable = false
           this.dieCastingVisiable = false
         }
-      }).catch(response => { console.log(JSON.stringify(response)); this.$notify.error({ title: '失败', message: response.data.errmsg }) })
+      }).catch( this.$notify.error({ title: '失败', message: '莫名其妙' }))
     },
     detailEdit() {
       this.rubberVisiable = false
@@ -737,7 +763,7 @@ export default {
       this.detailForm.updateTime = ''
       for (var i = 0; i < this.detail.length; i++) {
         const v = this.detail[i]
-        if (v.id === this.detailForm.id) {
+        if (v.code === this.detailForm.code) {
           this.detail.splice(i, 1, this.detailForm)
           break
         }

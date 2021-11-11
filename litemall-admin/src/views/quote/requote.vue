@@ -15,8 +15,8 @@
 
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" bquote fit highlight-current-row>
-      <el-table-column align="center" min-width="100" label="报价ID" prop="id" />
-      <el-table-column align="center" min-width="100" label="询价ID" prop="quoteId" />
+<!--      <el-table-column align="center" min-width="100" label="报价ID" prop="id" />-->
+      <el-table-column align="center" min-width="30" label="询价ID" prop="quoteId" />
       <el-table-column align="center" label="询价单附件" prop="quoteModelExcelSupply">
         <template slot-scope="scope">
           <el-button v-if="scope.row.quoteModelExcelSupply !== undefined && scope.row.quoteModelExcelSupply !== null" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(scope.row.quoteModelExcelSupply, '询价ID'+(scope.row.quoteId).toString()+'.xlsx')">下载</el-button>
@@ -25,7 +25,9 @@
       <el-table-column align="center" label="简单描述" prop="note" />
       <el-table-column align="center" label="报价单状态" prop="quoteStatusFilter">
         <template slot-scope="scope">
-          <el-tag>{{ scope.row.status | quoteStatusFilter }}</el-tag>
+            <el-tag effect="dark" v-if = "scope.row.status == 0" type="danger">{{ scope.row.status | quoteStatusFilter }}</el-tag>
+            <el-tag effect="dark" v-else-if = "scope.row.status == 9" type="error">{{ scope.row.status | quoteStatusFilter }}</el-tag>
+            <el-tag effect="dark" v-else type="success">{{ scope.row.status | quoteStatusFilter }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" label="供应商名称" prop="adminId">
@@ -45,7 +47,7 @@
         <template slot-scope="scope">
           <el-button v-if="(scope.row.status===0 || scope.row.status===10) && scope.row.status!==6" v-permission="['POST /admin/requote/update']" type="primary" size="mini" @click="getApprove(scope.row)">签收</el-button>
           <el-button v-if="(scope.row.status===1) && scope.row.status!==6" v-permission="['POST /admin/requote/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">报价</el-button>
-          <el-button v-if="scope.row.status >= 1" v-permission="['POST /admin/requote/submit']" type="primary" size="mini" @click="getApprove(scope.row)">详情</el-button>
+          <el-button v-if="scope.row.status!==0 && scope.row.status!==10" type="primary" size="mini" @click="getApprove(scope.row)">详情</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -82,7 +84,7 @@ const statusMap = {
   5: '报价',
   6: '报价超时作废',
   8: '流标',
-  9: '开标',
+  9: '已开标',
   10: '重新报价',
   11: '终止询价'
 }

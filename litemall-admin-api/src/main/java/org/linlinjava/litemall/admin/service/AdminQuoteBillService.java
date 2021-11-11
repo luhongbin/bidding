@@ -227,7 +227,9 @@ public class AdminQuoteBillService {
             LitemallQuoteDieCasting[] quoteDieCastings = quoteinone.getQuoteDieCasting();
             for (LitemallQuoteDieCasting quoteDieCasting : quoteDieCastings) {
                 if (quoteDieCasting.getProcessingCharge().compareTo(a) == 1  && quoteDieCasting.getStatus()!=2) {
-                    quoteDieCasting.setStatus((short) 5);
+                    if (quoteDieCasting.getStatus() == 8) {
+                        quoteDieCasting.setStatus((short) 9);
+                    } else { quoteDieCasting.setStatus((short) 5); }
                     quoteDieCastingService.updateById(quoteDieCasting);
                 }
             }
@@ -236,7 +238,9 @@ public class AdminQuoteBillService {
             LitemallQuoteElectronic[] quoteElectronics = quoteinone.getQuoteElectronic();
             for (LitemallQuoteElectronic quoteElectronic : quoteElectronics) {
                 if (quoteElectronic.getPrice().compareTo(a) == 1 && quoteElectronic.getStatus()!=2) {
-                    quoteElectronic.setStatus((short) 5);
+                    if (quoteElectronic.getStatus() == 8) {
+                        quoteElectronic.setStatus((short) 9);
+                    } else { quoteElectronic.setStatus((short) 5); }
                     quoteElectronicService.updateById(quoteElectronic);
                 }
             }
@@ -245,7 +249,9 @@ public class AdminQuoteBillService {
             LitemallQuoteHardware[] quoteHardwares = quoteinone.getQuoteHardware();
             for (LitemallQuoteHardware quoteHardware : quoteHardwares) {
                if (quoteHardware.getPrice().compareTo(a) == 1 && quoteHardware.getStatus()!=2) {
-                   quoteHardware.setStatus((short) 5);
+                   if (quoteHardware.getStatus() == 8) {
+                       quoteHardware.setStatus((short) 9);
+                   } else { quoteHardware.setStatus((short) 5); }
                    quoteHardwareService.updateById(quoteHardware);
                }
             }
@@ -254,7 +260,9 @@ public class AdminQuoteBillService {
             LitemallQuoteRubber[] quoteRubbers = quoteinone.getQuoteRubber();
             for (LitemallQuoteRubber quoteRubber : quoteRubbers) {
               if (quoteRubber.getMouldCharge().compareTo(a) == 1 && quoteRubber.getStatus()!=2) {
-                  quoteRubber.setStatus((short) 5);
+                  if (quoteRubber.getStatus() == 8) {
+                      quoteRubber.setStatus((short) 9);
+                  } else { quoteRubber.setStatus((short) 5); }
                   quoteRubberService.updateById(quoteRubber);
               }
             }
@@ -348,6 +356,7 @@ public class AdminQuoteBillService {
 
         LitemallQuoteBill quoteBills = quoteBillService.findById(id);
         Integer modelId = quoteBills.getModelName();
+        if (modelId == null ) { modelId = 4; }
 //        logger.info("modelId:"+String.valueOf(modelId));
 
         if (modelId == 4) {
@@ -355,6 +364,7 @@ public class AdminQuoteBillService {
             data.put("detail", quoteDieCastings);
 
             List<LitemallRequote> reQuotes = reQuoteService.readQuote(id);
+
             List<Map<String, Object>> redetail = new ArrayList<>();
             List<Map<String, Object>> redetailpart = new ArrayList<>();
 

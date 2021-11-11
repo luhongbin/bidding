@@ -32,10 +32,10 @@
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" class="table-expand">
-              <el-form-item label="ID">
+              <el-form-item label="单号">
                 <span>{{ props.row.id }}</span>
               </el-form-item>
-              <el-form-item label="主表ID">
+              <el-form-item label="主表单号">
                 <span>{{ props.row.quoteId }}</span>
               </el-form-item>
               <el-form-item label="报价概要">
@@ -76,7 +76,10 @@
             <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.reQuoteadminId) }} </el-tag>
           </template>
         </el-table-column>
-        <el-table-column property="allname" label="产品名称" sortable />
+        <el-table-column property="code" label="品号" />
+        <el-table-column property="name" label="品名" />
+        <el-table-column property="spec" label="规格" />
+        <el-table-column property="material" label="材质" />
         <el-table-column property="weight" label="理论重量" />
         <el-table-column property="quantityYear" label="年预估量" />
         <el-table-column align="center" label="状态" prop="quoteStatus2Filter">
@@ -105,10 +108,10 @@
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" class="table-expand">
-              <el-form-item label="ID">
+              <el-form-item label="单号">
                 <span>{{ props.row.id }}</span>
               </el-form-item>
-              <el-form-item label="主表ID">
+              <el-form-item label="主表单号">
                 <span>{{ props.row.quoteId }}</span>
               </el-form-item>
               <el-form-item label="报价概要">
@@ -172,10 +175,10 @@
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" class="table-expand">
-              <el-form-item label="ID">
+              <el-form-item label="单号">
                 <span>{{ props.row.id }}</span>
               </el-form-item>
-              <el-form-item label="主表ID">
+              <el-form-item label="主表单号">
                 <span>{{ props.row.quoteId }}</span>
               </el-form-item>
               <el-form-item label="报价概要">
@@ -216,7 +219,9 @@
             <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.reQuoteadminId) }} </el-tag>
           </template>
         </el-table-column>
-        <el-table-column property="allname" label="产品名称" sortable />
+        <el-table-column property="code" label="品号" />
+        <el-table-column property="name" label="品名" />
+        <el-table-column property="spec" label="规格" />
         <el-table-column property="material" label="材质" />
         <el-table-column property="weight" label="产品理论重量(克)" />
         <el-table-column property="quantityYear" label="年预估量" />
@@ -245,10 +250,10 @@
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" class="table-expand">
-              <el-form-item label="ID">
+              <el-form-item label="单号">
                 <span>{{ props.row.id }}</span>
               </el-form-item>
-              <el-form-item label="主表ID">
+              <el-form-item label="主表单号">
                 <span>{{ props.row.quoteId }}</span>
               </el-form-item>
               <el-form-item label="报价概要">
@@ -284,7 +289,9 @@
             <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.quoteBilladminId) }} </el-tag>
           </template>
         </el-table-column>
-        <el-table-column property="allname" label="产品名称" sortable />
+        <el-table-column property="code" label="品号" />
+        <el-table-column property="name" label="品名" />
+        <el-table-column property="spec" label="规格" />
         <el-table-column property="size" label="产品尺寸(长宽高)" />
         <el-table-column property="weight" label="产品理论重量(克)" />
         <el-table-column property="quantityYear" label="年预估量" />
@@ -343,7 +350,7 @@ const statusMap = {
   3: '提交ceo',
   4: '提交会审',
   5: '议价后提交ceo',
-  6: 'ceo审批',
+  6: '已结束',
   7: '重新提交',
   8: '重新提交完毕',
   9: '会审中',
@@ -358,19 +365,21 @@ const statusMap1 = {
   5: '报价',
   6: '报价超时作废',
   8: '流标',
-  9: '开标',
+  9: '已开标',
   10: '重新报价',
   11: '终止询价'
 }
 const statusMap2 = {
-  0: '开标',
+  0: '已开标',
   1: '流标',
-  2: '要求重新报价',
+  2: '历史报价',
   3: '未报价',
   4: '流标',
   5: '报价',
   6: '提交报价',
-  7: '取消报价'
+  7: '取消报价',
+  8: '待报价',
+  9: '最新报价'
 }
 const statusMap3 = {
   0: '选中',

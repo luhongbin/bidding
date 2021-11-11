@@ -11,14 +11,14 @@
       </el-select>
       <el-button v-permission="['GET /admin/quoteBill/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查询</el-button>
       <el-button v-permission="['GET /admin/quoteBill/listCeo']" class="filter-item" type="primary" icon="el-icon-search" @click="getListCeo">领导查询</el-button>
-      <el-button v-permission="['POST /admin/quoteBill/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">新建</el-button>
+      <el-button v-permission="['POST /admin/quoteBill/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">新增</el-button>
       <el-button v-permission="['GET /admin/quoteBill/search']" class="filter-item" type="primary" icon="el-icon-search" @click="handleSearch">商品浏览</el-button>
       <!--<el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>-->
     </div>
 
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" bquote fit highlight-current-row>
-      <el-table-column align="center" min-width="100" label="ID" prop="id" />
+      <el-table-column align="center" min-width="50" label="单号" prop="id" />
       <el-table-column align="center" label="采购员" prop="adminId">
         <template slot-scope="scope">
           <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.adminId) }} </el-tag>
@@ -50,14 +50,16 @@
       <el-table-column align="center" label="报价截止日期" prop="deadDate" />
       <el-table-column align="center" label="询价单状态" prop="quoteStatusFilter">
         <template slot-scope="scope">
-          <el-tag>{{ scope.row.status | quoteStatusFilter }}</el-tag>
+          <el-tag effect="dark" v-if = "scope.row.status == 2" type="danger">{{ scope.row.status | quoteStatusFilter }}</el-tag>
+          <el-tag effect="dark" v-else-if = "scope.row.status == 6" type="error">{{ scope.row.status | quoteStatusFilter }}</el-tag>
+          <el-tag effect="dark" v-else type="success">{{ scope.row.status | quoteStatusFilter }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作" width="250" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button v-if="scope.row.status===0" v-permission="['POST /admin/quoteBill/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">修改</el-button>
           <!--          <el-button v-if="scope.row.status===0" v-permission="['POST /admin/quoteBill/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>-->
-          <el-button v-permission="['POST /admin/quoteBill/submit']" type="primary" size="mini" @click="handleApprove(scope.row)">详情</el-button>
+          <el-button v-permission="['POST /admin/quoteBill/submit']" type="success" round size="mini" @click="handleApprove(scope.row)">详情</el-button>
           <!--          <el-button v-if="scope.row.status===1||scope.row.status===2" v-permission="['POST /admin/quoteBill/cancle']" type="primary" size="mini" @click="handleRefund(scope.row)">撤销</el-button>-->
         </template>
       </el-table-column>
@@ -93,7 +95,7 @@ const statusMap = {
   3: '提交ceo',
   4: '提交会审',
   5: '议价后提交ceo',
-  6: 'ceo审批',
+  6: '已结束',
   7: '重新提交',
   8: '重新提交完毕',
   9: '会审中',
@@ -108,7 +110,7 @@ const statusMap1 = {
   5: '报价',
   6: '报价超时作废',
   8: '流标',
-  9: '开标',
+  9: '已开标',
   10: '重新询价',
   11: '终止询价'
 }

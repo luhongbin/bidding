@@ -9,7 +9,7 @@
             <el-tag> {{ formatModel(dataForm.modelName) }} </el-tag>
           </template>
         </el-form-item>
-        <el-form-item label="报价单需求" prop="version">
+        <el-form-item label="报价单主题" prop="version">
           <label>
             <textarea v-model="dataForm.purchaserNote" maxlength="200" style="width: 70%;" placeholder="描述" />
           </label>
@@ -17,12 +17,13 @@
       </el-card>
       <el-card v-show="rubberCardVisiable" class="box-card">
         <h3>塑料橡胶类商品信息</h3>
-        <el-button type="primary" @click="rubberShowNew">新建</el-button>
+        <el-button type="primary" @click="rubberShowNew">新增</el-button>
         <el-table :data="detail">
-          <el-table-column property="id" label="id" />
+          <el-table-column property="id" label="单号" />
           <el-table-column property="code" label="品号" />
           <el-table-column property="name" label="品名" />
           <el-table-column property="spec" label="规格" />
+          <el-table-column property="material" label="材质" />
           <el-table-column property="weight" label="理论重量" />
           <el-table-column property="quantityYear" label="年预估量" />
           <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
@@ -39,6 +40,9 @@
               <span>(品号) {{ detailForm.code }} (品名) {{ detailForm.name }}</span>
               <span>(规格) {{ detailForm.spec }}</span>
               <el-button type="primary" @click="rubberShow">修改品号</el-button>
+            </el-form-item>
+            <el-form-item label="材质" prop="material">
+              <el-input v-model="detailForm.material" class="input-width" />
             </el-form-item>
             <el-form-item label="理论重量" prop="weight">
               <el-input v-model="detailForm.weight" type="number" class="input-width" @keydown="handleInput">
@@ -65,7 +69,7 @@
         <h3>电子电器类商品信息</h3>
         <el-button type="primary" @click="rubberShowNew">添加</el-button>
         <el-table :data="detail">
-          <el-table-column property="id" label="id" />
+          <el-table-column property="id" label="单号" />
           <el-table-column property="code" label="品号" />
           <el-table-column property="name" label="品名" />
           <el-table-column property="spec" label="规格" />
@@ -105,7 +109,7 @@
         <h3>五金类商品信息</h3>
         <el-button type="primary" @click="rubberShowNew">添加</el-button>
         <el-table :data="detail">
-          <el-table-column property="id" label="id" />
+          <el-table-column property="id" label="单号" />
           <el-table-column property="code" label="品号" />
           <el-table-column property="name" label="品名" />
           <el-table-column property="spec" label="规格" />
@@ -155,7 +159,7 @@
         <h3>压铸模具类商品信息</h3>
         <el-button type="primary" @click="rubberShowNew">添加</el-button>
         <el-table :data="detail">
-          <el-table-column property="id" label="id" />
+          <el-table-column property="id" label="单号" />
           <el-table-column property="code" label="品号" />
           <el-table-column property="name" label="品名" />
           <el-table-column property="spec" label="规格" />
@@ -256,7 +260,9 @@
     </div>
     <el-dialog :visible.sync="addCodeVisiable" title="查询产品">
       <div class="search">
-        <el-input v-model="listQueryCode.code" class="filter-item" style="width: 300px;" placeholder="请输入品号\品名\规格" />
+        <el-input v-model="listQueryCode.code" class="filter-item" style="width: 100px;" placeholder="请输入品号" />
+        <el-input v-model="listQueryCode.name" class="filter-item" style="width: 200px;" placeholder="请输入品名" />
+        <el-input v-model="listQueryCode.spec" class="filter-item" style="width: 200px;" placeholder="请输入规格" />
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="searchCode">查找</el-button>
         <el-table v-loading="CodelistLoading" :data="listCode" element-loading-text="正在查询中。。。" border fit highlight-current-row>
           <el-table-column align="center" label="品号" prop="imaal001" />
@@ -277,7 +283,7 @@
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
         <el-table v-loading="listLoading" :data="supplyList" element-loading-text="正在查询中。。。" border fit highlight-current-row @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55" />
-          <el-table-column align="center" label="ID" prop="id" />
+          <el-table-column align="center" label="单号" prop="id" />
           <el-table-column align="center" label="姓名" prop="name" />
           <el-table-column align="center" label="手机" prop="phone" />
           <el-table-column align="center" label="单位" prop="note" />
@@ -306,12 +312,13 @@
 </style>
 <script>
 import { createStorage, uploadPath } from '@/api/storage'
-import { readquote, createQuote, updateQuote, readCode, listSupply, find } from '@/api/quote'
+import { readquote, createQuote, updateQuote, readCode, listSupply, find,deleteRubber, deleteElectronic, deleteHardware, deleteDieCasting } from '@/api/quote'
 import { read } from '@/api/quotemodel'
 import { getToken } from '@/utils/auth'
 import Editor from '@tinymce/tinymce-vue'
 import Notify from "../../../../litemall-wx/lib/vant-weapp/notify/notify";
-import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import Pagination from '@/components/Pagination'
+import {deleteTopic} from "@/api/topic"; // Secondary package based on el-pagination
 
 export default {
   name: 'QuoteBill',
@@ -359,6 +366,8 @@ export default {
       listCode: [],
       listQueryCode: {
         code: '1',
+        name: '',
+        spec: '',
         page: 1,
         limit: 10
       },
@@ -396,12 +405,12 @@ export default {
         ceoChoice: [{ required: true, message: 'ceo必须供应商', trigger: 'blur' }],
         dutyChoice: [{ required: true, message: '责任人必须选择供应商', trigger: 'blur' }],
         code: [{ required: true, message: '必须输入品号', trigger: 'blur' }],
-        name: [{ required: true, message: '必须输入品名', trigger: 'blur' }],
-        mouldCharge: [{ required: true, message: '必须输入模具费', trigger: 'blur' }],
-        processingCostSingle: [{ required: true, message: '必须输入单个产品加工费', trigger: 'blur' }],
-        moldNumber: [{ required: true, message: '必须输入模穴数', trigger: 'blur' }],
-        looseCore: [{ required: true, message: '必须输入抽芯数', trigger: 'blur' }],
-        materialPrice: [{ required: true, message: '必须输入材料价', trigger: 'blur' }]
+        name: [{ required: true, message: '必须输入品名', trigger: 'blur' }]
+        // mouldCharge: [{ required: true, message: '必须输入模具费', trigger: 'blur' }],
+        // processingCostSingle: [{ required: true, message: '必须输入单个产品加工费', trigger: 'blur' }],
+        // moldNumber: [{ required: true, message: '必须输入模穴数', trigger: 'blur' }],
+        // looseCore: [{ required: true, message: '必须输入抽芯数', trigger: 'blur' }],
+        // materialPrice: [{ required: true, message: '必须输入材料价', trigger: 'blur' }]
       },
       shipDialogVisible: false,
       downloadLoading: false,
@@ -555,8 +564,9 @@ export default {
       })
 
       if (newGoodsIds.length > 0) {
+        // this.supplyList = []
         this.dataForm.quoteSupplyCode = this.dataForm.quoteSupplyCode.concat(newGoodsIds)
-        this.supplyList = this.supplyList.concat(newGoodsList)
+        // this.supplyList = this.supplyList.concat(newGoodsList)
       }
       this.addSupplyVisiable = false
     },
@@ -719,16 +729,14 @@ export default {
           for (var i = 0; i < this.detail.length; i++) {
             const v = this.detail[i]
             if (v.code === this.detailForm.code) {
-              if (v.value === this.detailForm.value) {
-                this.$message({
-                  type: 'warning',
-                  message: '已经存在品号值:' + v.code
-                })
-                this.detailForm = {}
-                return
-              } else {
-                index = i
-              }
+              this.$message({
+                type: 'warning',
+                message: '已经存在品号值:' + v.code
+              })
+              this.detailForm = {}
+              return
+            } else {
+              index = i
             }
           }
           this.detail.splice(index + 1, 0, this.detailForm)
@@ -741,7 +749,6 @@ export default {
       }).catch(response => { console.log(JSON.stringify(response)); this.$notify.error({ title: '失败', message: response.data.errmsg }) })
     },
     detailEdit() {
-
       this.$refs['attributeForm'].validate(valid => {
         if (valid) {
           this.falseVisiable()
@@ -757,7 +764,6 @@ export default {
           this.$notify.error({ title: '失败', message: '验证失败' })
         }
       })
-
     },
     falseVisiable() {
       this.rubberVisiable = false
@@ -795,7 +801,25 @@ export default {
       this.trueVisiable()
     },
     handleAttributeDelete(row) {
-      row.deleted = true
+      this.$confirm('您确定删除[' + row.code + ']吗？').then(_ => {
+        const modelId = this.dataForm.modelName
+        if (modelId === 3) {
+          deleteRubber(row).then(response => { this.$notify.success({title: '成功', message: '删除询价产品成功'}); const index = this.detail.indexOf(row); this.detail.splice(index, 1)
+          }).catch(response => { this.$notify.error({title: '失败', message: response.data.errmsg}) })
+        }
+        if (modelId === 4) {
+          deleteDieCasting(row).then(response => { this.$notify.success({title: '成功', message: '删除询价产品成功'}); const index = this.detail.indexOf(row); this.detail.splice(index, 1)
+          }).catch(response => { this.$notify.error({title: '失败', message: response.data.errmsg}) })
+        }
+        if (modelId === 5) {
+          deleteHardware(row).then(response => { this.$notify.success({title: '成功', message: '删除询价产品成功'}); const index = this.detail.indexOf(row); this.detail.splice(index, 1)
+          }).catch(response => { this.$notify.error({title: '失败', message: response.data.errmsg}) })
+        }
+        if (modelId === 6) {
+          deleteHardware(row).then(response => { this.$notify.success({title: '成功', message: '删除询价产品成功'}); const index = this.detail.indexOf(row); this.detail.splice(index, 1)
+          }).catch(response => { this.$notify.error({title: '失败', message: response.data.errmsg}) })
+        }
+      })
     },
     formatModel(modelId) {
       for (let i = 0; i < this.modelNameList.length; i++) {

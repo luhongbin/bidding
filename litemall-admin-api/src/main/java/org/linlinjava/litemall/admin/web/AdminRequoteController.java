@@ -240,8 +240,6 @@ public class AdminRequoteController {
         data.put("ApproveInfoList", ApproveInfoList);
         return ResponseUtil.ok(data);
     }
-    @RequiresPermissions("admin:requote:submit")
-    @RequiresPermissionsDesc(menu = {"供应商管理", "报价管理"}, button = "详情")
     @PostMapping("/submit")
     public Object submit(@RequestBody String body) { return adminQuoteService.submitById(body);}
 

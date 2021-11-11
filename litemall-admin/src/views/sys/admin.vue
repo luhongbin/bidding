@@ -64,9 +64,9 @@
         </el-form-item>
         <el-form-item label="操作员身份" prop="capacity">
           <el-input v-model="dataForm.capacity" />
-<!--          <el-select v-model="dataForm.capacity" multiple clear placeholder="请选择">-->
-<!--            <el-option v-for="item in capacity" :key="item" :label="item" :value="item" />-->
-<!--          </el-select>-->
+          <!--          <el-select v-model="dataForm.capacity" multiple clear placeholder="请选择">-->
+          <!--            <el-option v-for="item in capacity" :key="item" :label="item" :value="item" />-->
+          <!--          </el-select>-->
         </el-form-item>
         <el-form-item label="操作员密码" prop="password">
           <el-input v-model="dataForm.password" type="password" readonly="readonly" auto-complete="off" />
@@ -144,7 +144,6 @@ export default {
     return {
       uploadPath,
       list: [],
-      capacity: null,
       capacitylist: [],
       total: 0,
       roleOptions: null,
@@ -164,7 +163,7 @@ export default {
         dept: undefined,
         jobnumber: undefined,
         avatar: undefined,
-        capacity: [],
+        capacity: undefined,
         roleIds: []
       },
       dialogFormVisible: false,
@@ -210,7 +209,7 @@ export default {
         this.list = response.data.data.list.data.list
         this.total = response.data.data.list.data.total
         this.roleOptions = response.data.data.options
-        this.capacity = (JSON.stringify(response.data.data.capacity.keyValue).replace('"', '').replace('"', '')).split(',')
+        // this.capacity = (JSON.stringify(response.data.data.capacity.keyValue).replace('"', '').replace('"', '')).split(',')
         // roleOptions()
         //   .then(response => {
         //     this.roleOptions = response.data.data.list
@@ -273,7 +272,6 @@ export default {
     },
     handleUpdate(row) {
       this.dataForm = Object.assign({}, row)
-      this.dataForm.capacity = ''
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -282,7 +280,7 @@ export default {
       this.dataForm.password = 'APZHSBfBjC5Ybf2p'
     },
     updateData() {
-      this.dataForm.capacity = JSON.stringify(this.dataForm.capacity)
+      // this.dataForm.capacity = JSON.stringify(this.dataForm.capacity)
       console.log(JSON.stringify(this.dataForm))
 
       this.$refs['dataForm'].validate(valid => {

@@ -101,6 +101,34 @@ export function deleteQuote(data) {
     data
   })
 }
+export function deleteRubber(data) {
+  return request({
+    url: '/quoteBill/deleteRubber',
+    method: 'post',
+    data
+  })
+}
+export function deleteElectronic(data) {
+  return request({
+    url: '/quoteBill/deleteElectronic',
+    method: 'post',
+    data
+  })
+}
+export function deleteHardware(data) {
+  return request({
+    url: '/quoteBill/deleteHardware',
+    method: 'post',
+    data
+  })
+}
+export function deleteDieCasting(data) {
+  return request({
+    url: '/quoteBill/deleteDieCasting',
+    method: 'post',
+    data
+  })
+}
 
 export function detail(query) {
   return request({

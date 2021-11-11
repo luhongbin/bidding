@@ -366,7 +366,7 @@ public class AdminQuoteService {
                     quoteDieCastingMapper.updateByExampleSelective(rubber, example1);
                     for(Integer idt : ids) {
                         LitemallQuoteDieCasting quoteDieCastings = quoteDieCastingService.findById(idt);
-                        quoteDieCastings.setIsCeo(true);
+                        quoteDieCastings.setIsDuty(true);
                         quoteDieCastings.setStatus((short) 0);
                         quoteDieCastingService.updateById(quoteDieCastings);
                     }
@@ -380,7 +380,7 @@ public class AdminQuoteService {
                     quoteElectronicMapper.updateByExampleSelective(rubber, example1);
                     for(Integer idt : ids) {
                         LitemallQuoteElectronic quoteElectronics = quoteElectronicService.findById(idt);
-                        quoteElectronics.setIsCeo(true);
+                        quoteElectronics.setIsDuty(true);
                         quoteElectronics.setStatus((short) 0);
                         quoteElectronicService.updateById(quoteElectronics);
                     }
@@ -394,7 +394,7 @@ public class AdminQuoteService {
                     quoteHardwareMapper.updateByExampleSelective(rubber, example1);
                     for(Integer idt : ids) {
                         LitemallQuoteHardware quoteHardwares = quoteHardwareService.findById(idt);
-                        quoteHardwares.setIsCeo(true);
+                        quoteHardwares.setIsDuty(true);
                         quoteHardwares.setStatus((short) 0);
                         quoteHardwareService.updateById(quoteHardwares);
                     }
@@ -409,7 +409,7 @@ public class AdminQuoteService {
                     quoteRubberMapper.updateByExampleSelective(rubber, example1);
                     for(Integer idt : ids) {
                         LitemallQuoteRubber quoteRubbers = quoteRubberService.findById(idt);
-                        quoteRubbers.setIsCeo(true);
+                        quoteRubbers.setIsDuty(true);
                         quoteRubbers.setStatus((short) 0);
                         quoteRubberService.updateById(quoteRubbers);
                     }
@@ -696,7 +696,7 @@ public class AdminQuoteService {
                         quoteRubbers.setStatus((short) 2);
                         quoteRubberService.updateById(quoteRubbers);
                         quoteRubberService.add(quoteRubbers);
-                        quoteRubbers.setStatus((short) 3);
+                        quoteRubbers.setStatus((short) 8);
                         quoteRubberService.updateById(quoteRubbers);
 //                        quoteRubberMapper.updateByPrimaryKey(quoteRubbers);
 //                        quoteRubbers.setStatus((short) 5);
@@ -708,7 +708,7 @@ public class AdminQuoteService {
                         quoteRubbers.setStatus((short) 2);
                         quoteDieCastingService.updateById(quoteRubbers);
                         quoteDieCastingService.add(quoteRubbers);
-                        quoteRubbers.setStatus((short) 3);
+                        quoteRubbers.setStatus((short) 8);
                         quoteDieCastingService.updateById(quoteRubbers);
 //                        quoteDieCastingMapper.updateByPrimaryKey(quoteRubbers);
 //                        quoteRubbers.setStatus((short) 5);
@@ -720,7 +720,7 @@ public class AdminQuoteService {
                         quoteRubbers.setStatus((short) 2);
                         quoteHardwareService.updateById(quoteRubbers);
                         quoteHardwareService.add(quoteRubbers);
-                        quoteRubbers.setStatus((short) 3);
+                        quoteRubbers.setStatus((short) 8);
                         quoteHardwareService.updateById(quoteRubbers);
 //                        quoteHardwareMapper.updateByPrimaryKey(quoteRubbers);
 //                        quoteRubbers.setStatus((short) 5);
@@ -732,7 +732,7 @@ public class AdminQuoteService {
                         quoteRubbers.setStatus((short) 2);
                         quoteElectronicService.updateById(quoteRubbers);
                         quoteElectronicService.add(quoteRubbers);
-                        quoteRubbers.setStatus((short) 3);
+                        quoteRubbers.setStatus((short) 8);
                         quoteElectronicService.updateById(quoteRubbers);
                         quoteElectronicMapper.updateByPrimaryKey(quoteRubbers);
                     }
@@ -791,7 +791,7 @@ public class AdminQuoteService {
                     try { DingtalkApi.asyncsend(infoSend); } catch (Exception e) {  e.printStackTrace(); }
                 }
             }
-            //            和供应商议价后,重新提交供应商报价
+            //            和供应商议价后,重新提交供应商报价 采购员动作 重新提交完毕
             if (status == 8) {
                 LitemallQuoteBill quote = QuoteService.findById(quoteId);
                 Integer modelId = quote.getModelName();
@@ -806,24 +806,24 @@ public class AdminQuoteService {
                 example.or().andIdEqualTo(id);
                 quoteBillMapper.updateByExampleSelective(quoteBill, example);
 
-                LitemallRequoteExample example2 = new LitemallRequoteExample();
-                //把本次报价单设置成未中标
-                reQuote.setQuoteDate(LocalDateTime.now());
-                example2.or().andQuoteIdEqualTo(id);
-                reQuote.setStatus((short) 10);
-                reQuote.setQuoteId(quoteId);
-
-                reQuote.setSubmitDate(LocalDateTime.now());
-                reQuote.setDeadDate(dead);
-                requoteMapper.updateByExampleSelective(reQuote, example2);
-
                 List<LitemallRequote> reQuotes = reQuoteService.readQuote(id);
 
                 for (LitemallRequote idt : reQuotes) {
                     if (modelId == 3) {
                         List<LitemallQuoteRubber> quoteRubbers = quoteRubberService.queryByGid(idt.getId(),true);
                         for (LitemallQuoteRubber rubber : quoteRubbers) {
-                            if (rubber.getStatus() == 2) {
+                            if (rubber.getStatus() == 9) {  //重新报价
+                                LitemallRequoteExample example2 = new LitemallRequoteExample();
+                                //把本次报价单设置成重新询价
+                                reQuote.setQuoteDate(LocalDateTime.now());
+                                example2.or().andQuoteIdEqualTo(id);
+                                reQuote.setStatus((short) 10);
+                                reQuote.setQuoteId(quoteId);
+
+                                reQuote.setSubmitDate(LocalDateTime.now());
+                                reQuote.setDeadDate(dead);
+                                requoteMapper.updateByExampleSelective(reQuote, example2);
+
                                 idt.setStatus((short) 10);
                                 reQuoteService.updateById(idt);
 
@@ -852,7 +852,18 @@ public class AdminQuoteService {
                     if (modelId == 4) {
                         List<LitemallQuoteDieCasting> quoteRubbers = quoteDieCastingService.queryByGid(idt.getId(),true);
                         for (LitemallQuoteDieCasting rubber : quoteRubbers) {
-                            if (rubber.getStatus() == 2) {
+                            if (rubber.getStatus() == 9) {
+                                LitemallRequoteExample example2 = new LitemallRequoteExample();
+                                //把本次报价单设置成重新询价
+                                reQuote.setQuoteDate(LocalDateTime.now());
+                                example2.or().andQuoteIdEqualTo(id);
+                                reQuote.setStatus((short) 10);
+                                reQuote.setQuoteId(quoteId);
+
+                                reQuote.setSubmitDate(LocalDateTime.now());
+                                reQuote.setDeadDate(dead);
+                                requoteMapper.updateByExampleSelective(reQuote, example2);
+
                                 idt.setStatus((short) 10);
                                 reQuoteService.updateById(idt);
 
@@ -883,7 +894,18 @@ public class AdminQuoteService {
                     if (modelId == 5) {
                         List<LitemallQuoteHardware> quoteRubbers = quoteHardwareService.queryByGid(idt.getId(),true);
                         for (LitemallQuoteHardware rubber : quoteRubbers) {
-                            if (rubber.getStatus() == 2) {
+                            if (rubber.getStatus() == 9) {
+                                LitemallRequoteExample example2 = new LitemallRequoteExample();
+                                //把本次报价单设置成重新询价
+                                reQuote.setQuoteDate(LocalDateTime.now());
+                                example2.or().andQuoteIdEqualTo(id);
+                                reQuote.setStatus((short) 10);
+                                reQuote.setQuoteId(quoteId);
+
+                                reQuote.setSubmitDate(LocalDateTime.now());
+                                reQuote.setDeadDate(dead);
+                                requoteMapper.updateByExampleSelective(reQuote, example2);
+
                                 idt.setStatus((short) 10);
                                 reQuoteService.updateById(idt);
 
@@ -914,7 +936,18 @@ public class AdminQuoteService {
                     if (modelId == 6) {
                         List<LitemallQuoteElectronic> quoteRubbers = quoteElectronicService.queryByGid(idt.getId(),true);
                         for (LitemallQuoteElectronic rubber : quoteRubbers) {
-                            if (rubber.getStatus() == 2) {
+                            if (rubber.getStatus() == 9) {
+                                LitemallRequoteExample example2 = new LitemallRequoteExample();
+                                //把本次报价单设置成重新询价
+                                reQuote.setQuoteDate(LocalDateTime.now());
+                                example2.or().andQuoteIdEqualTo(id);
+                                reQuote.setStatus((short) 10);
+                                reQuote.setQuoteId(quoteId);
+
+                                reQuote.setSubmitDate(LocalDateTime.now());
+                                reQuote.setDeadDate(dead);
+                                requoteMapper.updateByExampleSelective(reQuote, example2);
+
                                 idt.setStatus((short) 10);
                                 reQuoteService.updateById(idt);
 

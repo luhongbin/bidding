@@ -11,13 +11,19 @@
 <!--      <editor v-html="goodsDetail" :init="editorInit" />-->
     </el-dialog>
 
-    <el-card v-show="rubberCardVisiable && quote.status<2" class="box-card">
+    <el-card v-show="rubberCardVisiable && chksenver" class="box-card">
       <h3>塑料橡胶类商品信息</h3>
-      <el-table :data="detail">
+      <el-table :data="server">
+        <el-table-column align="center" label="供应商名称" prop="adminId">
+          <template slot-scope="scope">
+            <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.adminId) }} </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column property="id" label="id" />
         <el-table-column property="code" label="品号" />
         <el-table-column property="name" label="品名" />
         <el-table-column property="spec" label="规格" />
+        <el-table-column property="material" label="材质" />
         <el-table-column property="weight" label="理论重量" />
         <el-table-column property="quantityYear" label="年预估量" />
         <el-table-column align="center" label="备注" prop="id">
@@ -27,9 +33,14 @@
         </el-table-column>
       </el-table>
     </el-card>
-    <el-card v-show="electronicCardVisiable && quote.status<2" class="box-card">
+    <el-card v-show="electronicCardVisiable && chksenver" class="box-card">
       <h3>电子电器类商品信息</h3>
-      <el-table :data="detail">
+      <el-table :data="server">
+        <el-table-column align="center" label="供应商名称" prop="adminId">
+          <template slot-scope="scope">
+            <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.adminId) }} </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column property="id" label="id" />
         <el-table-column property="code" label="品号" />
         <el-table-column property="name" label="品名" />
@@ -43,9 +54,14 @@
         </el-table-column>
       </el-table>
     </el-card>
-    <el-card v-show="hardwareCardVisiable && quote.status<2" class="box-card">
+    <el-card v-show="hardwareCardVisiable && chksenver" class="box-card">
       <h3>五金类商品信息</h3>
-      <el-table :data="detail">
+      <el-table :data="server">
+        <el-table-column align="center" label="供应商名称" prop="adminId">
+          <template slot-scope="scope">
+            <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.adminId) }} </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column property="id" label="id" />
         <el-table-column property="code" label="品号" />
         <el-table-column property="name" label="品名" />
@@ -60,7 +76,68 @@
         </el-table-column>
       </el-table>
     </el-card>
-    <el-card v-show="dieCastingCardVisiable && quote.status<2" class="box-card">
+    <el-card v-show="dieCastingCardVisiable && chksenver" class="box-card">
+      <h3>压铸模具类商品信息</h3>
+      <el-table :data="server">
+        <el-table-column align="center" label="供应商名称" prop="adminId">
+          <template slot-scope="scope">
+            <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.adminId) }} </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column property="id" label="id" />
+        <el-table-column property="code" label="品号" />
+        <el-table-column property="name" label="品名" />
+        <el-table-column property="spec" label="规格" />
+        <el-table-column property="size" label="产品尺寸(长宽高)" />
+        <el-table-column property="weight" label="产品理论重量(克)" />
+      </el-table>
+    </el-card>
+
+    <el-card v-show="rubberCardVisiable && quote.status < 2" class="box-card">
+      <h3>塑料橡胶类商品信息</h3>
+      <el-table :data="detail">
+        <el-table-column property="id" label="id" />
+        <el-table-column property="code" label="品号" />
+        <el-table-column property="name" label="品名" />
+        <el-table-column property="spec" label="规格" />
+        <el-table-column property="material" label="材质" />
+        <el-table-column property="weight" label="理论重量" />
+        <el-table-column property="quantityYear" label="年预估量" />
+      </el-table>
+    </el-card>
+    <el-card v-show="electronicCardVisiable &&  quote.status < 2" class="box-card">
+      <h3>电子电器类商品信息</h3>
+      <el-table :data="detail">
+        <el-table-column align="center" label="供应商名称" prop="adminId">
+          <template slot-scope="scope">
+            <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.adminId) }} </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column property="id" label="id" />
+        <el-table-column property="code" label="品号" />
+        <el-table-column property="name" label="品名" />
+        <el-table-column property="spec" label="规格" />
+        <el-table-column property="quantityYear" label="年预估量" />
+      </el-table>
+    </el-card>
+    <el-card v-show="hardwareCardVisiable &&  quote.status < 2" class="box-card">
+      <h3>五金类商品信息</h3>
+      <el-table :data="detail">
+        <el-table-column align="center" label="供应商名称" prop="adminId">
+          <template slot-scope="scope">
+            <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.adminId) }} </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column property="id" label="id" />
+        <el-table-column property="code" label="品号" />
+        <el-table-column property="name" label="品名" />
+        <el-table-column property="spec" label="规格" />
+        <el-table-column property="material" label="材质" />
+        <el-table-column property="weight" label="产品理论重量(克)" />
+        <el-table-column property="quantityYear" label="年预估量" />
+      </el-table>
+    </el-card>
+    <el-card v-show="dieCastingCardVisiable && quote.status < 2" class="box-card">
       <h3>压铸模具类商品信息</h3>
       <el-table :data="detail">
         <el-table-column property="id" label="id" />
@@ -71,7 +148,10 @@
         <el-table-column property="weight" label="产品理论重量(克)" />
         <el-table-column align="center" label="状态" prop="quoteStatus2Filter">
           <template slot-scope="scope">
-            <el-tag>{{ scope.row.status | quoteStatus2Filter }}</el-tag>
+            <el-tag effect="dark" v-if = "scope.row.status == 0" type="danger">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
+            <el-tag effect="dark" v-else-if="scope.row.status == 9" type="success">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
+            <el-tag effect="dark" v-else-if="scope.row.status == 5" type="success">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
+            <el-tag effect="dark" v-else type="'error'">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column align="center" label="备注" prop="id">
@@ -81,14 +161,14 @@
         </el-table-column>
       </el-table>
     </el-card>
-    <el-card v-show="rubberCardVisiable && quote.status>=2" class="box-card">
+    <el-card v-show="rubberCardVisiable && quote.status>=2 && !chksenver" class="box-card">
       <h3>塑料橡胶类商品信息</h3>
       <el-table ref="multipleSelection" :data="reDetail" border fit highlight-current-row @selection-change="handleSelectionChange">
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" class="table-expand">
-              <el-form-item label="ID">
-                <span>(产品序号ID){{ props.row.id }} (报价单ID) {{ props.row.quoteId }}  (询价单ID) {{ props.row.mainId }}   (供应商) {{ formatRole(props.row.adminId) }}</span>
+              <el-form-item label="单号">
+                <span>(产品序号单号){{ props.row.id }} (报价单单号) {{ props.row.quoteId }}  (询价单单号) {{ props.row.mainId }}   (供应商) {{ formatRole(props.row.adminId) }}</span>
               </el-form-item>
               <el-form-item label="报价单状态">
                 <span>(报价单状态) {{ props.row.status | quoteStatus1Filter }} (报价概要) {{ formatRole(props.row.note) }}</span>
@@ -97,6 +177,9 @@
               <el-form-item label="时间">
                 <span>(定标通知时间){{ props.row.quoteDate }} (报价截止日期) {{ props.row.deadDate }}  (提交报价日期) {{ props.row.submitDate }}</span>
               </el-form-item>
+              <el-form-item label="数量">
+                <span>(材质){{ props.row.material }}  (理论重量){{ props.row.weight }} (年预估量){{ props.row.quantityYear }}</span>
+              </el-form-item>
               <el-form-item>
                 <editor v-model="props.row.appendix" :init="editorInit" />
               </el-form-item>
@@ -104,18 +187,21 @@
           </template>
         </el-table-column>
 
-        <el-table-column v-if="quote.status !== 7 && quote.status !== 6" type="selection" :selectable="checkboxT" disabled="true" width="55" />
+        <el-table-column v-if="quote.status !== 7 && quote.status !== 6 && !chkgroup" type="selection" :selectable="checkboxT" disabled="true" width="55" />
         <el-table-column property="adminId" label="供应商" sortable>
           <template slot-scope="scope">
             <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.adminId) }} </el-tag>
           </template>
         </el-table-column>
-        <el-table-column property="allname" label="产品名称" sortable />
-        <el-table-column property="weight" label="理论重量" />
-        <el-table-column property="quantityYear" label="年预估量" />
+        <el-table-column property="code" label="品号" sortable />
+        <el-table-column property="name" width="200" label="品名" />
+        <el-table-column property="spec" width="200" label="规格" />
         <el-table-column property="status" label="状态" sortable prop="quoteStatusFilter" >
           <template slot-scope="scope">
-            <el-tag>{{ scope.row.status | quoteStatus2Filter }}</el-tag>
+            <el-tag effect="dark" v-if = "scope.row.status == 0" type="danger">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
+            <el-tag effect="dark" v-else-if="scope.row.status == 9" type="success">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
+            <el-tag effect="dark" v-else-if="scope.row.status == 5" type="success">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
+            <el-tag effect="dark" v-else type="'error'">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column property="isDuty" label="负责人选择"> prop="quoteStatusFilter">
@@ -125,11 +211,11 @@
         </el-table-column>
         <el-table-column property="deviceType" label="设备型号" />
         <el-table-column property="looseCore" label="抽芯数" />
-        <el-table-column property="materialPrice" label="材料价" sortable />
+        <el-table-column property="materialPrice" label="材料价" />
         <el-table-column property="moldNumber" label="模穴数" />
-        <el-table-column property="processingCostSingle" label="单个产品加工费" sortable />
-        <el-table-column property="pieceWeight" label="单个产品克重价格" sortable />
-        <el-table-column property="mouldCharge" label="模具费" sortable />
+        <el-table-column property="processingCostSingle" label="单个产品加工费" />
+        <el-table-column property="pieceWeight" label="单个产品克重价格" />
+        <el-table-column property="mouldCharge" label="模具费" />
 <!--        <el-table-column align="center" label="附件" prop="id">-->
 <!--          <template slot-scope="scope">-->
 <!--            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>-->
@@ -137,14 +223,14 @@
 <!--        </el-table-column>-->
       </el-table>
     </el-card>
-    <el-card v-show="electronicCardVisiable && quote.status>=2" class="box-card">
+    <el-card v-show="electronicCardVisiable && quote.status>=2 && !chksenver" class="box-card">
       <h3>电子电器类商品信息</h3>
       <el-table ref="multipleSelection2" :data="reDetail" border fit highlight-current-row @selection-change="handleSelectionChange2">
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" class="table-expand">
-              <el-form-item label="ID">
-                <span>(产品序号ID){{ props.row.id }} (报价单ID) {{ props.row.quoteId }}  (询价单ID) {{ props.row.mainId }}   (供应商) {{ formatRole(props.row.adminId) }}</span>
+              <el-form-item label="单号">
+                <span>(产品序号单号){{ props.row.id }} (报价单单号) {{ props.row.quoteId }}  (询价单单号) {{ props.row.mainId }}   (供应商) {{ formatRole(props.row.adminId) }}</span>
               </el-form-item>
               <el-form-item label="报价单状态">
                 <span>(报价单状态) {{ props.row.status | quoteStatus1Filter }} (报价概要) {{ formatRole(props.row.note) }}</span>
@@ -153,6 +239,9 @@
               <el-form-item label="时间">
                 <span>(定标通知时间){{ props.row.quoteDate }} (报价截止日期) {{ props.row.deadDate }}  (提交报价日期) {{ props.row.submitDate }}</span>
               </el-form-item>
+              <el-form-item label="数量">
+                <span>(理论重量){{ props.row.weight }} (年预估量){{ props.row.quantityYear }}</span>
+              </el-form-item>
               <el-form-item>
                 <editor v-model="props.row.appendix" :init="editorInit" />
               </el-form-item>
@@ -160,12 +249,17 @@
           </template>
         </el-table-column>
 
-        <el-table-column v-if="quote.status !== 7 && quote.status !== 6" type="selection" :selectable="checkboxT" disabled="true" width="55" />
-        <el-table-column property="allname" label="产品名称" sortable />
+        <el-table-column v-if="quote.status !== 7 && quote.status !== 6 && !chkgroup" type="selection" :selectable="checkboxT" disabled="true" width="55" />
+        <el-table-column property="code" label="品号" sortable />
+        <el-table-column property="name" width="200" label="品名" />
+        <el-table-column property="spec" width="200" label="规格" />
         <el-table-column property="quantityYear" label="年预估量" />
         <el-table-column align="center" label="状态" prop="quoteStatus2Filter">
           <template slot-scope="scope">
-            <el-tag>{{ scope.row.status | quoteStatus2Filter }}</el-tag>
+            <el-tag effect="dark" v-if = "scope.row.status == 0" type="danger">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
+            <el-tag effect="dark" v-else-if="scope.row.status == 9" type="success">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
+            <el-tag effect="dark" v-else-if="scope.row.status == 5" type="success">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
+            <el-tag effect="dark" v-else type="'error'">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column property="isDuty" label="负责人选择"> prop="quoteStatusFilter">
@@ -187,13 +281,13 @@
 <!--        </el-table-column>-->
       </el-table>
     </el-card>
-    <el-card v-show="hardwareCardVisiable && quote.status>=2" class="box-card">
+    <el-card v-show="hardwareCardVisiable && quote.status>=2 && !chksenver" class="box-card">
       <h3>五金类商品信息</h3>
       <el-table ref="multipleSelection3" :data="reDetail" border fit highlight-current-row @selection-change="handleSelectionChange3">
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" class="table-expand">
-              <el-form-item label="ID">
+              <el-form-item label="单号">
                 <span>(产品序号ID){{ props.row.id }} (报价单ID) {{ props.row.quoteId }}  (询价单ID) {{ props.row.mainId }}   (供应商) {{ formatRole(props.row.adminId) }}</span>
               </el-form-item>
               <el-form-item label="报价单状态">
@@ -203,6 +297,9 @@
               <el-form-item label="时间">
                 <span>(定标通知时间){{ props.row.quoteDate }} (报价截止日期) {{ props.row.deadDate }}  (提交报价日期) {{ props.row.submitDate }}</span>
               </el-form-item>
+              <el-form-item label="数量">
+                <span>(材质){{ props.row.material }} (产品理论重量(克)){{ props.row.weight }} (年预估量){{ props.row.quantityYear }}</span>
+              </el-form-item>
               <el-form-item>
                 <editor v-model="props.row.appendix" :init="editorInit" />
               </el-form-item>
@@ -210,14 +307,16 @@
           </template>
         </el-table-column>
 
-        <el-table-column v-if="quote.status !== 7 && quote.status !== 6" type="selection" :selectable="checkboxT" disabled="true" width="55" />
-        <el-table-column property="allname" label="产品名称" sortable />
-        <el-table-column property="material" label="材质" />
-        <el-table-column property="weight" label="产品理论重量(克)" />
-        <el-table-column property="quantityYear" label="年预估量" />
+        <el-table-column v-if="quote.status !== 7 && quote.status !== 6 && !chkgroup" type="selection" :selectable="checkboxT" disabled="true" width="55" />
+        <el-table-column property="code" label="品号" sortable />
+        <el-table-column property="name" width="200" label="品名" />
+        <el-table-column property="spec" width="200" label="规格" />
         <el-table-column align="center" label="状态" sortable prop="quoteStatus2Filter">
           <template slot-scope="scope">
-            <el-tag>{{ scope.row.status | quoteStatus2Filter }}</el-tag>
+            <el-tag effect="dark" v-if = "scope.row.status == 0" type="danger">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
+            <el-tag effect="dark" v-else-if="scope.row.status == 9" type="success">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
+            <el-tag effect="dark" v-else-if="scope.row.status == 5" type="success">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
+            <el-tag effect="dark" v-else type="'error'">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column property="isDuty" label="负责人选择"> prop="quoteStatusFilter">
@@ -228,9 +327,9 @@
         <el-table-column property="materialCharge" label="材料价格/吨" />
         <el-table-column property="materialPerCharge" label="单个产品材料价" />
         <el-table-column property="processingCharge" label="加工费" />
-        <el-table-column property="electroplateCharge" label="电镀费" sortable />
-        <el-table-column property="otherCharge" label="其它费用" sortable />
-        <el-table-column property="price" label="产品报价" sortable />
+        <el-table-column property="electroplateCharge" label="电镀费" />
+        <el-table-column property="otherCharge" label="其它费用" />
+        <el-table-column property="price" label="产品报价" />
 <!--        <el-table-column align="center" label="附件" prop="id">-->
 <!--          <template slot-scope="scope">-->
 <!--            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>-->
@@ -238,14 +337,14 @@
 <!--        </el-table-column>-->
       </el-table>
     </el-card>
-    <el-card v-show="dieCastingCardVisiable && quote.status>=2" class="box-card">
+    <el-card v-show="dieCastingCardVisiable && quote.status>=2 && !chksenver" class="box-card">
       <h3>压铸模具类商品信息</h3>
       <el-table ref="multipleSelection4" :data="reDetail" border fit highlight-current-row @selection-change="handleSelectionChange4">
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" class="table-expand">
-              <el-form-item label="ID">
-                <span>(产品序号ID){{ props.row.id }} (报价单ID) {{ props.row.quoteId }}  (询价单ID) {{ props.row.mainId }}   (供应商) {{ formatRole(props.row.adminId) }}</span>
+              <el-form-item label="单号">
+                <span>(产品序号单号){{ props.row.id }} (报价单单号) {{ props.row.quoteId }}  (询价单单号) {{ props.row.mainId }}   (供应商) {{ formatRole(props.row.adminId) }}</span>
               </el-form-item>
               <el-form-item label="报价单状态">
                 <span>(报价单状态) {{ props.row.status | quoteStatus1Filter }} (报价概要) {{ formatRole(props.row.note) }}</span>
@@ -254,6 +353,9 @@
               <el-form-item label="时间">
                 <span>(定标通知时间){{ props.row.quoteDate }} (报价截止日期) {{ props.row.deadDate }}  (提交报价日期) {{ props.row.submitDate }}</span>
               </el-form-item>
+              <el-form-item label="数量">
+                <span>(产品尺寸(长宽高)){{ props.row.size }} (产品理论重量(克){{ props.row.weight }} (年预估量){{ props.row.quantityYear }}</span>
+              </el-form-item>
               <el-form-item>
                 <editor v-model="props.row.appendix" :init="editorInit" />
               </el-form-item>
@@ -261,14 +363,16 @@
           </template>
         </el-table-column>
 
-        <el-table-column v-if="quote.status !== 7 && quote.status !== 6" type="selection" :selectable="checkboxT" disabled="true" width="55" />
-        <el-table-column property="allname" label="产品名称" sortable />
-        <el-table-column property="size" label="产品尺寸(长宽高)" />
-        <el-table-column property="weight" label="产品理论重量(克)" />
-        <el-table-column property="quantityYear" label="年预估量" />
+        <el-table-column v-if="quote.status !== 7 && quote.status !== 6 && !chkgroup" type="selection" :selectable="checkboxT" disabled="true" width="55" />
+        <el-table-column property="code" label="品号" sortable />
+        <el-table-column property="name" width="200" label="品名" />
+        <el-table-column property="spec" width="200" label="规格" />
         <el-table-column align="center" label="状态" sortable prop="quoteStatus2Filter">
           <template slot-scope="scope">
-            <el-tag>{{ scope.row.status | quoteStatus2Filter }}</el-tag>
+            <el-tag effect="dark" v-if = "scope.row.status == 0" type="danger">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
+            <el-tag effect="dark" v-else-if="scope.row.status == 9" type="success">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
+            <el-tag effect="dark" v-else-if="scope.row.status == 5" type="success">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
+            <el-tag effect="dark" v-else type="'error'">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column property="isDuty" label="负责人选择"> prop="quoteStatusFilter">
@@ -282,10 +386,10 @@
         <el-table-column property="deviceType" label="压铸机吨位" />
         <el-table-column property="deadline" label="模具设计寿命" />
         <el-table-column property="moldTime" label="开模时间" />
-        <el-table-column property="mouldCharge" label="模具费(万)" sortable />
+        <el-table-column property="mouldCharge" label="模具费(万)" />
         <el-table-column property="note1" label="备注" />
         <el-table-column property="material" label="产品材料" />
-        <el-table-column property="processingCharge" label="产品加工费" sortable />
+        <el-table-column property="processingCharge" label="产品加工费" />
 <!--        <el-table-column align="center" label="附件" prop="id">-->
 <!--          <template slot-scope="scope">-->
 <!--            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>-->
@@ -304,7 +408,7 @@
               <el-radio :label="false">直接总经理审批</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item v-show=" quote.status === 9 && dutyShow" label="重新报价" prop="toCeo">
+          <el-form-item v-show=" quote.status === 9 && dutyShow" label="重新报价" prop="isReapprove">
             <el-radio-group v-model="quote.isReapprove" @change="changeHandler2">
               <el-radio :label="false">让采购员 通知供应商 重新报价</el-radio>
               <el-radio :label="true">直接总经理审批</el-radio>
@@ -318,15 +422,15 @@
           </label>
           <el-button @click="handleCancel">取消</el-button>
           <el-button v-if="(quote.status === 0) && adminShow" v-permission="['POST /admin/quoteBill/submit']" class="filter-item" type="primary" @click="handleSubmit(quote,approveNote,'提交询价单',1,'询价单','报价人签收',1)">提交询价单</el-button>
-          <el-button v-if="(quote.status === 7) && adminShow" v-permission="['POST /admin/quoteBill/submit']" class="filter-item" type="primary" @click="handleSubmit(quote,approveNote,'重新提交询价单',1,'询价单','报价人签收',8)">重新提交询价单</el-button>
-          <el-button v-if="(quote.status === 2) && !chkgroup && dutyShow" v-permission="['POST /admin/quoteBill/submit']" class="filter-item" type="primary" @click="handleSubmit(quote,approveNote,'提交总经理',1,'询价单','结案',3,true,quote.dutyChoice)">提交ceo</el-button>
-          <el-button v-if="(quote.status === 2) && chkgroup && dutyShow" v-permission="['POST /admin/quoteBill/submit']" class="filter-item" type="primary" @click="handleSubmit(quote,approveNote,'负责人提交会签',1,'询价单','责任人审批',4)">提交评估小组</el-button>
-          <el-button v-if="(quote.status === 4 || quote.status === 9) && signShow" v-permission="['POST /admin/quoteBill/submit']" class="filter-item" type="primary" @click="handleSubmit(quote,approveNote,'会审',1,'询价单','负责人提交ceo审批',9)">会签</el-button>
-          <el-button v-if="(quote.status === 3 || quote.status === 5) && ceoShow" v-permission="['POST /admin/quoteBill/submit']" class="filter-item" type="primary" @click="handleSubmit(quote,approveNote,'ceo审批',1,'询价单','结案',6,true,quote.ceoChoice)">ceo审批</el-button>
-          <el-button v-if="quote.status === 9 && !chkceo && dutyShow" v-permission="['POST /admin/quoteBill/submit']" class="filter-item" type="primary" @click="handleSubmit(quote,approveNote,'重新议价',1,'询价单','采购员报价',7,true,quote.dutyChoice)">重新议价</el-button>
-          <el-button v-if="quote.status === 9 && chkceo && dutyShow" v-permission="['POST /admin/quoteBill/submit']" class="filter-item" type="primary" @click="handleSubmit(quote,approveNote,'议价后提交ceo',1,'询价单','ceo审批',5,false,quote.dutyChoice)">议价后提交ceo</el-button>
+          <el-button v-if="(quote.status === 7) && adminShow" v-permission="['POST /admin/quoteBill/submit']" class="filter-item" type="danger" @click="handleSubmit(quote,approveNote,'重新提交询价单',1,'询价单','报价人签收',8)">重新提交询价单</el-button>
+          <el-button v-if="(quote.status === 2) && !chkgroup && dutyShow" v-permission="['POST /admin/quoteBill/submit']" class="filter-item" type="warning" @click="handleSubmit(quote,approveNote,'提交总经理',1,'询价单','结案',3,true,quote.dutyChoice)">提交总经理</el-button>
+          <el-button v-if="(quote.status === 2) && chkgroup && dutyShow" v-permission="['POST /admin/quoteBill/submit']" class="filter-item" type="info" plain  @click="handleSubmit(quote,approveNote,'负责人提交会签',1,'询价单','责任人审批',4)">提交评估小组</el-button>
+          <el-button v-if="(quote.status === 4 || quote.status === 9) && signShow" v-permission="['POST /admin/quoteBill/submit']" class="filter-item" type="info" @click="handleSubmit(quote,approveNote,'会审',1,'询价单','负责人提交ceo审批',9)">会签</el-button>
+          <el-button v-if="(quote.status === 3 || quote.status === 5) && ceoShow" v-permission="['POST /admin/quoteBill/submit']" class="filter-item" type="success" @click="handleSubmit(quote,approveNote,'ceo审批',1,'询价单','结案',6,true,quote.ceoChoice)">ceo审批</el-button>
+          <el-button v-if="(quote.status === 9 || quote.status === 3) && !chkceo && dutyShow" v-permission="['POST /admin/quoteBill/submit']" class="filter-item" type="primary" @click="handleSubmit(quote,approveNote,'重新议价',1,'询价单','采购员报价',7,true,quote.dutyChoice)">重新议价</el-button>
+          <el-button v-if="quote.status === 9 && chkceo && dutyShow" v-permission="['POST /admin/quoteBill/submit']" class="filter-item" type="warning" round @click="handleSubmit(quote,approveNote,'议价后提交ceo',1,'询价单','ceo审批',5,false,quote.dutyChoice)">提交总经理</el-button>
 <!--          <el-button v-if="quote.status===6" v-permission="['POST /admin/quoteBill/submit']" class="filter-item" type="primary" @click="handleSubmit(quote,approveNote,'结案',1,'询价单','结案')">结案</el-button>-->
-          <el-button style="float: right" type="warning" v-if="quote.status!=0 && quote.status !=6 && quote.status !=10 && dutyShow" @click="handleSubmit(quote,approveNote,'终止询价',1,'询价单','结束',10)">终止报价</el-button>
+          <el-button style="float: right" type="warning" plain v-if="quote.status!=0 && quote.status !=6 && quote.status !=10 && dutyShow" @click="handleSubmit(quote,approveNote,'终止询价',1,'询价单','结束',10)">终止报价</el-button>
         </el-form>
       </div>
     </el-card>
@@ -432,7 +536,7 @@ const statusMap = {
   3: '提交ceo',
   4: '提交会审',
   5: '议价后提交ceo',
-  6: 'ceo审批',
+  6: '已结束',
   7: '重新提交',
   8: '重新提交完毕',
   9: '会审中',
@@ -454,12 +558,14 @@ const statusMap1 = {
 const statusMap2 = {
   0: '中标',
   1: '未中标',
-  2: '要求重新报价',
+  2: '历史报价',
   3: '未报价',
   4: '流标',
   5: '报价',
   6: '提交报价',
-  7: '取消报价'
+  7: '取消报价',
+  8: '待报价',
+  9: '最新报价'
 }
 const statusMap3 = {
   0: '选中',
@@ -492,6 +598,7 @@ export default {
       adminShow: false,
       chkgroup: false,
       chkceo: false,
+      chksenver: false,
       uploadPath,
       setstatus: 0,
       DialogVisiable: false,
@@ -538,6 +645,7 @@ export default {
         isReapprove: undefined
       },
       hours: 0,
+      server: [],
       supply: [],
       listAdmin: [],
       uploadList: [],
@@ -620,6 +728,7 @@ export default {
         this.quoteModelId = response.data.data.quoteModelId
         this.listAdmin = response.data.data.optionsAdmin
         this.modelNameList = response.data.data.quoteModel
+        if (Object.assign({}, response.data.data.quoteBills).status === 4 || Object.assign({}, response.data.data.quoteBills).status === 9) { this.chkgroup = true }
 
         this.getQuery.quoteId = Id
         this.getQuery.billCode = 0
@@ -652,6 +761,7 @@ export default {
           })
         }
       }).catch(() => { this.list = []; this.total = 0; this.$notify.error({ title: '失败', message: '基础数据没取出来数据' }) })
+
       this.listLoading = false
     },
     uploadUrl: function(response) {
@@ -678,7 +788,16 @@ export default {
       this.getList()
     },
     checkboxT(row, index) {
-      if (this.dataForm.status === 9) { return false } else { if (row.status === 5) { return true } else { return false } }
+      if (this.dataForm.status === 2 || this.dataForm.status === 3 || this.dataForm.status === 5 || this.dataForm.status === 7) {
+        if (row.status === 5 || row.status === 9) {
+          return true
+        } else {
+          return false
+        }
+      } else { return true }
+
+      // return true
+      // if (this.dataForm.status === 9) { return false } else { if (row.status === 5) { return true } else { return false } }
     },
     showDetail(row) {
       this.DialogVisiable = true
@@ -708,6 +827,12 @@ export default {
       if (row.ceoCode === parseInt(sessionStorage.getItem('userid'))) { this.ceoShow = true }
       if (row.dutyCode === parseInt(sessionStorage.getItem('userid'))) { this.dutyShow = true }
       if (row.adminId === parseInt(sessionStorage.getItem('userid'))) { this.adminShow = true }
+      if (row.status === 9 && this.dutyShow === true) { this.chkgroup = false }
+      if (row.status === 7 && this.adminShow === true && this.dutyShow === false) {
+        this.server = this.reDetail.filter(item => item.status === 2);
+        this.chksenver = true
+      } else { this.chksenver = false }
+
       if ((row.approveCode).toString().indexOf(sessionStorage.getItem('userid')) >= 0) { this.signShow = true }
       if (this.signShow === true) {
         let count = 0
@@ -732,6 +857,8 @@ export default {
       if (modelId === 4) { this.dieCastingCardVisiable = true }
       if (modelId === 5) { this.hardwareCardVisiable = true }
       if (modelId === 6) { this.electronicCardVisiable = true }
+      this.quote.isReapprove = true
+      this.quote.isCeo = false
     },
     formatAdmin(roleId) {
       for (let i = 0; i < this.listAdmin.length; i++) {
@@ -819,12 +946,12 @@ export default {
 
     handleSubmit(row, approveNote, action, billcode, billname, nextaction, setstatus, choiceid, choicevalue) {
       console.log(JSON.stringify(row))
-      if (setstatus === 1 && this.reDetail.length === 0) {
+      if (setstatus === 1 && this.detail.length === 0) {
         this.$notify.error({ title: '失败', message: '请至少输入一个产品,才能[' + action + '],重新输入' })
         return false
       }
       if (this.multipleSelection.length === 0) {
-        if (row.status === 3 || row.status === 2 || row.status === 5 || row.status === 6) {
+        if ((this.chkgroup === false || row.status === 6) && row.status !== 7 && row.status !== 0) {
           this.$notify.error({ title: '失败', message: '请选择至少勾选一条记录,才能[' + action + '],重新选择' })
 
           // const gg = this.$confirm('请选择至少一条记录,确定重新选择吗？', '提示', {
@@ -856,16 +983,16 @@ export default {
           this.$notify.error({ title: '失败', message: '必须指定接收询价的供应商' })
           return false
         }
-        if (row.dutyCode !== row.adminId) {
+        if (row.dutyCode !== parseInt(sessionStorage.getItem('userid'))) {
           for (let i = 0; i < this.listAdmin.length; i++) {
             if (row.quoteSupplyCode.indexOf(this.listAdmin[i].value) >= 0) {
-              if (this.listAdmin[i].capacity.indexOf('AB') < 0) {
+              if (this.listAdmin[i].capacity.indexOf('A') < 0 && this.listAdmin[i].capacity.indexOf('B') < 0) {
                 this.$notify.error({ title: '你不能提交审批', message: this.listAdmin[i].deptname + ':不是AB类供应商,需要[' + this.formatRole(row.dutyCode) + ']提交询价,并钉钉通知其本人' })
                 var uid = ''
                 if (row.dutyCode === row.adminId) {
                   uid = this.formatdd(row.dutyCode)
                 } else {
-                  uid = this.formatdd(row.dutyCode) + ',' + this.formatdd(row.adminId)
+                  uid = this.formatdd(row.dutyCode) + ',' + this.formatdd(parseInt(sessionStorage.getItem('userid')))
                 }
                 var infoSend = {
                   userid_list: uid,
@@ -886,7 +1013,7 @@ export default {
           }
         }
       }
-      if (row.adminId !== parseInt(sessionStorage.getItem('userid'))) {
+      if (row.status === 0 && row.adminId !== parseInt(sessionStorage.getItem('userid'))) {
         this.$notify.error('需要制单人[' + this.formatRole(row.adminId) + ']提交询价')
         return false
       }
@@ -904,7 +1031,7 @@ export default {
           billcode: billcode,
           billname: billname,
           nextaction: nextaction,
-          adminId: row.adminId,
+          adminId: parseInt(sessionStorage.getItem('userid')),
           adminName: this.formatRole(row.adminId),
           setstatus: setstatus,
           idcard: 1,
@@ -912,12 +1039,11 @@ export default {
           choiceid: choiceid,
           choicevalue: choicevalue,
           ids: ids
-        }).then(response => { this.$notify.success({ title: '成功', message: '发放成功' }); this.getList(); this.quoteDialogVisible = false })
+        }).then(response => { this.$notify.success({ title: '成功', message: '发放成功' }); this.$store.dispatch('tagsView/delView', this.$route); this.$router.push({ path: '/quoteManage/quotebill' }) })
           .catch(response => { this.$notify.error({ title: '失败', message: response.data.errmsg }) })
         console.log('submit row:' + JSON.stringify(row))
         this.$message.success({ title: '询价单审批', message: '已经通知供应商报价,通知在钉钉 待办任务 里面' })
-        this.$store.dispatch('tagsView/delView', this.$route)
-        this.$router.push({ path: '/quoteManage/quotebill' })
+
         // this.list.status = setstatus
       })
 

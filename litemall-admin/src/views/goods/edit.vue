@@ -445,6 +445,28 @@ export default {
           })
         })
     },
+    handleEdit: function() {
+      const finalGoods = {
+        goods: this.goods,
+        specifications: this.specifications,
+        products: this.products,
+        attributes: this.attributes
+      }
+      editGoods(finalGoods)
+        .then(response => {
+          this.$notify.success({
+            title: '成功',
+            message: '创建成功'
+          })
+          this.$router.push({ path: '/goods/list' })
+        })
+        .catch(response => {
+          MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
+            confirmButtonText: '确定',
+            type: 'error'
+          })
+        })
+    },
     handleClose(tag) {
       this.keywords.splice(this.keywords.indexOf(tag), 1)
       this.goods.keywords = this.keywords.toString()

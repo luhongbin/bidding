@@ -17,7 +17,7 @@
 
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" bquote fit highlight-current-row>
-      <el-table-column align="center" min-width="100" label="ID" prop="id" />
+      <el-table-column align="center" min-width="50" label="单号" prop="id" />
       <el-table-column align="center" label="采购员" prop="adminId">
         <template slot-scope="scope">
           <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.adminId) }} </el-tag>
@@ -280,7 +280,7 @@ const statusMap = {
   3: '提交ceo',
   4: '提交会审',
   5: '议价后提交ceo',
-  6: 'ceo审批',
+  6: '已结束',
   7: '重新提交',
   // 8: 'ceo审批完成',
   9: '会审中'

@@ -12,12 +12,9 @@ import org.linlinjava.litemall.core.util.ResponseUtil;
 import org.linlinjava.litemall.core.validator.Order;
 import org.linlinjava.litemall.core.validator.Sort;
 import org.linlinjava.litemall.db.domain.*;
-import org.linlinjava.litemall.db.service.LitemallAdminService;
-import org.linlinjava.litemall.db.service.LitemallQuoteBillService;
+import org.linlinjava.litemall.db.service.*;
 import org.linlinjava.litemall.admin.service.AdminQuoteService;
-import org.linlinjava.litemall.db.service.LitemallQuoteModelService;
 import org.linlinjava.litemall.admin.service.AdminQuoteBillService;
-import org.linlinjava.litemall.db.service.ImaalTService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
@@ -53,7 +50,14 @@ public class AdminQuoteBillController {
     private LitemallAdminService AdminService;
     @Autowired
     private ImaalTService T100Service;
-
+    @Autowired
+    private LitemallQuoteDieCastingService quoteDieCastingService;
+    @Autowired
+    private LitemallQuoteElectronicService quoteElectronicService;
+    @Autowired
+    private LitemallQuoteHardwareService quoteHardwareService;
+    @Autowired
+    private LitemallQuoteRubberService quoteRubberService;
     /**
      * 查询询价单
      *
@@ -80,7 +84,7 @@ public class AdminQuoteBillController {
                        @Order @RequestParam(defaultValue = "desc") String order) {
 
         LitemallAdmin adminList = (LitemallAdmin) SecurityUtils.getSubject().getPrincipal();
-        System.out.println(start);
+//        System.out.println(start);
         Integer adminId = adminList.getId();
         List<LitemallQuoteBill> roleList = quoteBillService.querySelective(id,adminId, dutyid, start, end, status,page, limit, sort, order);
 
@@ -325,6 +329,42 @@ public class AdminQuoteBillController {
         return ResponseUtil.ok();
     }
 
+    @PostMapping("/deleteRubber")
+    public Object deleteRubber(@RequestBody LitemallQuoteRubber quote) {
+        Integer id = quote.getId();
+        if (id == null) {
+            return ResponseUtil.badArgument();
+        }
+        quoteRubberService.deleteById(id);
+        return ResponseUtil.ok();
+    }
+    @PostMapping("/deleteElectronic")
+    public Object deleteElectronic(@RequestBody LitemallQuoteElectronic quote) {
+        Integer id = quote.getId();
+        if (id == null) {
+            return ResponseUtil.badArgument();
+        }
+        quoteElectronicService.deleteById(id);
+        return ResponseUtil.ok();
+    }
+    @PostMapping("/deleteHardware")
+    public Object deleteHardware(@RequestBody LitemallQuoteHardware quote) {
+        Integer id = quote.getId();
+        if (id == null) {
+            return ResponseUtil.badArgument();
+        }
+        quoteHardwareService.deleteById(id);
+        return ResponseUtil.ok();
+    }
+    @PostMapping("/deleteDieCasting")
+    public Object deleteDieCasting(@RequestBody LitemallQuoteDieCasting quote) {
+        Integer id = quote.getId();
+        if (id == null) {
+            return ResponseUtil.badArgument();
+        }
+        quoteDieCastingService.deleteById(id);
+        return ResponseUtil.ok();
+    }
     public String sign() throws Exception {
         Long timestamp = 1577262236757L;
         String appSecret = "fXSxWtI3HAtdbmXg5E-VFPfMmnDSoHrGlT59bLxuIRzWeGvIzVSQTlSc5xN2NU93";

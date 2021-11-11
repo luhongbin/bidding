@@ -28,7 +28,7 @@
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" class="table-expand">
-              <el-form-item label="ID">
+              <el-form-item label="单号">
                 <span>{{ props.row.id }}</span>
               </el-form-item>
               <el-form-item label="主表ID">
@@ -87,10 +87,10 @@
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" class="table-expand">
-              <el-form-item label="ID">
+              <el-form-item label="单号">
                 <span>{{ props.row.id }}</span>
               </el-form-item>
-              <el-form-item label="主表ID">
+              <el-form-item label="主表单号">
                 <span>{{ props.row.quoteId }}</span>
               </el-form-item>
               <el-form-item label="报价概要">
@@ -145,10 +145,10 @@
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" class="table-expand">
-              <el-form-item label="ID">
+              <el-form-item label="单号">
                 <span>{{ props.row.id }}</span>
               </el-form-item>
-              <el-form-item label="主表ID">
+              <el-form-item label="主表单号">
                 <span>{{ props.row.quoteId }}</span>
               </el-form-item>
               <el-form-item label="报价概要">
@@ -291,7 +291,7 @@ const statusMap = {
   3: '提交ceo',
   4: '提交会审',
   5: '议价后提交ceo',
-  6: 'ceo审批',
+  6: '已结束',
   7: '重新提交',
   // 8: 'ceo审批完成',
   9: '会审中'

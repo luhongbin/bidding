@@ -216,11 +216,22 @@ export const asyncRoutes = [
         hidden: true
       },
       {
+        path: 'requote-edit_modify',
+        component: () => import('@/views/quote/requotebillEditMobile'),
+        name: 'requoteEdit',
+        meta: {
+          perms: ['POST /admin/requote/update'],
+          title: '报价单产品编辑',
+          noCache: true
+        },
+        hidden: true
+      },
+      {
         path: 'requote-approve',
         component: () => import('@/views/quote/requoteApprove'),
         name: 'requoteApprove',
         meta: {
-          perms: ['POST /admin/requote/submit'],
+          perms: ['POST /admin/requote/update'],
           title: '详情',
           noCache: true
         },
@@ -660,7 +671,8 @@ export const asyncRoutes = [
           perms: ['GET /admin/storage/list', 'POST /admin/storage/create', 'POST /admin/storage/update', 'POST /admin/storage/delete'],
           title: '对象存储',
           noCache: true
-        }
+        },
+        hidden: true
       }
     ]
   },

@@ -10,7 +10,7 @@
     </div>
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-      <el-table-column align="center" label="ID" prop="id" />
+      <el-table-column align="center" label="单号" prop="id" />
       <el-table-column align="center" label="模板名称" prop="name" />
       <el-table-column align="center" label="版本号" prop="version" />
       <el-table-column align="center" property="picUrl" label="询价单模板Excel样式" prop="excel">
