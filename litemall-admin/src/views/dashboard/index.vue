@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-editor-container">
-    <component :is="currentRole" />
+<!--    <component :is="currentRole" />-->
   </div>
 </template>
 
@@ -22,12 +22,18 @@ export default {
 
   created() {
     currentuser().then(response => {
-      this.current = Object.assign({}, response.data.data)
+      this.current = Object.assign({}, response.data.data.currentUser)
+      // alert('asd')
       if (this.current.capacity.indexOf('供应商') >= 0) {
-        this.currentRole = 'supplyDashboard'
+        this.$router.push({ path: '/supplyManage/requote' })
+        // this.currentRole = 'supplyDashboard'
       } else if (this.current.capacity.indexOf('采购员') >= 0) {
-        this.currentRole = 'purchaseDashboard'
-      } else { this.currentRole = 'lutecDashboard' }
+        this.$router.push({ path: '/quoteManage/quotebill' })
+        // this.currentRole = 'purchaseDashboard'
+      } else {
+        this.$router.push({ path: '/dashboard/quotebill' })
+        // this.currentRole = 'lutecDashboard'
+      }
     })
     // console.log(JSON.stringify(this.listAdmin))
     // sessionStorage.removeItem('Username')

@@ -11,58 +11,59 @@
       </el-select>
       <el-button v-permission="['GET /admin/quoteBill/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查询</el-button>
       <el-button v-permission="['GET /admin/quoteBill/listCeo']" class="filter-item" type="primary" icon="el-icon-search" @click="getListCeo">领导查询</el-button>
-      <el-button v-permission="['POST /admin/quoteBill/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">新增</el-button>
-      <el-button v-permission="['GET /admin/quoteBill/search']" class="filter-item" type="primary" icon="el-icon-search" @click="handleSearch">商品浏览</el-button>
+      <el-button v-permission="['GET /admin/quoteBill/search']" class="filter-item" type="primary" icon="el-icon-search" @click="handleSearch">分类查询</el-button>
       <!--<el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>-->
     </div>
-
+    <div>
+      <el-button v-permission="['POST /admin/quoteBill/create']" class="filter-item" align="left" type="primary" icon="el-icon-edit" @click="handleCreate">新建询价单</el-button>
+    </div>
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" bquote fit highlight-current-row>
       <el-table-column align="center" min-width="50" label="单号" prop="id" />
-      <el-table-column align="center" label="采购员" prop="adminId">
+      <el-table-column align="center" label="操作" width="250" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.adminId) }} </el-tag>
+          <el-button v-if="scope.row.status===0" v-permission="['POST /admin/quoteBill/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">修改</el-button>
+          <!--          <el-button v-if="scope.row.status===0" v-permission="['POST /admin/quoteBill/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>-->
+          <el-button type="success" round size="mini" @click="handleApprove(scope.row)">详情</el-button>
+          <!--          <el-button v-if="scope.row.status===1||scope.row.status===2" v-permission="['POST /admin/quoteBill/cancle']" type="primary" size="mini" @click="handleRefund(scope.row)">撤销</el-button>-->
         </template>
       </el-table-column>
-      <el-table-column align="center" label="模板" prop="modelName">
-        <template slot-scope="scope">
-          <el-tag v-if="scope.row.modelName!==null "> {{ formatModel(scope.row.modelName) }} </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="负责人" prop="dutyCode">
-        <template slot-scope="scope">
-          <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.dutyCode) }} </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="描述" prop="purchaserNote" />
-      <el-table-column align="center" label="供应商" prop="quoteSupplyCodeId">
-        <template slot-scope="scope">
-          <el-tag v-for="roleId in scope.row.quoteSupplyCode" :key="roleId" type="primary" style="margin-right: 20px;"> {{ formatAdmin(roleId) }} </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column v-if="show" align="center" label="供应商名称" prop="quoteSupplyCode" />
-      <el-table-column align="center" property="quoteModelExcel" label="询价单附件" prop="quoteModelExcel">
-        <template slot-scope="scope">
-          <el-button v-if="scope.row.quoteModelExcel !== undefined && scope.row.quoteModelExcel !== null" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(scope.row.quoteModelExcel,'询价ID'+(scope.row.id).toString()+'.xlsx')">下载</el-button>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="建档时间" prop="addTime" />
-      <el-table-column align="center" label="报价截止日期" prop="deadDate" />
-      <el-table-column align="center" label="询价单状态" prop="quoteStatusFilter">
+      <el-table-column align="left" label="询价单状态" prop="quoteStatusFilter">
         <template slot-scope="scope">
           <el-tag effect="dark" v-if = "scope.row.status == 2" type="danger">{{ scope.row.status | quoteStatusFilter }}</el-tag>
           <el-tag effect="dark" v-else-if = "scope.row.status == 6" type="error">{{ scope.row.status | quoteStatusFilter }}</el-tag>
           <el-tag effect="dark" v-else type="success">{{ scope.row.status | quoteStatusFilter }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="操作" width="250" class-name="small-padding fixed-width">
+      <el-table-column align="center" v-if="(totalId===1)" label="采购员" prop="adminId">
         <template slot-scope="scope">
-          <el-button v-if="scope.row.status===0" v-permission="['POST /admin/quoteBill/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">修改</el-button>
-          <!--          <el-button v-if="scope.row.status===0" v-permission="['POST /admin/quoteBill/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>-->
-          <el-button v-permission="['POST /admin/quoteBill/submit']" type="success" round size="mini" @click="handleApprove(scope.row)">详情</el-button>
-          <!--          <el-button v-if="scope.row.status===1||scope.row.status===2" v-permission="['POST /admin/quoteBill/cancle']" type="primary" size="mini" @click="handleRefund(scope.row)">撤销</el-button>-->
+          <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.adminId) }} </el-tag>
         </template>
       </el-table-column>
+      <el-table-column align="left" label="产品类别" prop="modelName">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.modelName!==null "> {{ formatModel(scope.row.modelName) }} </el-tag>
+        </template>
+      </el-table-column>
+      <!--      <el-table-column align="center" label="负责人" prop="dutyCode">-->
+      <!--        <template slot-scope="scope">-->
+      <!--          <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.dutyCode) }} </el-tag>-->
+      <!--        </template>-->
+      <!--      </el-table-column>-->
+      <el-table-column align="left" label="主题" prop="purchaserNote" />
+      <el-table-column align="left" label="供应商" prop="quoteSupplyCodeId">
+        <template slot-scope="scope">
+          <el-tag v-for="roleId in scope.row.quoteSupplyCode" :key="roleId" type="primary" style="margin-left: 0px;"> {{ formatAdmin(roleId) }} </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column v-if="show" align="left" label="供应商名称" prop="quoteSupplyCode" />
+      <el-table-column align="center" property="quoteModelExcel" label="询价单附件" prop="quoteModelExcel">
+        <template slot-scope="scope">
+          <el-button v-if="scope.row.quoteModelExcel !== undefined && scope.row.quoteModelExcel !== null" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(scope.row.quoteModelExcel,'询价'+scope.row.id.toString())">下载</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" width="150" label="建档时间" prop="addTime" />
+      <el-table-column align="center" width="150"  label="报价截止日期" prop="deadDate" />
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
   </div>
@@ -83,10 +84,11 @@
 </style>
 <script>
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination import { getToken } from '@/utils/auth'
-import { uploadPath } from '@/api/storage'
+import { uploadPath, readkey, readId } from '@/api/storage'
 import { listQuote, deleteQuote, listCeo } from '@/api/quote'
 import { openExcel } from '@/utils/quoteSubmit'
 import { getToken } from '@/utils/auth'
+import { currentuser } from '@/api/profile'
 
 const statusMap = {
   0: '制单',
@@ -99,7 +101,12 @@ const statusMap = {
   7: '重新提交',
   8: '重新提交完毕',
   9: '会审中',
-  10: '终止询价'
+  10: '终止询价',
+  11: '整单流标',
+  12: 'ceo退回负责人',
+  13: '通知预审人会签',
+  14: '预审供应商',
+  15: '预审后提交询价单'
 }
 const statusMap1 = {
   0: '询价',
@@ -112,7 +119,8 @@ const statusMap1 = {
   8: '流标',
   9: '已开标',
   10: '重新询价',
-  11: '终止询价'
+  11: '终止询价',
+  12: '签收重新询价'
 }
 
 export default {
@@ -136,6 +144,7 @@ export default {
       adminShow: false,
       chkgroup: false,
       chkceo: false,
+      totalId: 0,
       uploadPath,
       setstatus: 0,
       quoteDialogVisible: false,
@@ -235,29 +244,84 @@ export default {
       }
     }
   },
+
   created() {
-    // this.init()
-    // setTimeout(function() {}, 500)
-    this.getList()
+    this.begin()
   },
   mounted() {
   },
-
   methods: {
+    begin() {
+      currentuser().then(response => {
+        this.current = Object.assign({}, response.data.data.currentUser)
+        // alert('asd')
+        if (this.current.capacity.indexOf('ceo') >= 0) {
+          this.listCeoQuery.status = [3, 5]
+          listCeo(this.listCeoQuery).then(response => {
+            this.totalId = 1
+            console.log(response)
+            this.list = response.data.data.list.data.list
+            this.total = response.data.data.list.data.total
+            this.current = Object.assign({}, response.data.data.currentUser)
+            this.listAdmin = response.data.data.optionsAdmin
+            this.modelNameList = response.data.data.quoteModel
+            sessionStorage.setItem('userid', this.current.id)
+            this.listLoading = false
+          })
+        } else if (this.current.capacity.indexOf('采购员') >= 0) {
+          this.listCeoQuery.status = [0, 1, 2, 7, 15]
+          listQuote(this.listCeoQuery).then(response => {
+            this.totalId = 0
+            this.list = response.data.data.list.data.list
+            this.total = response.data.data.list.data.total
+            this.current = Object.assign({}, response.data.data.currentUser)
+            this.listAdmin = response.data.data.optionsAdmin
+            this.modelNameList = response.data.data.quoteModel
+            sessionStorage.setItem('userid', this.current.id)
+            console.log(response)
+            this.listLoading = false
+          })
+        } else {
+          this.listCeoQuery.status = [2, 3, 4, 5, 6, 8, 9, 10, 13, 14]
+          listCeo(this.listCeoQuery).then(response => {
+            this.totalId = 1
+            console.log(response)
+            this.list = response.data.data.list.data.list
+            this.total = response.data.data.list.data.total
+            this.current = Object.assign({}, response.data.data.currentUser)
+            this.listAdmin = response.data.data.optionsAdmin
+            this.modelNameList = response.data.data.quoteModel
+            sessionStorage.setItem('userid', this.current.id)
+            this.listLoading = false
+          })
+        }
+      })
+      this.listLoading = false
+    },
     getList() {
       this.listLoading = true
       if (this.listQuery.timeArray && this.listQuery.timeArray.length === 2) {
         this.listQuery.start = this.listQuery.timeArray[0]; this.listQuery.end = this.listQuery.timeArray[1]
       } else { this.listQuery.start = null; this.listQuery.end = null }
       listQuote(this.listQuery).then(response => {
+        this.totalId = 0
         this.list = response.data.data.list.data.list
         this.total = response.data.data.list.data.total
         this.current = Object.assign({}, response.data.data.currentUser)
         this.listAdmin = response.data.data.optionsAdmin
         this.modelNameList = response.data.data.quoteModel
         sessionStorage.setItem('userid', this.current.id)
-      }).catch(() => { this.list = []; this.total = 0; this.$notify.error({ title: '失败', message: '询价单没取出来数据' }) })
+        console.log(response)
+        this.listLoading = false
+      }).catch(() => {
+        this.list = []; this.total = 0
+        this.listLoading = false
+        this.$store.dispatch('tagsView/delView', this.$route)
+        this.$router.push({ path: '/quoteManage/quotebill' })
+      })
       this.listLoading = false
+
+        // this.$notify.error({ title: '失败', message: '询价单没取出来数据' }) })
     },
     changeHandler1(value) {
       this.chkgroup = value
@@ -275,7 +339,9 @@ export default {
         this.listCeoQuery.start = null
         this.listCeoQuery.end = null
       }
+      this.listCeoQuery=this.listQuery
       listCeo(this.listCeoQuery).then(response => {
+        this.totalId = 1
         console.log(response)
         this.list = response.data.data.list.data.list
         this.total = response.data.data.list.data.total
@@ -371,7 +437,7 @@ export default {
       return ''
     },
     openExcel(url, name) {
-      openExcel(url, name)
+      readkey(url).then(response => { openExcel(url, name+'_'+ response.data.data.name) }).catch(response => { this.$notify.error({ title: '失败', message: response.data.errmsg }) })
     },
     handleFilter() {
       this.listQuery.page = 1

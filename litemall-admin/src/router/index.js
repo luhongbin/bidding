@@ -81,7 +81,7 @@ export const asyncRoutes = [
     alwaysShow: true,
     name: 'quoteManage',
     meta: {
-      title: '采购管理',
+      title: '采购询价',
       icon: 'chart'
     },
     children: [
@@ -90,8 +90,8 @@ export const asyncRoutes = [
         component: () => import('@/views/quote/quotebill'),
         name: 'quotebill',
         meta: {
-          perms: ['GET /admin/quoteBill/list', 'GET /admin/quoteBill/listCeo', 'POST /admin/quoteBill/delete', 'POST /admin/quoteBill/create', 'POST /admin/quoteBill/update', 'POST /admin/quoteBill/submit'],
-          title: '询价单制作审批',
+          perms: ['GET /admin/quoteBill/list', 'GET /admin/quoteBill/listCeo', 'POST /admin/quoteBill/delete', 'POST /admin/quoteBill/create', 'POST /admin/quoteBill/update'],
+          title: '询价单明细',
           noCache: true
         }
       },
@@ -133,8 +133,8 @@ export const asyncRoutes = [
         component: () => import('@/views/quote/quotebillApprove'),
         name: 'quotebillApprove',
         meta: {
-          perms: ['POST /admin/quoteBill/submit'],
-          title: '详情及审批',
+          perms: ['GET /admin/quoteBill/list'],
+          title: '详情',
           noCache: true
         },
         hidden: true
@@ -179,7 +179,7 @@ export const asyncRoutes = [
     alwaysShow: true,
     name: 'supplyManage',
     meta: {
-      title: '供应商管理',
+      title: '供应商报价',
       icon: 'chart'
     },
     children: [
@@ -189,7 +189,7 @@ export const asyncRoutes = [
         name: 'requote',
         meta: {
           perms: ['GET /admin/requote/list', 'GET /admin/requote/listCeo', 'POST /admin/requote/delete', 'POST /admin/requote/create', 'POST /admin/requote/update', 'POST /admin/requote/submit', 'GET /admin/requote/submit'],
-          title: '报价管理',
+          title: '报价明细',
           noCache: true
         }
       },
@@ -290,7 +290,79 @@ export const asyncRoutes = [
       }
     ]
   },
-
+  {
+    path: '/workrecord',
+    component: Layout,
+    redirect: '/workrecord/index/',
+    alwaysShow: true,
+    name: 'workRecord',
+    meta: {
+      title: '钉钉待办任务',
+      icon: 'thesis'
+    },
+    children: [
+      {
+        path: 'user',
+        component: () => import('@/views/user/user'),
+        name: 'user',
+        meta: {
+          perms: ['GET /admin/user/list'],
+          title: '会员管理',
+          noCache: true
+        }
+      },
+      {
+        path: 'address',
+        component: () => import('@/views/user/address'),
+        name: 'address',
+        meta: {
+          perms: ['GET /admin/address/list'],
+          title: '收货地址',
+          noCache: true
+        }
+      },
+      {
+        path: 'collect',
+        component: () => import('@/views/user/collect'),
+        name: 'collect',
+        meta: {
+          perms: ['GET /admin/collect/list'],
+          title: '会员收藏',
+          noCache: true
+        }
+      },
+      {
+        path: 'footprint',
+        component: () => import('@/views/user/footprint'),
+        name: 'footprint',
+        meta: {
+          perms: ['GET /admin/footprint/list'],
+          title: '会员足迹',
+          noCache: true
+        }
+      },
+      {
+        path: 'history',
+        component: () => import('@/views/user/history'),
+        name: 'history',
+        meta: {
+          perms: ['GET /admin/history/list'],
+          title: '搜索历史',
+          noCache: true
+        }
+      },
+      {
+        path: 'feedback',
+        component: () => import('@/views/user/feedback'),
+        name: 'feedback',
+        meta: {
+          perms: ['GET /admin/feedback/list'],
+          title: '意见反馈',
+          noCache: true
+        }
+      }
+    ]
+  },
   {
     path: '/user',
     component: Layout,
@@ -668,11 +740,10 @@ export const asyncRoutes = [
         component: () => import('@/views/sys/os'),
         name: 'os',
         meta: {
-          perms: ['GET /admin/storage/list', 'POST /admin/storage/create', 'POST /admin/storage/update', 'POST /admin/storage/delete'],
+          perms: ['GET /admin/storage/list'],
           title: '对象存储',
           noCache: true
         },
-        hidden: true
       }
     ]
   },
@@ -777,7 +848,7 @@ export const asyncRoutes = [
         name: 'configQuoteMode;',
         meta: {
           perms: ['GET /admin/quoteModel/list', 'POST /admin/quoteModel/create'],
-          title: '询价单样式配置',
+          title: '询价产品类别配置',
           noCache: true
         }
       },
@@ -787,7 +858,7 @@ export const asyncRoutes = [
         name: 'quotemodelCreate',
         meta: {
           perms: ['POST /admin/quoteModel/create'],
-          title: '询价单样式创建',
+          title: '产品类别创建',
           noCache: true
         },
         hidden: true
@@ -798,7 +869,7 @@ export const asyncRoutes = [
         name: 'quotemodelEdit',
         meta: {
           perms: ['POST /admin/quoteModel/update'],
-          title: '询价单样式编辑',
+          title: '产品类别编辑',
           noCache: true
         },
         hidden: true

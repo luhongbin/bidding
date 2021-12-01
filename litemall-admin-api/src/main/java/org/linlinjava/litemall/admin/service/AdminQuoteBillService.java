@@ -8,13 +8,15 @@ import org.linlinjava.litemall.core.util.ResponseUtil;
 import org.linlinjava.litemall.db.domain.*;
 import org.linlinjava.litemall.db.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class AdminQuoteBillService {
@@ -139,10 +141,11 @@ public class AdminQuoteBillService {
                 else if(quoteDieCasting.getDeleted()){
                     quoteDieCastingService.deleteById(quoteDieCasting.getId());
                 }
-                else if(quoteDieCasting.getUpdateTime() == null){
-                    quoteDieCasting.setStatus((short) 3);
+                else {
+//                    if (quoteDieCasting.getStatus() == 0) { quoteDieCasting.setStatus((short) 5); };
                     quoteDieCastingService.updateById(quoteDieCasting);
                 }
+
             }
         }
         if (modelId == 6) {
@@ -157,8 +160,8 @@ public class AdminQuoteBillService {
                 else if(quoteElectronic.getDeleted()){
                     quoteElectronicService.deleteById(quoteElectronic.getId());
                 }
-                else if(quoteElectronic.getUpdateTime() == null){
-                    quoteElectronic.setStatus((short) 3);
+                else {
+//                    if (quoteElectronic.getStatus() == 0) { quoteElectronic.setStatus((short) 5); };
                     quoteElectronicService.updateById(quoteElectronic);
                 }
             }
@@ -175,8 +178,8 @@ public class AdminQuoteBillService {
                 else if(quoteHardware.getDeleted()){
                     quoteHardwareService.deleteById(quoteHardware.getId());
                 }
-                else if(quoteHardware.getUpdateTime() == null){
-                    quoteHardware.setStatus((short) 3);
+                else {
+//                    if (quoteHardware.getStatus() == 0) { quoteHardware.setStatus((short) 5); };
                     quoteHardwareService.updateById(quoteHardware);
                 }
             }
@@ -193,7 +196,8 @@ public class AdminQuoteBillService {
                 else if(quoteRubber.getDeleted()){
                     quoteRubberService.deleteById(quoteRubber.getId());
                 }
-                else if(quoteRubber.getUpdateTime() == null){
+                else {
+//                    if (quoteRubber.getStatus() == 0) { quoteRubber.setStatus((short) 5); };
                     quoteRubberService.updateById(quoteRubber);
                 }
             }
@@ -226,8 +230,9 @@ public class AdminQuoteBillService {
         if (modelId == 4) {
             LitemallQuoteDieCasting[] quoteDieCastings = quoteinone.getQuoteDieCasting();
             for (LitemallQuoteDieCasting quoteDieCasting : quoteDieCastings) {
-                if (quoteDieCasting.getProcessingCharge().compareTo(a) == 1  && quoteDieCasting.getStatus()!=2) {
-                    if (quoteDieCasting.getStatus() == 8) {
+//                quoteDieCasting.getProcessingCharge().compareTo(a) == 1  &&
+                if (quoteDieCasting.getStatus()!=2) {
+                    if (quoteDieCasting.getStatus() == 8 || quoteDieCasting.getStatus() == 9) {
                         quoteDieCasting.setStatus((short) 9);
                     } else { quoteDieCasting.setStatus((short) 5); }
                     quoteDieCastingService.updateById(quoteDieCasting);
@@ -237,8 +242,9 @@ public class AdminQuoteBillService {
         if (modelId == 6) {
             LitemallQuoteElectronic[] quoteElectronics = quoteinone.getQuoteElectronic();
             for (LitemallQuoteElectronic quoteElectronic : quoteElectronics) {
-                if (quoteElectronic.getPrice().compareTo(a) == 1 && quoteElectronic.getStatus()!=2) {
-                    if (quoteElectronic.getStatus() == 8) {
+//                quoteElectronic.getPrice().compareTo(a) == 1 &&
+                if (quoteElectronic.getStatus()!=2) {
+                    if (quoteElectronic.getStatus() == 8 || quoteElectronic.getStatus() == 9) {
                         quoteElectronic.setStatus((short) 9);
                     } else { quoteElectronic.setStatus((short) 5); }
                     quoteElectronicService.updateById(quoteElectronic);
@@ -248,8 +254,9 @@ public class AdminQuoteBillService {
         if (modelId == 5) {
             LitemallQuoteHardware[] quoteHardwares = quoteinone.getQuoteHardware();
             for (LitemallQuoteHardware quoteHardware : quoteHardwares) {
-               if (quoteHardware.getPrice().compareTo(a) == 1 && quoteHardware.getStatus()!=2) {
-                   if (quoteHardware.getStatus() == 8) {
+//                quoteHardware.getPrice().compareTo(a) == 1 &&
+                if (quoteHardware.getStatus()!=2) {
+                   if (quoteHardware.getStatus() == 8 || quoteHardware.getStatus() == 9) {
                        quoteHardware.setStatus((short) 9);
                    } else { quoteHardware.setStatus((short) 5); }
                    quoteHardwareService.updateById(quoteHardware);
@@ -259,8 +266,9 @@ public class AdminQuoteBillService {
         if (modelId == 3) {
             LitemallQuoteRubber[] quoteRubbers = quoteinone.getQuoteRubber();
             for (LitemallQuoteRubber quoteRubber : quoteRubbers) {
-              if (quoteRubber.getMouldCharge().compareTo(a) == 1 && quoteRubber.getStatus()!=2) {
-                  if (quoteRubber.getStatus() == 8) {
+//                quoteRubber.getMouldCharge().compareTo(a) == 1 &&
+                if (quoteRubber.getStatus()!=2) {
+                  if (quoteRubber.getStatus() == 8 || quoteRubber.getStatus() == 9) {
                       quoteRubber.setStatus((short) 9);
                   } else { quoteRubber.setStatus((short) 5); }
                   quoteRubberService.updateById(quoteRubber);
@@ -381,6 +389,9 @@ public class AdminQuoteBillService {
                     quoteModel.put("size", role.getSize());
                     quoteModel.put("isDuty", role.getIsDuty());
                     quoteModel.put("isCeo", role.getIsCeo());
+                    quoteModel.put("isNew", role.getIsNew());
+                    quoteModel.put("isHistory", role.getIsHistory());
+                    quoteModel.put("updateTime", role.getUpdateTime());
                     quoteModel.put("weight", role.getWeight());
                     quoteModel.put("quantityYear", role.getQuantityYear());
                     quoteModel.put("moldNumber", role.getMoldNumber());
@@ -435,6 +446,9 @@ public class AdminQuoteBillService {
                     quoteModel.put("spec", role.getSpec());
                     quoteModel.put("isDuty", role.getIsDuty());
                     quoteModel.put("isCeo", role.getIsCeo());
+                    quoteModel.put("isNew", role.getIsNew());
+                    quoteModel.put("isHistory", role.getIsHistory());
+                    quoteModel.put("updateTime", role.getUpdateTime());
                     quoteModel.put("quantityYear", role.getQuantityYear());
                     quoteModel.put("price", role.getPrice());
                     quoteModel.put("delivery", role.getDelivery());
@@ -488,9 +502,14 @@ public class AdminQuoteBillService {
                     quoteModel.put("processingCharge", role.getProcessingCharge());
                     quoteModel.put("electroplateCharge", role.getElectroplateCharge());
                     quoteModel.put("otherCharge", role.getOtherCharge());
+                    quoteModel.put("material", role.getMaterial());
+                    quoteModel.put("quantityYear", role.getQuantityYear());
                     quoteModel.put("price", role.getPrice());
                     quoteModel.put("isDuty", role.getIsDuty());
                     quoteModel.put("isCeo", role.getIsCeo());
+                    quoteModel.put("isNew", role.getIsNew());
+                    quoteModel.put("isHistory", role.getIsHistory());
+                    quoteModel.put("updateTime", role.getUpdateTime());
                     quoteModel.put("status", role.getStatus());
                     quoteModel.put("note", role.getNote());
                     quoteModel.put("appendix", role.getAppendix());
@@ -537,6 +556,9 @@ public class AdminQuoteBillService {
                     quoteModel.put("spec", role.getSpec());
                     quoteModel.put("isDuty", role.getIsDuty());
                     quoteModel.put("isCeo", role.getIsCeo());
+                    quoteModel.put("isNew", role.getIsNew());
+                    quoteModel.put("isHistory", role.getIsHistory());
+                    quoteModel.put("updateTime", role.getUpdateTime());
                     quoteModel.put("weight", role.getWeight());
                     quoteModel.put("material", role.getMaterial());
                     quoteModel.put("quantityYear", role.getQuantityYear());
@@ -601,6 +623,7 @@ public class AdminQuoteBillService {
             quoteModel.put("notice", role.getNotice());
             quoteModel.put("approveCode", role.getApproveCode());
             quoteModel.put("ceoCode", role.getCeoCode());
+            quoteModel.put("preApprove", role.getPreApprove());
             quoteModel.put("duty", role.getDuty());
             quoteModels.add(quoteModel);
         }
@@ -667,6 +690,9 @@ public class AdminQuoteBillService {
                         quoteModel.put("size", role.getSize());
                         quoteModel.put("isDuty", role.getIsDuty());
                         quoteModel.put("isCeo", role.getIsCeo());
+                        quoteModel.put("isNew", role.getIsNew());
+                        quoteModel.put("isHistory", role.getIsHistory());
+                        quoteModel.put("updateTime", role.getUpdateTime());
                         quoteModel.put("weight", role.getWeight());
                         quoteModel.put("quantityYear", role.getQuantityYear());
                         quoteModel.put("moldNumber", role.getMoldNumber());
@@ -723,6 +749,9 @@ public class AdminQuoteBillService {
                         quoteModel.put("spec", role.getSpec());
                         quoteModel.put("isDuty", role.getIsDuty());
                         quoteModel.put("isCeo", role.getIsCeo());
+                        quoteModel.put("isNew", role.getIsNew());
+                        quoteModel.put("isHistory", role.getIsHistory());
+                        quoteModel.put("updateTime", role.getUpdateTime());
                         quoteModel.put("quantityYear", role.getQuantityYear());
                         quoteModel.put("price", role.getPrice());
                         quoteModel.put("delivery", role.getDelivery());
@@ -780,9 +809,14 @@ public class AdminQuoteBillService {
                         quoteModel.put("processingCharge", role.getProcessingCharge());
                         quoteModel.put("electroplateCharge", role.getElectroplateCharge());
                         quoteModel.put("otherCharge", role.getOtherCharge());
+                        quoteModel.put("material", role.getMaterial());
+                        quoteModel.put("quantityYear", role.getQuantityYear());
                         quoteModel.put("price", role.getPrice());
                         quoteModel.put("isDuty", role.getIsDuty());
                         quoteModel.put("isCeo", role.getIsCeo());
+                        quoteModel.put("isNew", role.getIsNew());
+                        quoteModel.put("isHistory", role.getIsHistory());
+                        quoteModel.put("updateTime", role.getUpdateTime());
                         quoteModel.put("status", role.getStatus());
                         quoteModel.put("note", role.getNote());
                         quoteModel.put("appendix", role.getAppendix());
@@ -824,6 +858,9 @@ public class AdminQuoteBillService {
                         quoteModel.put("spec", role.getSpec());
                         quoteModel.put("isDuty", role.getIsDuty());
                         quoteModel.put("isCeo", role.getIsCeo());
+                        quoteModel.put("isNew", role.getIsNew());
+                        quoteModel.put("isHistory", role.getIsHistory());
+                        quoteModel.put("updateTime", role.getUpdateTime());
                         quoteModel.put("weight", role.getWeight());
                         quoteModel.put("material", role.getMaterial());
                         quoteModel.put("quantityYear", role.getQuantityYear());
@@ -886,6 +923,7 @@ public class AdminQuoteBillService {
             quoteModel.put("supply", role.getCode());
             quoteModel.put("notice", role.getNotice());
             quoteModel.put("approveCode", role.getApproveCode());
+            quoteModel.put("preApprove", role.getPreApprove());
             quoteModel.put("ceoCode", role.getCeoCode());
             quoteModel.put("duty", role.getDuty());
             quoteModels.add(quoteModel);
@@ -938,6 +976,9 @@ public class AdminQuoteBillService {
                     quoteModel.put("size", role.getSize());
                     quoteModel.put("isDuty", role.getIsDuty());
                     quoteModel.put("isCeo", role.getIsCeo());
+                    quoteModel.put("isNew", role.getIsNew());
+                    quoteModel.put("isHistory", role.getIsHistory());
+                    quoteModel.put("updateTime", role.getUpdateTime());
                     quoteModel.put("weight", role.getWeight());
                     quoteModel.put("quantityYear", role.getQuantityYear());
                     quoteModel.put("moldNumber", role.getMoldNumber());
@@ -994,6 +1035,9 @@ public class AdminQuoteBillService {
                     quoteModel.put("spec", role.getSpec());
                     quoteModel.put("isDuty", role.getIsDuty());
                     quoteModel.put("isCeo", role.getIsCeo());
+                    quoteModel.put("isNew", role.getIsNew());
+                    quoteModel.put("isHistory", role.getIsHistory());
+                    quoteModel.put("updateTime", role.getUpdateTime());
                     quoteModel.put("quantityYear", role.getQuantityYear());
                     quoteModel.put("price", role.getPrice());
                     quoteModel.put("delivery", role.getDelivery());
@@ -1053,9 +1097,14 @@ public class AdminQuoteBillService {
                     quoteModel.put("processingCharge", role.getProcessingCharge());
                     quoteModel.put("electroplateCharge", role.getElectroplateCharge());
                     quoteModel.put("otherCharge", role.getOtherCharge());
+                    quoteModel.put("material", role.getMaterial());
+                    quoteModel.put("quantityYear", role.getQuantityYear());
                     quoteModel.put("price", role.getPrice());
                     quoteModel.put("isDuty", role.getIsDuty());
                     quoteModel.put("isCeo", role.getIsCeo());
+                    quoteModel.put("isNew", role.getIsNew());
+                    quoteModel.put("isHistory", role.getIsHistory());
+                    quoteModel.put("updateTime", role.getUpdateTime());
                     quoteModel.put("status", role.getStatus());
                     quoteModel.put("note", role.getNote());
                     quoteModel.put("appendix", role.getAppendix());
@@ -1097,6 +1146,9 @@ public class AdminQuoteBillService {
                     quoteModel.put("spec", role.getSpec());
                     quoteModel.put("isDuty", role.getIsDuty());
                     quoteModel.put("isCeo", role.getIsCeo());
+                    quoteModel.put("isNew", role.getIsNew());
+                    quoteModel.put("isHistory", role.getIsHistory());
+                    quoteModel.put("updateTime", role.getUpdateTime());
                     quoteModel.put("weight", role.getWeight());
                     quoteModel.put("material", role.getMaterial());
                     quoteModel.put("quantityYear", role.getQuantityYear());
@@ -1157,6 +1209,7 @@ public class AdminQuoteBillService {
             quoteModel.put("supply", role.getCode());
             quoteModel.put("notice", role.getNotice());
             quoteModel.put("approveCode", role.getApproveCode());
+            quoteModel.put("preApprove", role.getPreApprove());
             quoteModel.put("ceoCode", role.getCeoCode());
             quoteModel.put("duty", role.getDuty());
             quoteModels.add(quoteModel);

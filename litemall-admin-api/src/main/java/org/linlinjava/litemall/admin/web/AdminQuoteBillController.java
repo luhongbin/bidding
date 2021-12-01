@@ -86,46 +86,7 @@ public class AdminQuoteBillController {
         LitemallAdmin adminList = (LitemallAdmin) SecurityUtils.getSubject().getPrincipal();
 //        System.out.println(start);
         Integer adminId = adminList.getId();
-        List<LitemallQuoteBill> roleList = quoteBillService.querySelective(id,adminId, dutyid, start, end, status,page, limit, sort, order);
-
-        Map<String, Object> data = new HashMap<String, Object>();
-        data.put("list", ResponseUtil.okList(roleList));
-
-        LitemallAdmin admin = (LitemallAdmin) SecurityUtils.getSubject().getPrincipal();
-
-        List<LitemallAdmin> roleist = adminService.queryAll();
-        List<Map<String, Object>> options = new ArrayList<>(roleist.size());
-        for (LitemallAdmin role : roleist) {
-            Map<String, Object> option = new HashMap<>();
-            option.put("value", role.getId());
-            option.put("label", role.getNickname());
-            option.put("username", role.getUsername());
-            option.put("dept", role.getDept());
-            option.put("deptname", role.getDept()+':'+role.getNickname()+':'+role.getId());
-            option.put("dd", role.getUsername());
-            option.put("jobNumber", role.getJobnumber());
-            option.put("capacity", role.getCapacity());
-            options.add(option);
-        }
-
-        List<LitemallQuoteModel> rolist = quoteModelService.queryAll();
-        List<Map<String, Object>> quoteModels = new ArrayList<>(rolist.size());
-        for (LitemallQuoteModel role : rolist) {
-            Map<String, Object> quoteModel = new HashMap<>();
-            quoteModel.put("value", role.getId());
-            quoteModel.put("label", role.getName()+':'+role.getVersion());
-            quoteModel.put("supply", role.getCode());
-            quoteModel.put("notice", role.getNotice());
-            quoteModel.put("approveCode", role.getApproveCode());
-            quoteModel.put("ceoCode", role.getCeoCode());
-            quoteModel.put("duty", role.getDuty());
-            quoteModels.add(quoteModel);
-        }
-
-        data.put("currentUser", admin);
-        data.put("optionsAdmin", options);
-        data.put("quoteModel", quoteModels);
-        return ResponseUtil.ok(data);
+        return getList(id, adminId, dutyid, start, end, status,page, limit, sort, order);
     }
 
     @GetMapping("/listSupply")
@@ -134,45 +95,44 @@ public class AdminQuoteBillController {
                              @RequestParam(defaultValue = "10") Integer limit,
                              @Sort @RequestParam(defaultValue = "add_time") String sort,
                              @Order @RequestParam(defaultValue = "desc") String order) {
-        if (name == null || name.isEmpty()) { name = "1"; }
+//        if (name == null || name.isEmpty()) { name = "1"; }
         List<Map<String, Object>> data = new ArrayList<>();
-        System.out.println(name);
+//        System.out.println(name);
         List logLists  = T100Service.querySupply(name,page, limit, sort, order);
-        List logListtot  = T100Service.queryTotalSupply(name);
-        String total1 = "";
-        for(int i=0; i<logListtot.size(); i++) {
-            Map userMap= (Map) logListtot.get(i);
-            total1 = userMap.get("total").toString();
-        }
+//        List logListtot  = T100Service.queryTotalSupply(name);
+//        String total1 = "";
+//        for(int i=0; i<logListtot.size(); i++) {
+//            Map userMap= (Map) logListtot.get(i);
+//            total1 = userMap.get("total").toString();
+//        }
         for(int i=0; i<logLists.size(); i++) {
             Map<String, Object> adminnames = new HashMap<>();
             Map userMap= (Map) logLists.get(i);
-            System.out.println(userMap.get("pmaal004"));
-            String phone = (String) userMap.get("oofc012");
+
+
             String simname = (String) userMap.get("pmaal004");
-            String classid = (String) userMap.get("pmaa084");
+            String classid = (String) userMap.get("pmab030");
             String code = (String) userMap.get("pmaa001");
 
-            List<LitemallAdmin> adminList = AdminService.findPhone(phone);
+            List<LitemallAdmin> adminList = AdminService.findJobnumber(code);
             LitemallAdmin adminInfo = new LitemallAdmin();
 
             for (LitemallAdmin admin : adminList) {
-                System.out.println(admin.getMobile());
+//                System.out.println(admin.getMobile());
 //                System.out.println(phone);
 //                System.out.println(classid+"类供应商["+simname+"]");
-
-                adminInfo.setId(admin.getId());
-                adminInfo.setJobnumber(code);
+              adminInfo.setId(admin.getId());
+              adminInfo.setJobnumber(code);
 //                    adminInfo.setDept(logList.getImaal003());
-                adminInfo.setCapacity(classid+"类供应商["+simname+"]");
-                AdminService.updateById(adminInfo);
-                adminnames.put("phone", phone);
-                adminnames.put("nickname", admin.getNickname());
-                adminnames.put("name", simname);
-                adminnames.put("note", classid+"类供应商["+simname+"]");
-                adminnames.put("id", admin.getId());
-                adminnames.put("total", total1);
-                data.add(adminnames);
+              adminInfo.setCapacity(classid + "类供应商[" + simname + "]");
+              AdminService.updateById(adminInfo);
+              adminnames.put("phone", admin.getMobile());
+              adminnames.put("nickname", admin.getNickname());
+              adminnames.put("name", simname);
+              adminnames.put("note", classid + "类供应商[" + simname + "]");
+              adminnames.put("id", admin.getId());
+//                adminnames.put("total", total1);
+              data.add(adminnames);
             }
         }
 
@@ -214,47 +174,7 @@ public class AdminQuoteBillController {
                        @RequestParam(defaultValue = "10") Integer limit,
                        @Sort @RequestParam(defaultValue = "add_time") String sort,
                        @Order @RequestParam(defaultValue = "desc") String order) {
-
-        List<LitemallQuoteBill> roleList = quoteBillService.querySelective(id, adminid, dutyid, start, end, status,page, limit, sort, order);
-
-        Map<String, Object> data = new HashMap<String, Object>();
-        data.put("list", ResponseUtil.okList(roleList));
-
-        LitemallAdmin admin = (LitemallAdmin) SecurityUtils.getSubject().getPrincipal();
-
-        List<LitemallAdmin> adminlist = adminService.queryAll();
-        List<Map<String, Object>> adminlists = new ArrayList<>(adminlist.size());
-        for (LitemallAdmin adminname : adminlist) {
-            Map<String, Object> adminnames = new HashMap<>();
-            adminnames.put("value", adminname.getId());
-            adminnames.put("label", adminname.getNickname());
-            adminnames.put("username", adminname.getUsername());
-            adminnames.put("dept", adminname.getDept());
-            adminnames.put("deptname", adminname.getDept()+':'+adminname.getNickname()+':'+adminname.getId());
-            adminnames.put("dd", adminname.getUsername());
-            adminnames.put("jobNumber", adminname.getJobnumber());
-            adminnames.put("capacity", adminname.getCapacity());
-            adminlists.add(adminnames);
-        }
-
-        List<LitemallQuoteModel> rolist = quoteModelService.queryAll();
-        List<Map<String, Object>> quoteModels = new ArrayList<>(rolist.size());
-        for (LitemallQuoteModel role : rolist) {
-            Map<String, Object> quoteModel = new HashMap<>();
-            quoteModel.put("value", role.getId());
-            quoteModel.put("label", role.getName()+':'+role.getVersion());
-            quoteModel.put("supply", role.getCode());
-            quoteModel.put("notice", role.getNotice());
-            quoteModel.put("approveCode", role.getApproveCode());
-            quoteModel.put("ceoCode", role.getCeoCode());
-            quoteModel.put("duty", role.getDuty());
-            quoteModels.add(quoteModel);
-        }
-
-        data.put("currentUser", admin);
-        data.put("optionsAdmin", adminlists);
-        data.put("quoteModel", quoteModels);
-        return ResponseUtil.ok(data);
+        return getList(id, adminid, dutyid, start, end, status,page, limit, sort, order);
     }
 
     @RequiresPermissions("admin:quoteBill:listBrowser")
@@ -294,8 +214,8 @@ public class AdminQuoteBillController {
         return adminQuoteBillService.update(quoteinone);
     }
 
-    @RequiresPermissions("admin:quoteBill:submit")
-    @RequiresPermissionsDesc(menu = {"采购管理", "询价单制作审批"}, button = "详情及审批")
+//    @RequiresPermissions("admin:quoteBill:submit")
+//    @RequiresPermissionsDesc(menu = {"采购管理", "询价单制作审批"}, button = "详情及审批")
     @PostMapping("/submit")
     public Object submit(@RequestBody String body) { return adminQuoteService.submitById(body);}
 //
@@ -403,6 +323,50 @@ public class AdminQuoteBillController {
 //        return ResponseUtil.ok(approveInfo);
 //    }
 
+    public Object getList(Integer id, Integer adminid, Integer dutyid,LocalDateTime start, LocalDateTime end, List<Short>  status,Integer page,Integer limit, String sort, String order) {
+
+        List<LitemallQuoteBill> roleList = quoteBillService.querySelective(id, adminid, dutyid, start, end, status,page, limit, sort, order);
+
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("list", ResponseUtil.okList(roleList));
+//        System.out.println(ResponseUtil.okList(roleList));
+
+        LitemallAdmin admin = (LitemallAdmin) SecurityUtils.getSubject().getPrincipal();
+
+        List<LitemallAdmin> adminlist = adminService.queryAll();
+        List<Map<String, Object>> adminlists = new ArrayList<>(adminlist.size());
+        for (LitemallAdmin adminname : adminlist) {
+            Map<String, Object> adminnames = new HashMap<>();
+            adminnames.put("value", adminname.getId());
+            adminnames.put("label", adminname.getNickname());
+            adminnames.put("username", adminname.getUsername());
+            adminnames.put("dept", adminname.getDept());
+            adminnames.put("deptname", adminname.getDept()+':'+adminname.getNickname()+':'+adminname.getId());
+            adminnames.put("dd", adminname.getUsername());
+            adminnames.put("jobNumber", adminname.getJobnumber());
+            adminnames.put("capacity", adminname.getCapacity());
+            adminlists.add(adminnames);
+        }
+
+        List<LitemallQuoteModel> rolist = quoteModelService.queryAll();
+        List<Map<String, Object>> quoteModels = new ArrayList<>(rolist.size());
+        for (LitemallQuoteModel role : rolist) {
+            Map<String, Object> quoteModel = new HashMap<>();
+            quoteModel.put("value", role.getId());
+            quoteModel.put("label", role.getName()+':'+role.getVersion());
+            quoteModel.put("supply", role.getCode());
+            quoteModel.put("notice", role.getNotice());
+            quoteModel.put("approveCode", role.getApproveCode());
+            quoteModel.put("ceoCode", role.getCeoCode());
+            quoteModel.put("duty", role.getDuty());
+            quoteModels.add(quoteModel);
+        }
+
+        data.put("currentUser", admin);
+        data.put("optionsAdmin", adminlists);
+        data.put("quoteModel", quoteModels);
+        return ResponseUtil.ok(data);
+    }
 
 }
 

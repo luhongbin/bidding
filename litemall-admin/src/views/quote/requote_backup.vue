@@ -70,7 +70,7 @@
             <span>(类型) {{ formatModel(quote.modelName) }}</span>
             <el-button v-if="quote.quoteModelExcel !== undefined && quote.quoteModelExcel !== null" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(quote.quoteModelExcel,'询价ID'+quote.id.toString()+'.xlsx')">下载</el-button>
           </el-form-item>
-          <el-form-item label="询价概要">
+          <el-form-item label="询价主题">
             <span>{{ quote.purchaserNote }}</span>
           </el-form-item>
         </el-form>
@@ -135,16 +135,16 @@
       <el-form ref="dataForm" :rules="rules" :model="dataForm" status-icon label-position="left" label-width="200px">
         <el-card class="box-card">
           <el-form-item v-if="dataForm.requoteExcel !== '' && dataForm.requoteExcel !== null" label="上传报价单" prop="requoteExcel">
-            <el-upload :headers="headers" :limit="1" :action="uploadPath" :on-success="uploadUrl" :file-list="fileList" :before-upload="checkFileSize" accept=".xlsx">
+            <el-upload :headers="headers" :limit="1" :action="uploadPath" :on-success="uploadUrl" :file-list="fileList" :before-upload="checkFileSize">
               <el-button style="margin-left: 10px;" size="small" type="success">重新询价单</el-button>
-              <div slot="tip" class="el-upload__tip">只能上传一个xlsx文件，且不超过20M</div>
+              <div slot="tip" class="el-upload__tip">只能上传一个,不超过20M</div>
             </el-upload>
           </el-form-item>
 
           <el-form-item v-if="dataForm.requoteExcel === '' || dataForm.requoteExcel === null" label="上传报价单" prop="requoteExcel">
-            <el-upload :headers="headers" :limit="1" :action="uploadPath" :on-success="uploadUrl" :file-list="fileList" :before-upload="checkFileSize" accept=".xlsx">
+            <el-upload :headers="headers" :limit="1" :action="uploadPath" :on-success="uploadUrl" :file-list="fileList" :before-upload="checkFileSize">
               <el-button style="margin-left: 10px;" size="small" type="success">开始上传</el-button>
-              <div slot="tip" class="el-upload__tip">只能上传一个xlsx文件，且不超过20M</div>
+              <div slot="tip" class="el-upload__tip">只能上传一个,不超过20M</div>
             </el-upload>
           </el-form-item>
         </el-card>
@@ -158,7 +158,7 @@
         <h4>询价信息</h4>
         <el-form ref="quote" :model="quote" status-icon label-position="left" label-width="100px">
           detailEdit
-          <el-form-item label="询价概要">
+          <el-form-item label="询价主题">
             <span>{{ quote.purchaserNote }}</span>
           </el-form-item>
         </el-form>

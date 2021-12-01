@@ -13,7 +13,7 @@
       <el-form-item label="报价截止时间">
         <span>{{ quote.submitDate }}</span>
       </el-form-item>
-      <el-form-item label="询价概要">
+      <el-form-item label="询价主题">
         <span>{{ quote.purchaserNote }}</span>
       </el-form-item>
       <el-form-item label="单据类型">

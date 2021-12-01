@@ -11,7 +11,6 @@ import org.linlinjava.litemall.core.validator.Sort;
 import org.linlinjava.litemall.db.domain.LitemallStorage;
 import org.linlinjava.litemall.db.service.LitemallStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -44,8 +43,8 @@ public class AdminStorageController {
         return ResponseUtil.okList(storageList);
     }
 
-    @RequiresPermissions("admin:storage:create")
-    @RequiresPermissionsDesc(menu = {"系统管理", "对象存储"}, button = "上传")
+//    @RequiresPermissions("admin:storage:create")
+//    @RequiresPermissionsDesc(menu = {"系统管理", "对象存储"}, button = "上传")
     @PostMapping("/create")
     public Object create(@RequestParam("file") MultipartFile file) throws IOException {
         String originalFilename = file.getOriginalFilename();
@@ -54,11 +53,19 @@ public class AdminStorageController {
         return ResponseUtil.ok(litemallStorage);
     }
 
-    @RequiresPermissions("admin:storage:read")
-    @RequiresPermissionsDesc(menu = {"系统管理", "对象存储"}, button = "详情")
-    @PostMapping("/read")
-    public Object read(@NotNull Integer id) {
+//    @RequiresPermissions("admin:storage:read")
+//    @RequiresPermissionsDesc(menu = {"系统管理", "对象存储"}, button = "详情")
+    @PostMapping("/readId")
+    public Object readId(@NotNull Integer id) {
         LitemallStorage storageInfo = litemallStorageService.findById(id);
+        if (storageInfo == null) {
+            return ResponseUtil.badArgumentValue();
+        }
+        return ResponseUtil.ok(storageInfo);
+    }
+    @PostMapping("/readKey")
+    public Object readKey(String url) {
+        LitemallStorage storageInfo = litemallStorageService.findByKey(url);
         if (storageInfo == null) {
             return ResponseUtil.badArgumentValue();
         }

@@ -86,8 +86,8 @@ public class AdminQuoteModelController {
         return ResponseUtil.ok(quoteModel);
     }
 
-    @RequiresPermissions("admin:quoteModel:read")
-    @RequiresPermissionsDesc(menu = {"配置管理", "询价单模板配置"}, button = "详情")
+//    @RequiresPermissions("admin:quoteModel:read")
+//    @RequiresPermissionsDesc(menu = {"配置管理", "询价单模板配置"}, button = "详情")
     @GetMapping("/read")
     public Object read(@NotNull Integer id) {
         LitemallQuoteModel quoteModel = quoteModelService.findById(id);

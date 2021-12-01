@@ -82,7 +82,7 @@
           <el-input v-model="dataForm.version" maxlength="10" /><span class="info">同样的类别存在不同样式单可能，用版本分开</span>
         </el-form-item>
         <el-form-item label="excel源文件" prop="excel">
-          <el-upload :headers="headers" :limit="1" :action="uploadPath" :on-success="uploadUrl" :file-list="fileList" :before-upload="checkFileSize" accept=".xlsx">
+          <el-upload :headers="headers" :limit="1" :action="uploadPath" :on-success="uploadUrl" :file-list="fileList" :before-upload="checkFileSize">
             <el-button style="margin-left: 10px;" size="small" type="success">上传到服务器</el-button>
             <div slot="tip" class="el-upload__tip">xlsx/xls文件，且不超过5M</div>
           </el-upload>

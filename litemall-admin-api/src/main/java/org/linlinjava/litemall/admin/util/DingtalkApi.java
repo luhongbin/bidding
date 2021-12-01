@@ -22,12 +22,42 @@ import java.util.Map;
 
 public class DingtalkApi {
 
-    public static String WEBHOOK_TOKEN = "https://oapi.dingtalk.com/robot/send?access_token=";
+    public static String WEBHOOK_TOKEN = "https://oapi.dingtalk.com/robot/send?access_token=45560b7a340db69b4aedee8d4508fce642fb3a04e6735fdc285c345d19fcf285";
     public static String MESSAGEHOOK_TOKEN = "https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2?access_token=";
-    public static final String GET_ACCESS_TOKEN_URL = "https://oapi.dingtalk.com/gettoken?appkey=&appsecret=-";
+    public static final String GET_ACCESS_TOKEN_URL = "https://oapi.dingtalk.com/gettoken?appkey=dingtxmp9bvomxhtvj8q&appsecret=NhhTE2Timl4cB0_gGiTQU0fEkFWXZjG6eJMG-2zVZmdQrp4YRXN6f4bXscN0t07g";
     public static String url_post_file = "https://oapi.dingtalk.com/media/upload?access_token=";
-    public static String down_load_url = "https://oapi.dingtalk.com/robot/send?access_token=";
+    public static String down_load_url = "https://oapi.dingtalk.com/robot/send?access_token=45560b7a340db69b4aedee8d4508fce642fb3a04e6735fdc285c345d19fcf285";
+    public static String getUserInfo_url = "https://oapi.dingtalk.com/user/get?access_token=%s&userid=%s";
+    public static String getDeptInfo_url = "https://oapi.dingtalk.com/department/get?access_token=%s&id=%d";
 
+    public static String getDeptInfo(Integer Id) throws Exception {
+        HttpClient httpclient = HttpClients.createDefault();
+        String url = String.format(getDeptInfo_url,DingtalkApi.gettoken(), Id);
+        HttpGet httpget = new HttpGet(url);
+        httpget.addHeader("Content-Type", "application/json; charset=utf-8");
+
+        HttpResponse response = httpclient.execute(httpget);
+        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            String result = EntityUtils.toString(response.getEntity(), "utf-8");
+//            System.out.println(result);
+            return result;
+        }
+        return url;
+    }
+    public static String getUserInfo(String userId) throws Exception {
+        HttpClient httpclient = HttpClients.createDefault();
+        String url = String.format(getUserInfo_url,DingtalkApi.gettoken(), userId);
+        HttpGet httpget = new HttpGet(url);
+        httpget.addHeader("Content-Type", "application/json; charset=utf-8");
+
+        HttpResponse response = httpclient.execute(httpget);
+        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            String result = EntityUtils.toString(response.getEntity(), "utf-8");
+//            System.out.println(result);
+            return result;
+        }
+        return url;
+    }
     public static void robotSend(String textMsg) throws Exception {
         HttpClient httpclient = HttpClients.createDefault();
         HttpPost httppost = new HttpPost(WEBHOOK_TOKEN);
@@ -38,7 +68,7 @@ public class DingtalkApi {
         HttpResponse response = httpclient.execute(httppost);
         if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
             String result = EntityUtils.toString(response.getEntity(), "utf-8");
-            System.out.println(result);
+//            System.out.println(result);
         }
     }
 
@@ -72,7 +102,7 @@ public class DingtalkApi {
         Header header=responseEntity.getContentType();
         //打印内容
         String sResponse= EntityUtils.toString(responseEntity, "UTF-8");//5、获取网页内容，并且指定编码 multipart/form-data
-        System.out.println("Post 返回结果"+sResponse);
+//        System.out.println("Post 返回结果"+sResponse);
 
         Gson gs = new Gson();
         Map<String,String> map = gs.fromJson(sResponse, Map.class);
@@ -104,10 +134,10 @@ public class DingtalkApi {
         HttpResponse response = httpclient.execute(httpget);
         if (response.getStatusLine().getStatusCode()== HttpStatus.SC_OK) {
             String result= EntityUtils.toString(response.getEntity(),"utf-8");
-            System.out.println(result);
+//            System.out.println(result);
             Gson gs = new Gson();
             Map<String,String> map = gs.fromJson(result, Map.class);
-            System.out.println(map.get("access_token"));
+//            System.out.println(map.get("access_token"));
             return map.get("access_token");
         }
         return null;
@@ -120,10 +150,10 @@ public class DingtalkApi {
         HttpResponse response = httpclient.execute(httpget);
         if (response.getStatusLine().getStatusCode()== HttpStatus.SC_OK) {
             String result= EntityUtils.toString(response.getEntity(),"utf-8");
-            System.out.println(result);
+//            System.out.println(result);
             Gson gs = new Gson();
             Map<String,String> map = gs.fromJson(result, Map.class);
-            System.out.println(map.get("access_token"));
+//            System.out.println(map.get("access_token"));
             return map.get("access_token");
         }
         return null;

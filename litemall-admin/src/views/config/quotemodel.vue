@@ -28,6 +28,11 @@
           <el-tag v-for="roleId in scope.row.code" :key="roleId" type="primary" style="margin-right: 20px;"> {{ formatRole(roleId) }} </el-tag>
         </template>
       </el-table-column>
+      <el-table-column align="center" label="预审人员" prop="preApprove">
+        <template slot-scope="scope">
+          <el-tag v-for="roleId in scope.row.preApprove" :key="roleId" type="primary" style="margin-right: 20px;"> {{ formatRole(roleId) }} </el-tag>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="终审负责人" prop="ceoCode">
         <template slot-scope="scope">
           <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.ceoCode) }} </el-tag>

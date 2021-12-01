@@ -19,7 +19,7 @@
       <el-tab-pane label="压铸模具类" name="yz" />
     </el-tabs>
     <!-- 查询结果 -->
-    <el-dialog :visible.sync="DialogVisiable" title="询价单明细">
+    <el-dialog :visible.sync="DialogVisiable" title="查看备注">
       <el-form status-icon label-position="left" style="margin-left:0px;">
         <el-form-item>
           <editor v-model="goodsDetail" :init="editorInit" />
@@ -57,7 +57,7 @@
               </el-form-item>
               <el-form-item v-if="props.row.requoteExcel !== undefined && props.row.requoteExcel !== null && props.row.requoteExcel !== ''" label="报价单附件">
                 <template slot-scope="scope">
-                  <el-button size="mini" type="info" icon="el-icon-download" plain @click="openExcel(scope.row.requoteExcel,'报价单ID' + (scope.row.quoteId).toString() + '.xlsx')">下载</el-button>
+                  <el-button size="mini" type="info" icon="el-icon-download" plain @click="openExcel(scope.row.requoteExcel,'报价单ID' + (scope.row.quoteId).toString())">下载</el-button>
                 </template>
               </el-form-item>
               <el-form-item>
@@ -96,7 +96,7 @@
         <el-table-column property="mouldCharge" label="模具费" />
 <!--        <el-table-column align="center" label="备注" prop="id">-->
 <!--          <template slot-scope="scope">-->
-<!--            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>-->
+<!--            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看备注</el-button>-->
 <!--          </template>-->
 <!--        </el-table-column>-->
       </el-table>
@@ -128,7 +128,7 @@
               </el-form-item>
               <el-form-item v-if="props.row.requoteExcel !== undefined && props.row.requoteExcel !== null && props.row.requoteExcel !== ''" label="报价单附件">
                 <template slot-scope="scope">
-                  <el-button size="mini" type="info" icon="el-icon-download" plain @click="openExcel(scope.row.requoteExcel,'报价单ID' + (scope.row.quoteId).toString() + '.xlsx')">下载</el-button>
+                  <el-button size="mini" type="info" icon="el-icon-download" plain @click="openExcel(scope.row.requoteExcel,'报价单ID' + (scope.row.quoteId).toString() )">下载</el-button>
                 </template>
               </el-form-item>
               <el-form-item>
@@ -163,7 +163,7 @@
         <el-table-column property="certificate" label="证书情况" />
 <!--        <el-table-column align="center" label="备注" prop="id">-->
 <!--          <template slot-scope="scope">-->
-<!--            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>-->
+<!--            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看备注</el-button>-->
 <!--          </template>-->
 <!--        </el-table-column>-->
       </el-table>
@@ -200,7 +200,7 @@
               </el-form-item>
               <el-form-item v-if="props.row.requoteExcel !== undefined && props.row.requoteExcel !== null && props.row.requoteExcel !== ''" label="报价单附件">
                 <template slot-scope="scope">
-                  <el-button size="mini" type="info" icon="el-icon-download" plain @click="openExcel(scope.row.requoteExcel,'报价单ID' + (scope.row.quoteId).toString() + '.xlsx')">下载</el-button>
+                  <el-button size="mini" type="info" icon="el-icon-download" plain @click="openExcel(scope.row.requoteExcel,'报价单ID' + (scope.row.quoteId).toString() )">下载</el-button>
                 </template>
               </el-form-item>
               <el-form-item>
@@ -238,7 +238,7 @@
         <el-table-column property="price" label="产品报价" />
 <!--        <el-table-column align="center" label="明细" prop="id">-->
 <!--          <template slot-scope="scope">-->
-<!--            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>-->
+<!--            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看备注</el-button>-->
 <!--          </template>-->
 <!--        </el-table-column>-->
       </el-table>
@@ -275,7 +275,7 @@
               </el-form-item>
               <el-form-item v-if="props.row.requoteExcel !== undefined && props.row.requoteExcel !== null && props.row.requoteExcel !== ''" label="报价单附件">
                 <template slot-scope="scope">
-                  <el-button size="mini" type="info" icon="el-icon-download" plain @click="openExcel(scope.row.requoteExcel,'报价单ID' + (scope.row.quoteId).toString() + '.xlsx')">下载</el-button>
+                  <el-button size="mini" type="info" icon="el-icon-download" plain @click="openExcel(scope.row.requoteExcel,'报价单ID' + (scope.row.quoteId).toString() )">下载</el-button>
                 </template>
               </el-form-item>
               <el-form-item>
@@ -312,7 +312,7 @@
         <el-table-column property="processingCharge" label="产品加工费" />
 <!--        <el-table-column align="center" label="备注" prop="id">-->
 <!--          <template slot-scope="scope">-->
-<!--            <el-button type="primary" size="mini" @click="showDetail(scope.appendix)">查看</el-button>-->
+<!--            <el-button type="primary" size="mini" @click="showDetail(scope.appendix)">查看备注</el-button>-->
 <!--          </template>-->
 <!--        </el-table-column>-->
       </el-table>
@@ -337,7 +337,7 @@
 </style>
 <script>
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination import { getToken } from '@/utils/auth'
-import { uploadPath } from '@/api/storage'
+import {readkey, uploadPath} from '@/api/storage'
 import { listBrowserOK, find, listBrowser, listBrowserCeo } from '@/api/quote'
 import { openExcel } from '@/utils/quoteSubmit'
 import { getToken } from '@/utils/auth'
@@ -354,12 +354,17 @@ const statusMap = {
   7: '重新提交',
   8: '重新提交完毕',
   9: '会审中',
-  10: '终止询价'
+  10: '终止询价',
+  11: '整单流标',
+  12: 'ceo退回负责人',
+  13: '通知预审人会签',
+  14: '预审供应商',
+  15: '预审后提交询价单'
 }
 const statusMap1 = {
   0: '询价',
   1: '签收',
-  2: '制作报价单',
+  2: '等待开标',
   3: '提交报价单',
   4: '取消报价',
   5: '报价',
@@ -688,7 +693,7 @@ export default {
       return ''
     },
     openExcel(url, name) {
-      openExcel(url, name)
+      readkey(url).then(response => { openExcel(url, name+'_'+ response.data.data.name) }).catch(response => { this.$notify.error({ title: '失败', message: response.data.errmsg }) })
     },
     handleFilter() {
       this.listQuery.page = 1

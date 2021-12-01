@@ -19,6 +19,12 @@
         <h3>塑料橡胶类商品信息</h3>
         <el-button type="primary" @click="rubberShowNew">新增</el-button>
         <el-table :data="detail">
+          <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
+            <template slot-scope="scope">
+              <el-button type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
+              <el-button type="danger" size="mini" @click="handleAttributeDelete(scope.row)">删除</el-button>
+            </template>
+          </el-table-column>
           <el-table-column property="id" label="单号" />
           <el-table-column property="code" label="品号" />
           <el-table-column property="name" label="品名" />
@@ -26,12 +32,6 @@
           <el-table-column property="material" label="材质" />
           <el-table-column property="weight" label="理论重量" />
           <el-table-column property="quantityYear" label="年预估量" />
-          <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
-            <template slot-scope="scope">
-              <el-button type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
-              <el-button type="danger" size="mini" @click="handleAttributeDelete(scope.row)">删除</el-button>
-            </template>
-          </el-table-column>
         </el-table>
 
         <el-dialog :visible.sync="rubberVisiable" :title="detailAdd ? '添加商品' : '编辑商品'">
@@ -45,17 +45,17 @@
               <el-input v-model="detailForm.material" class="input-width" />
             </el-form-item>
             <el-form-item label="理论重量" prop="weight">
-              <el-input v-model="detailForm.weight" type="number" class="input-width" @keydown="handleInput">
-                <template slot="append">Kg</template>
+              <el-input v-model="detailForm.weight" maxlength="10" type="number" class="input-width" @keydown="handleInput">
+                <template slot="append">g</template>
               </el-input>
             </el-form-item>
             <el-form-item label="年预估量" prop="quantityYear">
               <el-input v-model="detailForm.quantityYear" type="number" class="input-width" @keydown="handleInput">
-                <template slot="append">只</template>
+                <template slot="append">万PCS</template>
               </el-input>
             </el-form-item>
             <el-form-item label="备注">
-              <editor v-model="detailForm.appendix" :init="editorInit" />
+              <editor v-model="detailForm.appendix" v-if="editDisplay" :init="editorInit"/>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -69,17 +69,17 @@
         <h3>电子电器类商品信息</h3>
         <el-button type="primary" @click="rubberShowNew">添加</el-button>
         <el-table :data="detail">
-          <el-table-column property="id" label="单号" />
-          <el-table-column property="code" label="品号" />
-          <el-table-column property="name" label="品名" />
-          <el-table-column property="spec" label="规格" />
-          <el-table-column property="quantityYear" label="年预估量" />
           <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
               <el-button type="danger" size="mini" @click="handleAttributeDelete(scope.row)">删除</el-button>
             </template>
           </el-table-column>
+          <el-table-column property="id" label="单号" />
+          <el-table-column property="code" label="品号" />
+          <el-table-column property="name" label="品名" />
+          <el-table-column property="spec" label="规格" />
+          <el-table-column property="quantityYear" label="年预估量" />
         </el-table>
 
         <el-dialog :visible.sync="electronicVisiable" :title="detailAdd ? '添加商品' : '编辑商品'">
@@ -95,7 +95,7 @@
               </el-input>
             </el-form-item>
             <el-form-item label="明细">
-              <editor v-model="detailForm.appendix" :init="editorInit" />
+              <editor v-model="detailForm.appendix" v-if="editDisplay" :init="editorInit"/>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -109,6 +109,12 @@
         <h3>五金类商品信息</h3>
         <el-button type="primary" @click="rubberShowNew">添加</el-button>
         <el-table :data="detail">
+          <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
+            <template slot-scope="scope">
+              <el-button type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
+              <el-button type="danger" size="mini" @click="handleAttributeDelete(scope.row)">删除</el-button>
+            </template>
+          </el-table-column>
           <el-table-column property="id" label="单号" />
           <el-table-column property="code" label="品号" />
           <el-table-column property="name" label="品名" />
@@ -116,12 +122,6 @@
           <el-table-column property="material" label="材质" />
           <el-table-column property="weight" label="产品理论重量(克)" />
           <el-table-column property="quantityYear" label="年预估量" />
-          <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
-            <template slot-scope="scope">
-              <el-button type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
-              <el-button type="danger" size="mini" @click="handleAttributeDelete(scope.row)">删除</el-button>
-            </template>
-          </el-table-column>
         </el-table>
 
         <el-dialog :visible.sync="hardwareVisiable" :title="detailAdd ? '添加商品' : '编辑商品'">
@@ -135,7 +135,7 @@
               <el-input v-model="detailForm.material" maxlength="60" />
             </el-form-item>
             <el-form-item label="产品理论重量" prop="weight">
-              <el-input v-model="detailForm.weight" type="number" class="input-width" @keydown="handleInput">
+              <el-input v-model="detailForm.weight" maxlength="10" type="number" class="input-width" @keydown="handleInput">
                 <template slot="append">克</template>
               </el-input>
             </el-form-item>
@@ -145,7 +145,7 @@
               </el-input>
             </el-form-item>
             <el-form-item label="明细">
-              <editor v-model="detailForm.appendix" :init="editorInit" />
+              <editor v-model="detailForm.appendix" v-if="editDisplay" :init="editorInit" />
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -159,6 +159,12 @@
         <h3>压铸模具类商品信息</h3>
         <el-button type="primary" @click="rubberShowNew">添加</el-button>
         <el-table :data="detail">
+          <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
+            <template slot-scope="scope">
+              <el-button type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
+              <el-button type="danger" size="mini" @click="handleAttributeDelete(scope.row)">删除</el-button>
+            </template>
+          </el-table-column>
           <el-table-column property="id" label="单号" />
           <el-table-column property="code" label="品号" />
           <el-table-column property="name" label="品名" />
@@ -166,12 +172,6 @@
           <el-table-column property="size" label="产品尺寸(长宽高)" />
           <el-table-column property="weight" label="产品理论重量(克)" />
           <el-table-column property="quantityYear" label="年预估量" />
-          <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
-            <template slot-scope="scope">
-              <el-button type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
-              <el-button type="danger" size="mini" @click="handleAttributeDelete(scope.row)">删除</el-button>
-            </template>
-          </el-table-column>
         </el-table>
 
         <el-dialog :visible.sync="dieCastingVisiable" :title="detailAdd ? '添加商品' : '编辑商品'">
@@ -187,17 +187,17 @@
               </el-input>
             </el-form-item>
             <el-form-item label="产品理论重量" prop="weight">
-              <el-input v-model="detailForm.weight" type="number" class="input-width" @keydown="handleInput">
+              <el-input v-model="detailForm.weight" maxlength="10" type="number" class="input-width" @keydown="handleInput">
                 <template slot="append">克</template>
               </el-input>
             </el-form-item>
             <el-form-item label="年预估量" prop="quantityYear">
               <el-input v-model="detailForm.quantityYear" type="number" class="input-width" @keydown="handleInput">
-                <template slot="append">只</template>
+                <template slot="append">万只</template>
               </el-input>
             </el-form-item>
             <el-form-item label="明细">
-              <editor v-model="detailForm.appendix" :init="editorInit" />
+              <editor v-model="detailForm.appendix" v-if="editDisplay" :init="editorInit" />
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -210,47 +210,47 @@
 
       <el-card class="box-card">
         <el-form-item v-if="dataForm.quoteModelExcel !== undefined && dataForm.quoteModelExcel !== null" label="上传询价单" prop="quoteModelExcel">
-          <el-upload :headers="headers" :limit="1" :action="uploadPath" :on-success="uploadUrl" :file-list="fileList" :before-upload="checkFileSize" accept=".xlsx">
+          <el-upload :headers="headers" :limit="1" :action="uploadPath" :on-success="uploadUrl" :file-list="fileList" :before-upload="checkFileSize">
             <el-button style="margin-left: 10px;" size="small" type="success">重新上传询价单</el-button>
-            <div slot="tip" class="el-upload__tip">xlsx文件，且不超过20M</div>
+            <div slot="tip" class="el-upload__tip">只能上传一个,不超过20M</div>
           </el-upload>
         </el-form-item>
         <el-form-item v-if="dataForm.quoteModelExcel === undefined || dataForm.quoteModelExcel === null" label="上传询价单" prop="quoteModelExcel">
-          <el-upload :headers="headers" :limit="1" :action="uploadPath" :on-success="uploadUrl" :file-list="fileList" :before-upload="checkFileSize" accept=".xlsx">
+          <el-upload :headers="headers" :limit="1" :action="uploadPath" :on-success="uploadUrl" :file-list="fileList" :before-upload="checkFileSize">
             <el-button style="margin-left: 10px;" size="small" type="success">开始上传(上传之后 要按[确定]才会生效)</el-button>
-            <div slot="tip" class="el-upload__tip">xlsx文件，且不超过20M</div>
+            <div slot="tip" class="el-upload__tip">只能上传一个,不超过20M</div>
           </el-upload>
         </el-form-item>
         <el-form-item label="选择询价供应商" prop="quoteSupplyCode">
           <el-select v-model="dataForm.quoteSupplyCode" multiple placeholder="请选择" clear @change="selectDuty($event)">
             <el-option v-for="item in listAdmin" :key="item.value" :label="item.deptname" :value="item.value" />
           </el-select>
-          <el-button style="float: outside;" size="mini" type="primary" @click="handleCreate()">创建供应商</el-button>
+          <el-button style="float: outside;" size="mini" type="primary" @click="handleCreate()">选择供应商</el-button>
         </el-form-item>
-        <el-form-item label="添加核价小组成员" prop="approveCode">
-          <el-select v-model="dataForm.approveCode" disabled multiple placeholder="请选择" clear>
-            <el-option v-for="item in listAdmin" :key="item.value" :label="item.deptname" :value="item.value" />
-          </el-select>
-          <span class="info">有核价负责人 决定 是否提交 [核价小组]审核</span>
-        </el-form-item>
-        <el-form-item label="核价负责人" prop="dutyCode">
-          <el-select v-model="dataForm.dutyCode" disabled placeholder="请选择">
-            <el-option v-for="item in listAdmin" :key="item.value" :label="item.deptname" :value="item.value" />
-          </el-select>
-          <span class="info">每个类别的核价单，存在不同的核价负责人</span>
-        </el-form-item>
-        <el-form-item label="终审人" prop="ceoCode">
-          <el-select v-model="dataForm.ceoCode" disabled placeholder="请选择">
-            <el-option v-for="item in listAdmin" :key="item.value" :label="item.deptname" :value="item.value" />
-          </el-select>
-          <span class="info">默认是CEO,最后敲定价格</span>
-        </el-form-item>
-        <el-form-item label="通知人" prop="notice">
-          <el-select v-model="dataForm.noticeCode" multiple disabled placeholder="请选择">
-            <el-option v-for="item in listAdmin" :key="item.value" :label="item.deptname" :value="item.value" />
-          </el-select>
-          <span class="info">价格确认后 通知的人员</span>
-        </el-form-item>
+        <!--        <el-form-item label="添加核价小组成员" prop="approveCode">-->
+        <!--          <el-select v-model="dataForm.approveCode" disabled multiple placeholder="请选择" clear>-->
+        <!--            <el-option v-for="item in listAdmin" :key="item.value" :label="item.deptname" :value="item.value" />-->
+        <!--          </el-select>-->
+        <!--          <span class="info">有核价负责人 决定 是否提交 [核价小组]审核</span>-->
+        <!--        </el-form-item>-->
+        <!--        <el-form-item label="核价负责人" prop="dutyCode">-->
+        <!--          <el-select v-model="dataForm.dutyCode" disabled placeholder="请选择">-->
+        <!--            <el-option v-for="item in listAdmin" :key="item.value" :label="item.deptname" :value="item.value" />-->
+        <!--          </el-select>-->
+        <!--          <span class="info">每个类别的核价单，存在不同的核价负责人</span>-->
+        <!--        </el-form-item>-->
+        <!--        <el-form-item label="终审人" prop="ceoCode">-->
+        <!--          <el-select v-model="dataForm.ceoCode" disabled placeholder="请选择">-->
+        <!--            <el-option v-for="item in listAdmin" :key="item.value" :label="item.deptname" :value="item.value" />-->
+        <!--          </el-select>-->
+        <!--          <span class="info">默认是CEO,最后敲定价格</span>-->
+        <!--        </el-form-item>-->
+        <!--        <el-form-item label="通知人" prop="notice">-->
+        <!--          <el-select v-model="dataForm.noticeCode" multiple disabled placeholder="请选择">-->
+        <!--            <el-option v-for="item in listAdmin" :key="item.value" :label="item.deptname" :value="item.value" />-->
+        <!--          </el-select>-->
+        <!--          <span class="info">价格确认后 通知的人员</span>-->
+        <!--        </el-form-item>-->
       </el-card>
     </el-form>
     <div class="op-container">
@@ -263,11 +263,19 @@
         <el-input v-model="listQueryCode.code" class="filter-item" style="width: 100px;" placeholder="请输入品号" />
         <el-input v-model="listQueryCode.name" class="filter-item" style="width: 200px;" placeholder="请输入品名" />
         <el-input v-model="listQueryCode.spec" class="filter-item" style="width: 200px;" placeholder="请输入规格" />
+        <el-select v-model="listQueryCode.price" class="filter-item" placeholder="是否核过价">
+          <el-option v-for="(key, value) in statusOptions" :key="key" :label="key" :value="value" />
+        </el-select>
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="searchCode">查找</el-button>
         <el-table v-loading="CodelistLoading" :data="listCode" element-loading-text="正在查询中。。。" border fit highlight-current-row>
           <el-table-column align="center" label="品号" prop="imaal001" />
           <el-table-column align="center" label="品名" prop="imaal003" />
           <el-table-column align="center" label="规格" prop="imaal004" />
+          <el-table-column align="center" label="核过价" prop="price" >
+            <template slot-scope="scope">
+              <el-tag :type="scope.row.price ? 'success' : 'error' ">{{ scope.row.price ? '是' : '否' }}</el-tag>
+            </template>
+          </el-table-column>
           <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button type="primary" size="mini" @click="confirmAdd(scope.row)">选择</el-button>
@@ -327,7 +335,18 @@ export default {
   data() {
     return {
       show: false,
+      statusOptions: [
+        {
+          label: '已经核过价',
+          value: 0
+        },
+        {
+          label: '没有核过价',
+          value: 1
+        }
+      ],
       uploadPath,
+      editDisplay: false,
       total: 0,
       setstatus: 0,
       quoteDialogVisible: false,
@@ -368,6 +387,7 @@ export default {
         code: '1',
         name: '',
         spec: '',
+        price: undefined,
         page: 1,
         limit: 10
       },
@@ -462,7 +482,11 @@ export default {
         return
       }
       const Id = this.$route.query.id
+
+      // this.Editor.execCommand('mceAddControl',true,'editor_id');
       readquote(Id).then(response => {
+        this.reload()
+
         console.log(response)
         let newArr = response.data.data.detail.filter(item => item.status !== 2);
 
@@ -479,11 +503,17 @@ export default {
         this.trueCard()
       }).catch(() => { this.list = []; this.total = 0; this.$notify.error({ title: '失败', message: '询价单没取出来数据' }) })
       this.listLoading = false
+
     },
     uploadUrl: function(response) {
       console.log(JSON.stringify(response))
 
       this.dataForm.quoteModelExcel = response.data.url
+    },
+    reload() {
+      this.editDisplay = false
+      this.$nextTick(() => (this.editDisplay = true))
+      this.detailForm.appendix
     },
     checkFileSize: function(file) {
       if (file.size > 20485760) {
@@ -511,6 +541,7 @@ export default {
           this.$set(this.dataForm, 'noticeCode', this.modelNameList[i].notice)
           this.$set(this.dataForm, 'ceoChoice', this.modelNameList[i].supply)
           this.$set(this.dataForm, 'dutyChoice', this.modelNameList[i].supply)
+          this.$set(this.dataForm, 'preApprove', this.modelNameList[i].preApprove)
           this.detail = []
           this.trueCard()
           const modelId = this.dataForm.modelName
@@ -636,6 +667,15 @@ export default {
     },
     updateData() {
       this.dataForm.modify = sessionStorage.getItem('userId')
+      this.dataForm.isAb = true
+
+      for (let i = 0; i < this.listAdmin.length; i++) {
+        if (this.dataForm.quoteSupplyCode.indexOf(this.listAdmin[i].value) >= 0) {
+          if (this.listAdmin[i].capacity.indexOf('A') < 0 && this.listAdmin[i].capacity.indexOf('B') < 0) {
+            this.dataForm.isAb = false
+          }
+        }
+      }
       const modelId = this.dataForm.modelName
       console.log('modelId:' + JSON.stringify(modelId))
       const quoteInOne = { quoteRubber: [], quoteDieCasting: [], quoteHardware: [], quoteElectronic: [], quoteBill: {}}
@@ -667,6 +707,7 @@ export default {
       this.detailForm.code = row.imaal001
       this.detailForm.name = row.imaal003
       this.detailForm.spec = row.imaal004
+      this.detailForm.isNew = row.price
       // alert(this.dialogStatus)
       if (this.dialogStatus === 'create') { this.handleFilterAdmin() } else {
         this.detailEdit()
@@ -723,6 +764,7 @@ export default {
       })
     },
     handleAttributeAdd() {
+      this.reload()
       this.$refs['attributeForm'].validate(valid => {
         if (valid) {
           var index = this.detail.length - 1
@@ -733,7 +775,9 @@ export default {
                 type: 'warning',
                 message: '已经存在品号值:' + v.code
               })
-              this.detailForm = {}
+              return
+            }
+            if (v.code  === 0 ) {
               return
             } else {
               index = i
@@ -752,6 +796,7 @@ export default {
       this.$refs['attributeForm'].validate(valid => {
         if (valid) {
           this.falseVisiable()
+
           this.detailForm.updateTime = ''
           for (var i = 0; i < this.detail.length; i++) {
             const v = this.detail[i]
@@ -787,7 +832,11 @@ export default {
       this.dialogStatus = 'update'
       // this.detailForm = {}
       if (row.id) {
+        this.reload()
         this.detailForm = Object.assign({}, row)
+        this.detailForm.appendix = row.appendix
+        // this.reload()
+        // this.detail.appendix = row.appendix
         // find(row.id, this.dataForm.modelName)
         //   .then(response => {
         //     this.detailForm.appendix = response.data.data.detail.appendix
@@ -816,7 +865,7 @@ export default {
           }).catch(response => { this.$notify.error({title: '失败', message: response.data.errmsg}) })
         }
         if (modelId === 6) {
-          deleteHardware(row).then(response => { this.$notify.success({title: '成功', message: '删除询价产品成功'}); const index = this.detail.indexOf(row); this.detail.splice(index, 1)
+          deleteElectronic(row).then(response => { this.$notify.success({title: '成功', message: '删除询价产品成功'}); const index = this.detail.indexOf(row); this.detail.splice(index, 1)
           }).catch(response => { this.$notify.error({title: '失败', message: response.data.errmsg}) })
         }
       })

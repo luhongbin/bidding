@@ -1,5 +1,12 @@
 <template>
   <div class="app-container">
+    <el-dialog :visible.sync="DialogVisiable" title="查看备注">
+      <el-form status-icon label-position="left" style="margin-left:0px;">
+        <el-form-item>
+          <editor v-if="editDisplay" v-model="goodsDetail" :init="editorInit" />
+        </el-form-item>
+      </el-form>
+    </el-dialog>
     <!-- 报价单详情对话框 -->
     <el-card v-show="reQuote.status === 0" class="box-card">
       <label>
@@ -14,22 +21,13 @@
         </el-form-item>
         <el-form-item label="单据">
           <span>(类型) {{ formatModel(quote.modelName) }}</span>
-          <el-button v-if="quote.quoteModelExcel !== undefined && quote.quoteModelExcel !== null" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(quote.quoteModelExcel,'询价ID'+quote.id.toString()+'.xlsx')">下载</el-button>
+          <el-button v-if="quote.quoteModelExcel !== undefined && quote.quoteModelExcel !== null" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(quote.quoteModelExcel,'询价ID'+quote.id.toString())">询价下载</el-button>
         </el-form-item>
-        <el-form-item label="询价概要">
+        <el-form-item label="询价主题">
           <span>{{ quote.purchaserNote }}</span>
         </el-form-item>
       </el-form>
     </el-card>
-    <el-dialog :visible.sync="DialogVisiable" title="询价单明细">
-<!--      <div v-html="goodsDetail" :init="editorInit" />-->
-      <el-form status-icon label-position="left" style="margin-left:0px;">
-        <el-form-item>
-          <editor v-model="goodsDetail" :init="editorInit" />
-        </el-form-item>
-      </el-form>
-    </el-dialog>
-
     <el-card v-show="rubberCardVisiable && reQuote.status===0" class="box-card">
       <h3>塑料橡胶类商品信息</h3>
       <el-table :data="detail">
@@ -40,9 +38,13 @@
         <el-table-column property="material" label="材质" />
         <el-table-column property="weight" label="理论重量" />
         <el-table-column property="quantityYear" label="年预估量" />
-<!--        <el-table-column align="center" label="备注" prop="id">-->
+        <el-form-item label="单据">
+          <span>(类型) {{ formatModel(quote.modelName) }}</span>
+          <el-button v-if="quote.quoteModelExcel !== undefined && quote.quoteModelExcel !== null" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(quote.quoteModelExcel,'询价ID'+quote.id.toString())">询价下载</el-button>
+        </el-form-item>
+        <!--        <el-table-column align="center" label="备注" prop="id">-->
 <!--          <template slot-scope="scope">-->
-<!--            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>-->
+<!--            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看备注</el-button>-->
 <!--          </template>-->
 <!--        </el-table-column>-->
       </el-table>
@@ -55,9 +57,14 @@
         <el-table-column property="name" label="品名" />
         <el-table-column property="spec" label="规格" />
         <el-table-column property="quantityYear" label="年预估量" />
-<!--        <el-table-column align="center" label="备注" prop="id">-->
+        <el-form-item label="单据">
+          <span>(类型) {{ formatModel(quote.modelName) }}</span>
+          <el-button v-if="quote.quoteModelExcel !== undefined && quote.quoteModelExcel !== null" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(quote.quoteModelExcel,'询价ID'+quote.id.toString())">询价下载</el-button>
+        </el-form-item>
+
+        <!--        <el-table-column align="center" label="备注" prop="id">-->
 <!--          <template slot-scope="scope">-->
-<!--            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>-->
+<!--            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看备注</el-button>-->
 <!--          </template>-->
 <!--        </el-table-column>-->
       </el-table>
@@ -72,9 +79,13 @@
         <el-table-column property="material" label="材质" />
         <el-table-column property="weight" label="产品理论重量(克)" />
         <el-table-column property="quantityYear" label="年预估量" />
-<!--        <el-table-column align="center" label="明细" prop="id">-->
+        <el-form-item label="单据">
+          <span>(类型) {{ formatModel(quote.modelName) }}</span>
+        </el-form-item>
+
+        <!--        <el-table-column align="center" label="明细" prop="id">-->
 <!--          <template slot-scope="scope">-->
-<!--            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>-->
+<!--            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看备注</el-button>-->
 <!--          </template>-->
 <!--        </el-table-column>-->
       </el-table>
@@ -88,9 +99,14 @@
         <el-table-column property="spec" label="规格" />
         <el-table-column property="size" label="产品尺寸(长宽高)" />
         <el-table-column property="weight" label="产品理论重量(克)" />
-<!--        <el-table-column align="center" label="备注" prop="id">-->
+        <el-table-column property="quantityYear" label="年预估量" />
+        <el-form-item label="单据">
+          <span>(类型) {{ formatModel(quote.modelName) }}</span>
+        </el-form-item>
+
+        <!--        <el-table-column align="center" label="备注" prop="id">-->
 <!--          <template slot-scope="scope">-->
-<!--            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>-->
+<!--            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看备注</el-button>-->
 <!--          </template>-->
 <!--        </el-table-column>-->
       </el-table>
@@ -102,16 +118,25 @@
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" class="table-expand">
-              <el-form-item label="单号">
-                <span>(产品序号单号){{ props.row.id }} (报价单单号) {{ props.row.quoteId }} (产品状态) {{ props.row.status | quoteStatus2Filter }} </span>
-              </el-form-item>
               <el-form-item label="报价产品">
-                <span>(品号){{ props.row.code }}  (品名) {{ props.row.name }}  (规格) {{ props.row.spec }}  (材质) {{ props.row.material }} </span>
+                <span>(产品状态) {{ props.row.status | quoteStatus2Filter }} (品号){{ props.row.code }}  (品名) {{ props.row.name }}  (规格) {{ props.row.spec }}  (材质) {{ props.row.material }} </span>
               </el-form-item>
               <el-form-item label="数量">
-                <span>(理论重量){{ props.row.weight }} (年预估量){{ props.row.weight }}</span>
+                <span>(理论重量){{ props.row.weight }} g (年预估量){{ props.row.weight }} 万PCS</span>
+                <el-button type="danger" size="mini" @click="showDetail(props.row.appendix)">查看备注</el-button>
+                <span>(类型) {{ formatModel(quote.modelName) }}</span>
+                <el-button v-if="reQuote.requoteExcel !== '' && reQuote.requoteExcel !== null" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(reQuote.requoteExcel,'报价ID'+reQuote.quoteId.toString())">报价下载</el-button>
               </el-form-item>
             </el-form>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="状态" prop="quoteStatus2Filter">
+          <template slot-scope="scope">
+            <el-tag effect="dark" v-if = "scope.row.status == 0 && endBill==9" type="danger">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
+            <el-tag effect="dark" v-else-if="scope.row.status == 2 && endBill==9" type="info">历史报价</el-tag>
+            <el-tag effect="dark" v-else-if="scope.row.isRecheck == true" type="info">流标</el-tag>
+            <el-tag effect="dark" v-else-if="endBill==9" type="info">未中标</el-tag>
+            <el-tag effect="dark" v-else type="'error'">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column property="name" width="200" label="品名" />
@@ -125,19 +150,12 @@
         <el-table-column property="processingCostSingle" label="单个产品加工费(元/克)" />
         <el-table-column property="pieceWeight" label="单个产品克重价格(元/克)" />
         <el-table-column property="mouldCharge" label="模具费" />
-        <el-table-column align="center" label="状态" prop="quoteStatus2Filter">
-          <template slot-scope="scope">
-            <el-tag effect="dark" v-if = "scope.row.status == 0 && endBill==9" type="danger">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
-            <el-tag effect="dark" v-else-if="scope.row.status == 2 && endBill==9" type="info">历史报价</el-tag>
-            <el-tag effect="dark" v-else-if="scope.row.status != 2 && scope.row.status != 0 && endBill==9" type="info">流标</el-tag>
-            <el-tag effect="dark" v-else type="'error'">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="备注" prop="id">
-          <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>
-          </template>
-        </el-table-column>
+
+<!--        <el-table-column align="center" label="备注" prop="id">-->
+<!--          <template slot-scope="scope">-->
+<!--            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看备注</el-button>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
       </el-table>
     </el-card>
     <el-card v-show="electronicCardVisiable && reQuote.status>0" class="box-card">
@@ -146,16 +164,25 @@
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" class="table-expand">
-              <el-form-item label="单号">
-                <span>(产品序号单号){{ props.row.id }} (报价单单号) {{ props.row.quoteId }} (产品状态) {{ props.row.status | quoteStatus2Filter }} </span>
-              </el-form-item>
               <el-form-item label="报价产品">
-                <span>(品号){{ props.row.code }}  (品名) {{ props.row.name }}  (规格) {{ props.row.spec }} </span>
+                <span>(产品状态) {{ props.row.status | quoteStatus2Filter }} (品号){{ props.row.code }}  (品名) {{ props.row.name }}  (规格) {{ props.row.spec }} </span>
               </el-form-item>
               <el-form-item label="数量">
-                <span>(理论重量){{ props.row.weight }} (年预估量){{ props.row.quantityYear }}</span>
+                <span>(理论重量){{ props.row.weight }} (年预估量){{ props.row.quantityYear }} 万PCS</span>
+                <el-button type="danger" size="mini" @click="showDetail(props.row.appendix)">查看备注</el-button>
+                <span>(类型) {{ formatModel(quote.modelName) }}</span>
+                <el-button v-if="reQuote.requoteExcel !== '' && reQuote.requoteExcel !== null" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(reQuote.requoteExcel,'报价ID'+reQuote.quoteId.toString())">报价下载</el-button>
               </el-form-item>
             </el-form>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="状态" prop="quoteStatus2Filter">
+          <template slot-scope="scope">
+            <el-tag effect="dark" v-if = "scope.row.status == 0 && endBill==9" type="danger">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
+            <el-tag effect="dark" v-else-if="scope.row.status == 2 && endBill==9" type="info">历史报价</el-tag>
+            <el-tag effect="dark" v-else-if="scope.row.isRecheck == true" type="info">流标</el-tag>
+            <el-tag effect="dark" v-else-if="endBill==9" type="info">未中标</el-tag>
+            <el-tag effect="dark" v-else type="'error'">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column property="name" width="200" label="品名" />
@@ -168,19 +195,11 @@
         <el-table-column property="packageSize" label="包装方式" />
         <el-table-column property="brand" label="品牌'" />
         <el-table-column property="certificate" label="证书情况" />
-        <el-table-column align="center" label="状态" prop="quoteStatus2Filter">
-          <template slot-scope="scope">
-            <el-tag effect="dark" v-if = "scope.row.status == 0 && endBill==9" type="danger">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
-            <el-tag effect="dark" v-else-if="scope.row.status == 2 && endBill==9" type="info">历史报价</el-tag>
-            <el-tag effect="dark" v-else-if="scope.row.status != 2 && scope.row.status != 0 && endBill==9" type="info">流标</el-tag>
-            <el-tag effect="dark" v-else type="'error'">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="备注" prop="id">
-          <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>
-          </template>
-        </el-table-column>
+<!--        <el-table-column align="center" label="备注" prop="appendix">-->
+<!--          <template slot-scope="scope">-->
+<!--            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看备注</el-button>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
       </el-table>
     </el-card>
     <el-card v-show="hardwareCardVisiable && reQuote.status>0" class="box-card">
@@ -189,16 +208,29 @@
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" class="table-expand">
-              <el-form-item label="单号">
-                <span>(产品序号单号){{ props.row.id }} (报价单单号) {{ props.row.quoteId }} (产品状态) {{ props.row.status | quoteStatus2Filter }} </span>
-              </el-form-item>
               <el-form-item label="报价产品">
-                <span>(品号){{ props.row.code }}  (品名) {{ props.row.name }}  (规格) {{ props.row.spec }} </span>
+                <span>(产品状态) {{ props.row.status | quoteStatus2Filter }}  (品号){{ props.row.code }}  (品名) {{ props.row.name }}  (规格) {{ props.row.spec }} </span>
               </el-form-item>
               <el-form-item label="数量">
-                <span>(材质){{ props.row.material }} (产品理论重量(克)){{ props.row.weight }} (年预估量){{ props.row.quantityYear }}</span>
+                <span>(材质){{ props.row.material }} (产品理论重量(克)){{ props.row.weight }} (年预估量){{ props.row.quantityYear }} 万PCS</span>
+                <el-button type="danger" size="mini" @click="showDetail(props.row.appendix)">查看备注</el-button>
+                <span>(类型) {{ formatModel(quote.modelName) }}</span>
+                <el-button v-if="reQuote.requoteExcel !== '' && reQuote.requoteExcel !== null" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(reQuote.requoteExcel,'报价ID'+reQuote.quoteId.toString())">报价下载</el-button>
+              </el-form-item>
+
+              <el-form-item>
+                <editor v-model="props.row.appendix" :init="editorInit" />
               </el-form-item>
             </el-form>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="状态" prop="quoteStatus2Filter">
+          <template slot-scope="scope">
+            <el-tag effect="dark" v-if = "scope.row.status == 0 && endBill==9" type="danger">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
+            <el-tag effect="dark" v-else-if="scope.row.status == 2 && endBill==9" type="info">历史报价</el-tag>
+            <el-tag effect="dark" v-else-if="scope.row.isRecheck == true" type="info">流标</el-tag>
+            <el-tag effect="dark" v-else-if="endBill==9" type="info">未中标</el-tag>
+            <el-tag effect="dark" v-else type="'error'">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column property="name" width="200" label="品名" />
@@ -212,19 +244,12 @@
         <el-table-column property="electroplateCharge" label="电镀费" />
         <el-table-column property="otherCharge" label="其它费用" />
         <el-table-column property="price" label="产品报价" />
-        <el-table-column align="center" label="状态" prop="quoteStatus2Filter">
-          <template slot-scope="scope">
-            <el-tag effect="dark" v-if = "scope.row.status == 0 && endBill==9" type="danger">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
-            <el-tag effect="dark" v-else-if="scope.row.status == 2 && endBill==9" type="info">历史报价</el-tag>
-            <el-tag effect="dark" v-else-if="scope.row.status != 2 && scope.row.status != 0 && endBill==9" type="info">流标</el-tag>
-            <el-tag effect="dark" v-else type="'error'">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="明细" prop="id">
-          <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>
-          </template>
-        </el-table-column>
+
+<!--        <el-table-column align="center" label="明细" prop="appendix">-->
+<!--          <template slot-scope="scope">-->
+<!--            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看备注</el-button>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
       </el-table>
     </el-card>
     <el-card v-show="dieCastingCardVisiable && reQuote.status>0" class="box-card">
@@ -233,16 +258,25 @@
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" class="table-expand">
-              <el-form-item label="单号">
-                <span>(产品序号单号){{ props.row.id }} (报价单单号) {{ props.row.quoteId }} (产品状态) {{ props.row.status | quoteStatus2Filter }} </span>
-              </el-form-item>
               <el-form-item label="报价产品">
-                <span>(品号){{ props.row.code }}  (品名) {{ props.row.name }}  (规格) {{ props.row.spec }} </span>
+                <span>(产品状态) {{ props.row.status | quoteStatus2Filter }} (品号){{ props.row.code }}  (品名) {{ props.row.name }}  (规格) {{ props.row.spec }} </span>
               </el-form-item>
               <el-form-item label="数量">
-                <span>(产品尺寸(长宽高)){{ props.row.size }} (产品理论重量(克){{ props.row.weight }} (年预估量){{ props.row.quantityYear }}</span>
+                <span>(产品尺寸(长宽高)){{ props.row.size }} (产品理论重量(克){{ props.row.weight }} (年预估量){{ props.row.quantityYear }} 万PCS</span>
+                <el-button type="danger" size="mini" @click="showDetail(props.row.appendix)">查看备注</el-button>
+                <span>(类型) {{ formatModel(quote.modelName) }}</span>
+                <el-button v-if="reQuote.requoteExcel !== '' && reQuote.requoteExcel !== null" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(reQuote.requoteExcel,'报价ID'+reQuote.quoteId.toString())">报价下载</el-button>
               </el-form-item>
             </el-form>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="状态" prop="quoteStatus2Filter">
+          <template slot-scope="scope">
+            <el-tag effect="dark" v-if = "scope.row.status == 0" type="danger">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
+            <el-tag effect="dark" v-else-if="scope.row.status == 2 && endBill==9" type="info">历史报价</el-tag>
+            <el-tag effect="dark" v-else-if="scope.row.isRecheck == true" type="info">流标</el-tag>
+            <el-tag effect="dark" v-else-if="endBill==9" type="info">未中标</el-tag>
+            <el-tag effect="dark" v-else type="'error'">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column property="name" width="200" label="品名" />
@@ -260,30 +294,23 @@
         <el-table-column property="note1" label="备注" />
         <el-table-column property="material" label="产品材料" />
         <el-table-column property="processingCharge" label="产品加工费" />
-        <el-table-column align="center" label="状态" prop="quoteStatus2Filter">
-          <template slot-scope="scope">
-            <el-tag effect="dark" v-if = "scope.row.status == 0 && endBill==9" type="danger">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
-            <el-tag effect="dark" v-else-if="scope.row.status == 2 && endBill==9" type="info">历史报价</el-tag>
-            <el-tag effect="dark" v-else-if="scope.row.status != 2 && scope.row.status != 0 && endBill==9" type="info">流标</el-tag>
-            <el-tag effect="dark" v-else type="'error'">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="备注" prop="id">
-          <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>
-          </template>
-        </el-table-column>
+<!--        <el-table-column align="center" label="备注" prop="appendix">-->
+<!--          <template slot-scope="scope">-->
+<!--            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看备注</el-button>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
       </el-table>
     </el-card>
 
     <el-card v-show="reQuote.status >0" class="box-card">
-      <div v-show="reQuote.status<2 || reQuote.status===10" slot="header">
+      <div v-show="reQuote.status<2 || reQuote.status===10 || reQuote.status===12" slot="header">
         <label>
           <textarea v-model="approveNote" maxlength="200" style="width: 100%;" placeholder="建议" />
         </label>
         <el-button v-if="reQuote.status===3" style="float: right" type="warning" @click="handleCancle(reQuote)">撤销提交</el-button>
         <el-button v-if="reQuote.status===0 || reQuote.status===10" class="filter-item" type="primary" @click="handleSubmit(reQuote,approveNote,'签收询价单',2,'报价单','提交报价单',1)">签收</el-button>
-        <el-button v-if="reQuote.status===1" class="filter-item" type="primary" @click="handleSubmit(reQuote,approveNote,'提交报价单',2,'报价单','等待中标结果',2)">提交报价单</el-button>
+        <el-button v-if="reQuote.status===1" class="filter-item" size="medium" type="danger" @click="handleSubmit(reQuote,approveNote,'提交报价单',2,'报价单','等待中标结果',2)">提交报价单</el-button>
+        <el-button v-if="reQuote.status===12" class="filter-item" size="medium" type="warning" @click="handleSubmit(reQuote,approveNote,'提交重报价单',2,'报价单','等待中标结果',2)">提交重新报价单</el-button>
       </div>
       <el-form v-show="reQuote.status!==0" ref="reQuote" :model="reQuote" status-icon label-position="left" label-width="100px">
         <!-- 发货对话框 -->
@@ -295,14 +322,14 @@
         <el-form-item label="日期">
           <span>(报价截止日期) {{ reQuote.deadDate }}</span>
           <span>(提交报价日期) {{ reQuote.submitDate }}</span>
-          <span>(甲方答复日期) {{ reQuote.quoteDate }}</span>
+          <span>(甲方开标日期) {{ reQuote.quoteDate }}</span>
         </el-form-item>
         <el-form-item label="报价概要">
           <span>{{ reQuote.note }}</span>
         </el-form-item>
         <el-form-item label="单据状态">
           <span>{{ reQuote.status | quoteStatusFilter }}</span>
-          <el-button v-if="reQuote.requoteExcel !== '' && reQuote.requoteExcel !== null" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(reQuote.requoteExcel,'报价ID'+reQuote.id.toString()+'.xlsx')">下载</el-button>
+          <el-button v-if="quote.quoteModelExcel !== undefined && quote.quoteModelExcel !== null" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(quote.quoteModelExcel,'询价ID'+quote.id.toString())">询价下载</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -310,16 +337,16 @@
     <el-card v-show="reQuote.status > 0" class="box-card">
       <h4>审批信息</h4>
       <el-table :data="approve" border fit highlight-current-row>
-        <el-table-column align="center" label="发起人" prop="adminId">
-          <template slot-scope="scope">
-            <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.adminId) }} </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="接收人" prop="receiver">
-          <template slot-scope="scope">
-            <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.receiver) }} </el-tag>
-          </template>
-        </el-table-column>
+<!--        <el-table-column align="center" label="发起人" prop="adminId">-->
+<!--          <template slot-scope="scope">-->
+<!--            <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.adminId) }} </el-tag>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+<!--        <el-table-column align="center" label="接收人" prop="receiver">-->
+<!--          <template slot-scope="scope">-->
+<!--            <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.receiver) }} </el-tag>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
         <el-table-column align="center" label="时间" prop="addTime" />
         <el-table-column align="center" label="留言" prop="note" />
         <el-table-column align="center" label="动作" prop="action" />
@@ -342,10 +369,10 @@
 
 </style>
 <script>
-import { createStorage, uploadPath } from '@/api/storage'
-import { find, submitQuote } from '@/api/quote'
+import {readkey, uploadPath} from '@/api/storage'
+import { submitQuote } from '@/api/quote'
 import { myRead, updateRequote } from '@/api/requote'
-import { openExcel } from '@/utils/quoteSubmit'
+import { openExcel, getCurrentTime } from '@/utils/quoteSubmit'
 import { getToken } from '@/utils/auth'
 import Editor from '_@tinymce_tinymce-vue@3.0.1@@tinymce/tinymce-vue'
 import _ from 'lodash'
@@ -353,7 +380,7 @@ import _ from 'lodash'
 const statusMap = {
   0: '询价',
   1: '签收',
-  2: '制作报价单',
+  2: '等待开标',
   3: '提交报价单',
   4: '甲方审批中',
   5: '报价',
@@ -408,6 +435,7 @@ export default {
     return {
       uploadPath,
       goodsDetail: '',
+      editDisplay: false,
       multipleSelection: [],
       multipleSelection2: [],
       multipleSelection3: [],
@@ -546,6 +574,10 @@ export default {
       }).catch(() => { this.list = []; this.total = 0; this.$notify.error({ title: '失败', message: '基础数据没取出来数据' }) })
       this.listLoading = false
     },
+    reload() {
+      this.editDisplay = false
+      this.$nextTick(() => (this.editDisplay = true))
+    },
     uploadUrl: function(response) {
       console.log(JSON.stringify(response))
       this.dataForm.requoteExcel = response.data.url
@@ -566,10 +598,17 @@ export default {
     },
     showDetail(row) {
       // alert(row)
+      // this.$set(this, 'goodsDetail', row)
+      //
+      // this.$nextTick(() => {
+      //   this.goodsDetail = row
+      // });
+      // this.DialogVisiable = true
+      this.reload()
+      this.goodsDetail = row
+      this.reload()
+      this.goodsDetail = row
       this.DialogVisiable = true
-      this.$nextTick(() => {
-        this.goodsDetail = row
-      });
       // const modelId = this.quote.modelName
       // find(id, modelId)
       //   .then(response => {
@@ -640,6 +679,9 @@ export default {
           }).catch(response => { this.$notify.error({ title: '失败', message: response.data.errmsg }) })
         }
       })
+      this.$store.dispatch('tagsView/delView', this.$route)
+      // this.$router.push({ path: '/supplyManage/requote' })
+
       // this.getList()
     },
     formatModel(modelId) {
@@ -688,7 +730,7 @@ export default {
       return ''
     },
     openExcel(url, name) {
-      openExcel(url, name)
+      readkey(url).then(response => { openExcel(url, name+'_'+ response.data.data.name) }).catch(response => { this.$notify.error({ title: '失败', message: response.data.errmsg }) })
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
@@ -704,7 +746,7 @@ export default {
     },
     handleSubmit(row, approveNote, action, billcode, billname, nextaction, setstatus, choiceid, choicevalue) {
 
-      if (this.getcurrtime() > this.reQuote.deadDate) {
+      if (getCurrentTime() > this.reQuote.deadDate) {
         this.$notify.error({ title: '提交失败', message: '超过报价截止时间:'+this.reQuote.deadDate })
         return false
       }
@@ -751,54 +793,12 @@ export default {
           choiceid: choiceid,
           choicevalue: choicevalue,
           ids: ids }).then(response => { this.$message.success({ title: '提交成功', message: this.formatRole(row.adminId) + '[' + setstatus + ']成功' }) })
-          .catch(response => { this.$notify.error({ title: '失败', message: '签收失败了' }) })
+          .catch(response => { this.$notify.error({ title: '失败', message: response.data.errmsg }) })
         this.$store.dispatch('tagsView/delView', this.$route)
         this.$router.push({ path: '/supplyManage/requote' })
       })
     },
-    getcurrtime() {
-      var date = new Date()
 
-      var year = date.getFullYear();       //年 ,从 Date 对象以四位数字返回年份
-      var month = date.getMonth() + 1      //月 ,从 Date 对象返回月份 (0 ~ 11) ,date.getMonth()比实际月份少 1 个月
-      var day = date.getDate();            //日 ,从 Date 对象返回一个月中的某一天 (1 ~ 31)
-
-      var hours = date.getHours();         //小时 ,返回 Date 对象的小时 (0 ~ 23)
-      var minutes = date.getMinutes()      //分钟 ,返回 Date 对象的分钟 (0 ~ 59)
-      var seconds = date.getSeconds()      //秒 ,返回 Date 对象的秒数 (0 ~ 59)
-
-      //获取当前系统时间
-      var currentDate = year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds
-
-      //修改月份格式
-      if (month >= 1 && month <= 9) {
-        month = "0" + month
-      }
-
-      //修改日期格式
-      if (day >= 0 && day <= 9) {
-        day = "0" + day
-      }
-
-      //修改小时格式
-      if (hours >= 0 && hours <= 9) {
-        hours = "0" + hours
-      }
-
-      //修改分钟格式
-      if (minutes >= 0 && minutes <= 9) {
-        minutes = "0" + minutes
-      }
-
-      //修改秒格式
-      if (seconds >= 0 && seconds <= 9) {
-        seconds = "0" + seconds
-      }
-
-      //获取当前系统时间  格式(yyyy-mm-dd hh:mm:ss)
-      var currentFormatDate = year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds
-      return currentFormatDate
-    },
     printOrder() {
       this.$print(this.$refs.print)
       this.quoteDialogVisible = false

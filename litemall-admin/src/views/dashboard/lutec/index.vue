@@ -127,7 +127,8 @@ export default {
         this.waitTotalCount = response.data.data.value.waitTotalCount
 
         this.current = Object.assign({}, response.data.data.currentUser)
-        this.name = this.current.dept + ':' + this.current.nickname + ':' + this.current.id + '(' + this.current.capacity + ')'
+        this.name = this.current.dept + ':' + this.current.nickname
+          // + ':' + this.current.id + '(' + this.current.capacity + ')'
         this.avatar = this.current.avatar
         sessionStorage.removeItem('currentRole')
       })

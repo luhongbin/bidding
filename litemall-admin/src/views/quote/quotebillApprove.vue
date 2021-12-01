@@ -1,12 +1,11 @@
 <template>
   <div class="app-container">
-    <el-dialog :visible.sync="DialogVisiable" title="询价单明细">
+    <el-dialog :visible.sync="DialogVisiable" title="查看备注">
       <el-form status-icon label-position="left" style="margin-left:0px;">
         <el-form-item>
-          <editor v-model="goodsDetail" :init="editorInit" />
+          <editor v-if="editDisplay" v-model="goodsDetail" :init="editorInit" />
         </el-form-item>
       </el-form>
-
       <!--      <div v-html="goodsDetail" :init="editorInit" />-->
 <!--      <editor v-html="goodsDetail" :init="editorInit" />-->
     </el-dialog>
@@ -23,12 +22,17 @@
         <el-table-column property="code" label="品号" />
         <el-table-column property="name" label="品名" />
         <el-table-column property="spec" label="规格" />
+        <el-table-column property="isNew" label="核过价" >
+          <template slot-scope="scope">
+            <el-tag :type="scope.row.isNew ? 'success' : 'error' ">{{ scope.row.isNew ? '是' : '否' }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column property="material" label="材质" />
         <el-table-column property="weight" label="理论重量" />
         <el-table-column property="quantityYear" label="年预估量" />
         <el-table-column align="center" label="备注" prop="id">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>
+            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看备注</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -45,11 +49,16 @@
         <el-table-column property="code" label="品号" />
         <el-table-column property="name" label="品名" />
         <el-table-column property="spec" label="规格" />
+        <el-table-column property="isNew" label="核过价" >
+          <template slot-scope="scope">
+            <el-tag :type="scope.row.isNew ? 'success' : 'error' ">{{ scope.row.isNew ? '是' : '否' }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column property="quantityYear" label="年预估量" />
         <el-table-column property="status" label="状态" />
         <el-table-column align="center" label="备注" prop="id">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>
+            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看备注</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -66,12 +75,17 @@
         <el-table-column property="code" label="品号" />
         <el-table-column property="name" label="品名" />
         <el-table-column property="spec" label="规格" />
+        <el-table-column property="isNew" label="核过价" >
+          <template slot-scope="scope">
+            <el-tag :type="scope.row.isNew ? 'success' : 'error' ">{{ scope.row.isNew ? '是' : '否' }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column property="material" label="材质" />
         <el-table-column property="weight" label="产品理论重量(克)" />
         <el-table-column property="quantityYear" label="年预估量" />
-        <el-table-column align="center" label="明细" prop="id">
+        <el-table-column align="center" label="备注" prop="appendix">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>
+            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看备注</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -79,65 +93,106 @@
     <el-card v-show="dieCastingCardVisiable && chksenver" class="box-card">
       <h3>压铸模具类商品信息</h3>
       <el-table :data="server">
-        <el-table-column align="center" label="供应商名称" prop="adminId">
-          <template slot-scope="scope">
-            <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.adminId) }} </el-tag>
-          </template>
-        </el-table-column>
+<!--        <el-table-column align="center" label="供应商名称" prop="adminId">-->
+<!--          <template slot-scope="scope">-->
+<!--            <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.adminId) }} </el-tag>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
         <el-table-column property="id" label="id" />
         <el-table-column property="code" label="品号" />
         <el-table-column property="name" label="品名" />
         <el-table-column property="spec" label="规格" />
+        <el-table-column property="isNew" label="核过价" >
+          <template slot-scope="scope">
+            <el-tag :type="scope.row.isNew ? 'success' : 'error' ">{{ scope.row.isNew ? '是' : '否' }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column property="size" label="产品尺寸(长宽高)" />
         <el-table-column property="weight" label="产品理论重量(克)" />
+        <el-table-column property="quantityYear" label="年预估量" />
+        <el-table-column align="center" label="备注" prop="appendix">
+          <template slot-scope="scope">
+            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看备注</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </el-card>
 
-    <el-card v-show="rubberCardVisiable && quote.status < 2" class="box-card">
+    <el-card v-show="rubberCardVisiable && (quote.status < 2 || quote.status ===12 || quote.status === 13 || quote.status === 15)" class="box-card">
       <h3>塑料橡胶类商品信息</h3>
       <el-table :data="detail">
         <el-table-column property="id" label="id" />
         <el-table-column property="code" label="品号" />
         <el-table-column property="name" label="品名" />
         <el-table-column property="spec" label="规格" />
+        <el-table-column property="isNew" label="核过价" >
+          <template slot-scope="scope">
+            <el-tag :type="scope.row.isNew ? 'success' : 'error' ">{{ scope.row.isNew ? '是' : '否' }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column property="material" label="材质" />
         <el-table-column property="weight" label="理论重量" />
         <el-table-column property="quantityYear" label="年预估量" />
+        <el-table-column align="center" label="备注" prop="appendix">
+          <template slot-scope="scope">
+            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看备注</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </el-card>
-    <el-card v-show="electronicCardVisiable &&  quote.status < 2" class="box-card">
+    <el-card v-show="electronicCardVisiable && (quote.status < 2 || quote.status ===14 || quote.status === 13 || quote.status === 15)" class="box-card">
       <h3>电子电器类商品信息</h3>
       <el-table :data="detail">
-        <el-table-column align="center" label="供应商名称" prop="adminId">
-          <template slot-scope="scope">
-            <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.adminId) }} </el-tag>
-          </template>
-        </el-table-column>
+<!--        <el-table-column align="center" label="供应商名称" prop="adminId">-->
+<!--          <template slot-scope="scope">-->
+<!--            <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.adminId) }} </el-tag>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
         <el-table-column property="id" label="id" />
         <el-table-column property="code" label="品号" />
         <el-table-column property="name" label="品名" />
         <el-table-column property="spec" label="规格" />
+        <el-table-column property="isNew" label="核过价" >
+          <template slot-scope="scope">
+            <el-tag :type="scope.row.isNew ? 'success' : 'error' ">{{ scope.row.isNew ? '是' : '否' }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column property="quantityYear" label="年预估量" />
+        <el-table-column align="center" label="备注" prop="appendix">
+          <template slot-scope="scope">
+            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看备注</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </el-card>
-    <el-card v-show="hardwareCardVisiable &&  quote.status < 2" class="box-card">
+    <el-card v-show="hardwareCardVisiable && (quote.status < 2 || quote.status === 14 || quote.status === 13 || quote.status === 15)" class="box-card">
       <h3>五金类商品信息</h3>
       <el-table :data="detail">
-        <el-table-column align="center" label="供应商名称" prop="adminId">
-          <template slot-scope="scope">
-            <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.adminId) }} </el-tag>
-          </template>
-        </el-table-column>
+<!--        <el-table-column align="center" label="供应商名称" prop="adminId">-->
+<!--          <template slot-scope="scope">-->
+<!--            <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.adminId) }} </el-tag>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
         <el-table-column property="id" label="id" />
         <el-table-column property="code" label="品号" />
         <el-table-column property="name" label="品名" />
         <el-table-column property="spec" label="规格" />
+        <el-table-column property="isNew" label="核过价" >
+          <template slot-scope="scope">
+            <el-tag :type="scope.row.isNew ? 'success' : 'error' ">{{ scope.row.isNew ? '是' : '否' }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column property="material" label="材质" />
         <el-table-column property="weight" label="产品理论重量(克)" />
         <el-table-column property="quantityYear" label="年预估量" />
+        <el-table-column align="center" label="备注" prop="appendix">
+          <template slot-scope="scope">
+            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看备注</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </el-card>
-    <el-card v-show="dieCastingCardVisiable && quote.status < 2" class="box-card">
+    <el-card v-show="dieCastingCardVisiable && (quote.status < 2 || quote.status ===14 || quote.status === 13 || quote.status === 15)" class="box-card">
       <h3>压铸模具类商品信息</h3>
       <el-table :data="detail">
         <el-table-column property="id" label="id" />
@@ -146,6 +201,7 @@
         <el-table-column property="spec" label="规格" />
         <el-table-column property="size" label="产品尺寸(长宽高)" />
         <el-table-column property="weight" label="产品理论重量(克)" />
+        <el-table-column property="quantityYear" label="年预估量" />
         <el-table-column align="center" label="状态" prop="quoteStatus2Filter">
           <template slot-scope="scope">
             <el-tag effect="dark" v-if = "scope.row.status == 0" type="danger">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
@@ -154,14 +210,14 @@
             <el-tag effect="dark" v-else type="'error'">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="备注" prop="id">
+        <el-table-column align="center" label="备注" prop="appendix">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看</el-button>
+            <el-button type="primary" size="mini" @click="showDetail(scope.row.appendix)">查看备注</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
-    <el-card v-show="rubberCardVisiable && quote.status>=2 && !chksenver" class="box-card">
+    <el-card v-show="rubberCardVisiable && quote.status>=2 && quote.status !==14 && quote.status !== 13 && quote.status !==15 && !chksenver" class="box-card">
       <h3>塑料橡胶类商品信息</h3>
       <el-table ref="multipleSelection" :data="reDetail" border fit highlight-current-row @selection-change="handleSelectionChange">
         <el-table-column type="expand">
@@ -169,19 +225,15 @@
             <el-form label-position="left" class="table-expand">
               <el-form-item label="单号">
                 <span>(产品序号单号){{ props.row.id }} (报价单单号) {{ props.row.quoteId }}  (询价单单号) {{ props.row.mainId }}   (供应商) {{ formatRole(props.row.adminId) }}</span>
-              </el-form-item>
-              <el-form-item label="报价单状态">
                 <span>(报价单状态) {{ props.row.status | quoteStatus1Filter }} (报价概要) {{ formatRole(props.row.note) }}</span>
-                <el-button v-if="props.row.requoteExcel !== undefined && props.row.requoteExcel !== null && props.row.requoteExcel.length !== 0" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(props.row.requoteExcel, '报价ID'+(props.row.id).toString()+'.xlsx')">下载报价单附件</el-button>
+                <el-button v-if="props.row.requoteExcel !== undefined && props.row.requoteExcel !== null && props.row.requoteExcel.length !== 0" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(props.row.requoteExcel, formatRole(props.row.adminId)+'询价ID'+(props.row.id).toString())">下载报价单附件</el-button>
               </el-form-item>
               <el-form-item label="时间">
                 <span>(定标通知时间){{ props.row.quoteDate }} (报价截止日期) {{ props.row.deadDate }}  (提交报价日期) {{ props.row.submitDate }}</span>
               </el-form-item>
               <el-form-item label="数量">
-                <span>(材质){{ props.row.material }}  (理论重量){{ props.row.weight }} (年预估量){{ props.row.quantityYear }}</span>
-              </el-form-item>
-              <el-form-item>
-                <editor v-model="props.row.appendix" :init="editorInit" />
+                <span>(材质){{ props.row.material }}  (理论重量){{ props.row.weight }} g (年预估量){{ props.row.quantityYear }} 万PCS</span>
+                <el-button type="danger" size="mini" @click="showDetail(props.row.appendix)">查看备注</el-button>
               </el-form-item>
             </el-form>
           </template>
@@ -196,6 +248,11 @@
         <el-table-column property="code" label="品号" sortable />
         <el-table-column property="name" width="200" label="品名" />
         <el-table-column property="spec" width="200" label="规格" />
+        <el-table-column property="isNew" label="核过价" >
+          <template slot-scope="scope">
+            <el-tag :type="scope.row.isNew ? 'success' : 'error' ">{{ scope.row.isNew ? '是' : '否' }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column property="status" label="状态" sortable prop="quoteStatusFilter" >
           <template slot-scope="scope">
             <el-tag effect="dark" v-if = "scope.row.status == 0" type="danger">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
@@ -223,7 +280,7 @@
 <!--        </el-table-column>-->
       </el-table>
     </el-card>
-    <el-card v-show="electronicCardVisiable && quote.status>=2 && !chksenver" class="box-card">
+    <el-card v-show="electronicCardVisiable && quote.status>=2 && quote.status !==14 && quote.status !== 13 && quote.status !==15 && !chksenver" class="box-card">
       <h3>电子电器类商品信息</h3>
       <el-table ref="multipleSelection2" :data="reDetail" border fit highlight-current-row @selection-change="handleSelectionChange2">
         <el-table-column type="expand">
@@ -231,29 +288,34 @@
             <el-form label-position="left" class="table-expand">
               <el-form-item label="单号">
                 <span>(产品序号单号){{ props.row.id }} (报价单单号) {{ props.row.quoteId }}  (询价单单号) {{ props.row.mainId }}   (供应商) {{ formatRole(props.row.adminId) }}</span>
-              </el-form-item>
-              <el-form-item label="报价单状态">
                 <span>(报价单状态) {{ props.row.status | quoteStatus1Filter }} (报价概要) {{ formatRole(props.row.note) }}</span>
-                <el-button v-if="props.row.requoteExcel !== undefined && props.row.requoteExcel !== null && props.row.requoteExcel.length !== 0" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(props.row.requoteExcel, '报价ID'+(props.row.id).toString()+'.xlsx')">下载报价单附件</el-button>
+                <el-button v-if="props.row.requoteExcel !== undefined && props.row.requoteExcel !== null && props.row.requoteExcel.length !== 0" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(props.row.requoteExcel, formatRole(props.row.adminId)+'询价ID'+(props.row.id).toString())">下载报价单附件</el-button>
               </el-form-item>
               <el-form-item label="时间">
                 <span>(定标通知时间){{ props.row.quoteDate }} (报价截止日期) {{ props.row.deadDate }}  (提交报价日期) {{ props.row.submitDate }}</span>
               </el-form-item>
               <el-form-item label="数量">
-                <span>(理论重量){{ props.row.weight }} (年预估量){{ props.row.quantityYear }}</span>
-              </el-form-item>
-              <el-form-item>
-                <editor v-model="props.row.appendix" :init="editorInit" />
+                <span>(理论重量){{ props.row.weight }} (年预估量){{ props.row.quantityYear }} 万PCS</span>
+                <el-button type="danger" size="mini" @click="showDetail(props.row.appendix)">查看备注</el-button>
               </el-form-item>
             </el-form>
           </template>
         </el-table-column>
 
         <el-table-column v-if="quote.status !== 7 && quote.status !== 6 && !chkgroup" type="selection" :selectable="checkboxT" disabled="true" width="55" />
+        <el-table-column property="code" label="供应商">
+          <template slot-scope="scope">
+            <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.adminId) }} </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column property="code" label="品号" sortable />
         <el-table-column property="name" width="200" label="品名" />
         <el-table-column property="spec" width="200" label="规格" />
-        <el-table-column property="quantityYear" label="年预估量" />
+        <el-table-column property="isNew" label="核过价" >
+          <template slot-scope="scope">
+            <el-tag :type="scope.row.isNew ? 'success' : 'error' ">{{ scope.row.isNew ? '是' : '否' }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="状态" prop="quoteStatus2Filter">
           <template slot-scope="scope">
             <el-tag effect="dark" v-if = "scope.row.status == 0" type="danger">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
@@ -262,6 +324,7 @@
             <el-tag effect="dark" v-else type="'error'">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
           </template>
         </el-table-column>
+        <el-table-column property="quantityYear" label="年预估量" />
         <el-table-column property="isDuty" label="负责人选择"> prop="quoteStatusFilter">
           <template slot-scope="scope">
             <el-tag :type="scope.row.isDuty ? 'success' : 'error' ">{{ scope.row.isDuty ? '选中' : '未选中' }}</el-tag>
@@ -281,7 +344,7 @@
 <!--        </el-table-column>-->
       </el-table>
     </el-card>
-    <el-card v-show="hardwareCardVisiable && quote.status>=2 && !chksenver" class="box-card">
+    <el-card v-show="hardwareCardVisiable && quote.status>=2 && quote.status !==14 && quote.status !== 13 && quote.status !==15 && !chksenver" class="box-card">
       <h3>五金类商品信息</h3>
       <el-table ref="multipleSelection3" :data="reDetail" border fit highlight-current-row @selection-change="handleSelectionChange3">
         <el-table-column type="expand">
@@ -289,28 +352,34 @@
             <el-form label-position="left" class="table-expand">
               <el-form-item label="单号">
                 <span>(产品序号ID){{ props.row.id }} (报价单ID) {{ props.row.quoteId }}  (询价单ID) {{ props.row.mainId }}   (供应商) {{ formatRole(props.row.adminId) }}</span>
-              </el-form-item>
-              <el-form-item label="报价单状态">
                 <span>(报价单状态) {{ props.row.status | quoteStatus1Filter }} (报价概要) {{ formatRole(props.row.note) }}</span>
-                <el-button v-if="props.row.requoteExcel !== undefined && props.row.requoteExcel !== null && props.row.requoteExcel.length !== 0" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(props.row.requoteExcel, '报价ID'+(props.row.id).toString()+'.xlsx')">下载报价单附件</el-button>
+                <el-button v-if="props.row.requoteExcel !== undefined && props.row.requoteExcel !== null && props.row.requoteExcel.length !== 0" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(props.row.requoteExcel, formatRole(props.row.adminId)+'询价ID'+(props.row.id).toString())">下载报价单附件</el-button>
               </el-form-item>
               <el-form-item label="时间">
                 <span>(定标通知时间){{ props.row.quoteDate }} (报价截止日期) {{ props.row.deadDate }}  (提交报价日期) {{ props.row.submitDate }}</span>
               </el-form-item>
               <el-form-item label="数量">
-                <span>(材质){{ props.row.material }} (产品理论重量(克)){{ props.row.weight }} (年预估量){{ props.row.quantityYear }}</span>
-              </el-form-item>
-              <el-form-item>
-                <editor v-model="props.row.appendix" :init="editorInit" />
+                <span>(材质){{ props.row.material }} (产品理论重量(克)){{ props.row.weight }} (年预估量){{ props.row.quantityYear }} 万PCS</span>
+                <el-button type="danger" size="mini" @click="showDetail(props.row.appendix)">查看备注</el-button>
               </el-form-item>
             </el-form>
           </template>
         </el-table-column>
 
         <el-table-column v-if="quote.status !== 7 && quote.status !== 6 && !chkgroup" type="selection" :selectable="checkboxT" disabled="true" width="55" />
+        <el-table-column property="code" label="供应商">
+          <template slot-scope="scope">
+            <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.adminId) }} </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column property="code" label="品号" sortable />
         <el-table-column property="name" width="200" label="品名" />
         <el-table-column property="spec" width="200" label="规格" />
+        <el-table-column property="isNew" label="核过价" >
+          <template slot-scope="scope">
+            <el-tag :type="scope.row.isNew ? 'success' : 'error' ">{{ scope.row.isNew ? '是' : '否' }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="状态" sortable prop="quoteStatus2Filter">
           <template slot-scope="scope">
             <el-tag effect="dark" v-if = "scope.row.status == 0" type="danger">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
@@ -337,7 +406,7 @@
 <!--        </el-table-column>-->
       </el-table>
     </el-card>
-    <el-card v-show="dieCastingCardVisiable && quote.status>=2 && !chksenver" class="box-card">
+    <el-card v-show="dieCastingCardVisiable && quote.status>=2 && quote.status !==14 && quote.status !== 13 && quote.status !==15 && !chksenver" class="box-card">
       <h3>压铸模具类商品信息</h3>
       <el-table ref="multipleSelection4" :data="reDetail" border fit highlight-current-row @selection-change="handleSelectionChange4">
         <el-table-column type="expand">
@@ -345,28 +414,34 @@
             <el-form label-position="left" class="table-expand">
               <el-form-item label="单号">
                 <span>(产品序号单号){{ props.row.id }} (报价单单号) {{ props.row.quoteId }}  (询价单单号) {{ props.row.mainId }}   (供应商) {{ formatRole(props.row.adminId) }}</span>
-              </el-form-item>
-              <el-form-item label="报价单状态">
                 <span>(报价单状态) {{ props.row.status | quoteStatus1Filter }} (报价概要) {{ formatRole(props.row.note) }}</span>
-                <el-button v-if="props.row.requoteExcel !== undefined && props.row.requoteExcel !== null && props.row.requoteExcel.length !== 0" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(props.row.requoteExcel, '报价ID'+(props.row.id).toString()+'.xlsx')">下载报价单附件</el-button>
+                <el-button v-if="props.row.requoteExcel !== undefined && props.row.requoteExcel !== null && props.row.requoteExcel.length !== 0" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(props.row.requoteExcel, formatRole(props.row.adminId)+'询价ID'+(props.row.id).toString())">下载报价单附件</el-button>
               </el-form-item>
               <el-form-item label="时间">
                 <span>(定标通知时间){{ props.row.quoteDate }} (报价截止日期) {{ props.row.deadDate }}  (提交报价日期) {{ props.row.submitDate }}</span>
               </el-form-item>
               <el-form-item label="数量">
                 <span>(产品尺寸(长宽高)){{ props.row.size }} (产品理论重量(克){{ props.row.weight }} (年预估量){{ props.row.quantityYear }}</span>
-              </el-form-item>
-              <el-form-item>
-                <editor v-model="props.row.appendix" :init="editorInit" />
+                <el-button type="danger" size="mini" @click="showDetail(props.row.appendix)">查看备注</el-button>
               </el-form-item>
             </el-form>
           </template>
         </el-table-column>
 
         <el-table-column v-if="quote.status !== 7 && quote.status !== 6 && !chkgroup" type="selection" :selectable="checkboxT" disabled="true" width="55" />
+        <el-table-column property="code" label="供应商">
+          <template slot-scope="scope">
+            <el-tag style="margin-right: 20px;"> {{ formatRole(scope.row.adminId) }} </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column property="code" label="品号" sortable />
         <el-table-column property="name" width="200" label="品名" />
         <el-table-column property="spec" width="200" label="规格" />
+        <el-table-column property="isNew" label="核过价" >
+          <template slot-scope="scope">
+            <el-tag :type="scope.row.isNew ? 'success' : 'error' ">{{ scope.row.isNew ? '是' : '否' }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="状态" sortable prop="quoteStatus2Filter">
           <template slot-scope="scope">
             <el-tag effect="dark" v-if = "scope.row.status == 0" type="danger">{{ scope.row.status | quoteStatus2Filter }}</el-tag>
@@ -414,21 +489,25 @@
               <el-radio :label="true">直接总经理审批</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item v-show=" quote.status === 2 && dutyShow && chkgroup" label="会签人员">
+          <el-form-item v-show="quote.status === 2 && dutyShow && chkgroup" label="会签人员">
             <span>(会签小组) <el-tag v-for="roleId in quote.approveCode" :key="roleId" type="primary" style="margin-right: 20px;"> {{ formatAdmin(roleId) }} </el-tag> </span>
           </el-form-item>
           <label v-show=" quote.status !== 6">
             <textarea v-model="approveNote" maxlength="200" style="width: 100%;" placeholder="我的看法" />
           </label>
           <el-button @click="handleCancel">取消</el-button>
-          <el-button v-if="(quote.status === 0) && adminShow" v-permission="['POST /admin/quoteBill/submit']" class="filter-item" type="primary" @click="handleSubmit(quote,approveNote,'提交询价单',1,'询价单','报价人签收',1)">提交询价单</el-button>
-          <el-button v-if="(quote.status === 7) && adminShow" v-permission="['POST /admin/quoteBill/submit']" class="filter-item" type="danger" @click="handleSubmit(quote,approveNote,'重新提交询价单',1,'询价单','报价人签收',8)">重新提交询价单</el-button>
-          <el-button v-if="(quote.status === 2) && !chkgroup && dutyShow" v-permission="['POST /admin/quoteBill/submit']" class="filter-item" type="warning" @click="handleSubmit(quote,approveNote,'提交总经理',1,'询价单','结案',3,true,quote.dutyChoice)">提交总经理</el-button>
-          <el-button v-if="(quote.status === 2) && chkgroup && dutyShow" v-permission="['POST /admin/quoteBill/submit']" class="filter-item" type="info" plain  @click="handleSubmit(quote,approveNote,'负责人提交会签',1,'询价单','责任人审批',4)">提交评估小组</el-button>
-          <el-button v-if="(quote.status === 4 || quote.status === 9) && signShow" v-permission="['POST /admin/quoteBill/submit']" class="filter-item" type="info" @click="handleSubmit(quote,approveNote,'会审',1,'询价单','负责人提交ceo审批',9)">会签</el-button>
-          <el-button v-if="(quote.status === 3 || quote.status === 5) && ceoShow" v-permission="['POST /admin/quoteBill/submit']" class="filter-item" type="success" @click="handleSubmit(quote,approveNote,'ceo审批',1,'询价单','结案',6,true,quote.ceoChoice)">ceo审批</el-button>
-          <el-button v-if="(quote.status === 9 || quote.status === 3) && !chkceo && dutyShow" v-permission="['POST /admin/quoteBill/submit']" class="filter-item" type="primary" @click="handleSubmit(quote,approveNote,'重新议价',1,'询价单','采购员报价',7,true,quote.dutyChoice)">重新议价</el-button>
-          <el-button v-if="quote.status === 9 && chkceo && dutyShow" v-permission="['POST /admin/quoteBill/submit']" class="filter-item" type="warning" round @click="handleSubmit(quote,approveNote,'议价后提交ceo',1,'询价单','ceo审批',5,false,quote.dutyChoice)">提交总经理</el-button>
+          <el-button v-if="(quote.status === 0) && quote.isAb === true && adminShow" class="filter-item" type="primary" @click="handleSubmit(quote,approveNote,'提交询价单',1,'询价单','报价人签收',1)">提交询价单</el-button>
+          <el-button v-if="quote.status === 15 && adminShow" class="filter-item" type="primary" @click="handleSubmit(quote,approveNote,'预审后提交询价单',1,'询价单','报价人签收',1)">预审后提交询价单</el-button>
+          <el-button v-if="(quote.status === 0) && quote.isAb === false && adminShow" class="filter-item" type="warning" @click="handleSubmit(quote,approveNote,'通知预审人会签',1,'询价单','预审供应商',13)">通知预审人会签</el-button>
+          <el-button v-if="(quote.status === 13 || quote.status === 14) && quote.isAb === false && preApproveShow"class="filter-item" type="primary" @click="handleSubmit(quote,approveNote,'预审供应商',1,'询价单','报价人签收',14)">预审供应商</el-button>
+          <el-button v-if="(quote.status === 7) && adminShow" class="filter-item" type="danger" @click="handleSubmit(quote,approveNote,'重新提交询价单',1,'询价单','报价人签收',8)">重新提交询价单</el-button>
+          <el-button v-if="(quote.status === 2) && !chkgroup && dutyShow" class="filter-item" type="warning" @click="handleSubmit(quote,approveNote,'提交总经理',1,'询价单','结案',3,true,quote.dutyChoice)">提交总经理</el-button>
+          <el-button v-if="(quote.status === 2) && chkgroup && dutyShow" class="filter-item" type="primary" plain  @click="handleSubmit(quote,approveNote,'负责人提交会签',1,'询价单','责任人审批',4)">提交评估小组</el-button>
+          <el-button v-if="(quote.status === 4 || quote.status === 9) && signShow" class="filter-item" type="info" @click="handleSubmit(quote,approveNote,'会审',1,'询价单','负责人提交ceo审批',9)">会签</el-button>
+          <el-button v-if="(quote.status === 3 || quote.status === 5) && ceoShow" class="filter-item" type="success" @click="handleSubmit(quote,approveNote,'ceo退回负责人',1,'询价单','责任人审批',12,true,quote.ceoChoice)">ceo退回负责人</el-button>
+          <el-button v-if="(quote.status === 3 || quote.status === 5) && ceoShow" class="filter-item" type="success" @click="handleSubmit(quote,approveNote,'ceo审批',1,'询价单','结案',6,true,quote.ceoChoice)">ceo审批</el-button>
+          <el-button v-if="(quote.status === 9 || quote.status === 3) && quote.isReapprove===false && dutyShow" class="filter-item" type="primary" @click="handleSubmit(quote,approveNote,'重新议价',1,'询价单','采购员报价',7,true,quote.dutyChoice)">重新议价</el-button>
+          <el-button v-if="quote.status === 9 && quote.isReapprove===true && dutyShow" class="filter-item" type="warning" round @click="handleSubmit(quote,approveNote,'议价后提交ceo',1,'询价单','ceo审批',5,false,quote.dutyChoice)">提交总经理</el-button>
 <!--          <el-button v-if="quote.status===6" v-permission="['POST /admin/quoteBill/submit']" class="filter-item" type="primary" @click="handleSubmit(quote,approveNote,'结案',1,'询价单','结案')">结案</el-button>-->
           <el-button style="float: right" type="warning" plain v-if="quote.status!=0 && quote.status !=6 && quote.status !=10 && dutyShow" @click="handleSubmit(quote,approveNote,'终止询价',1,'询价单','结束',10)">终止报价</el-button>
         </el-form>
@@ -456,7 +535,7 @@
     <!--        <el-table-column align="center" label="提交时间" prop="submitDate" />-->
     <!--      </el-table>-->
     <!--    </el-card>-->
-    <el-card v-show="quote.status!==0" class="box-card">
+    <el-card v-show="quote.status!==0 && !adminShow" class="box-card">
       <h4>审批信息</h4>
       <el-table :data="approve" border fit highlight-current-row>
         <el-table-column align="center" label="发起人" prop="adminId">
@@ -487,15 +566,16 @@
         <el-form-item label="单据">
           <span>(状态) {{ quote.status | quoteStatusFilter }}</span>
           <span>(类型) {{ formatModel(quote.modelName) }}</span>
-          <el-button v-if="quote.quoteModelExcel != undefined && quote.quoteModelExcel != null" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(quote.quoteModelExcel,'询价ID'+(quote.id).toString()+'.xlsx')">下载</el-button>
+          <span>(AB供应商) {{ quote.isAb ? '全是AB' : '不是' }}</span>
+          <span>(预审人员) <el-tag v-for="roleId in quote.preApprove" :key="roleId" type="primary" style="margin-right: 20px;"> {{ formatAdmin(roleId) }} </el-tag> </span>
+          <el-button v-if="quote.quoteModelExcel != undefined && quote.quoteModelExcel != null" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(quote.quoteModelExcel,'询价ID'+(quote.id).toString())">询价单附件下载</el-button>
         </el-form-item>
-        <el-form-item label="询价概要">
+        <el-form-item label="询价主题">
           <span>{{ quote.purchaserNote }}</span>
         </el-form-item>
-        <el-form-item label="审核人员">
+        <el-form-item v-if="adminShow === false" label="审核人员">
           <span>(核价小组) <el-tag v-for="roleId in quote.approveCode" :key="roleId" type="primary" style="margin-right: 20px;"> {{ formatAdmin(roleId) }} </el-tag> </span>
-          <span>(责任人) {{ formatRole(quote.dutyCode) }} </span>
-          <span>(终审) {{ formatRole(quote.ceoCode) }} </span>
+          <span>(责任人) {{ formatRole(quote.dutyCode) }} (终审) {{ formatRole(quote.ceoCode) }} </span>
           <span>(通知人员) <el-tag v-for="roleId in quote.noticeCode" :key="roleId" type="primary" style="margin-right: 20px;"> {{ formatAdmin(roleId) }} </el-tag> </span>
         </el-form-item>
       </el-form>
@@ -520,7 +600,7 @@
 
 </style>
 <script>
-import { uploadPath } from '@/api/storage'
+import { uploadPath, readkey } from '@/api/storage'
 import { updateQuote, submitQuote, readquote, find } from '@/api/quote'
 import { openExcel } from '@/utils/quoteSubmit'
 import { dingtalkSend } from '@/utils/senddingtalk'
@@ -540,12 +620,17 @@ const statusMap = {
   7: '重新提交',
   8: '重新提交完毕',
   9: '会审中',
-  10: '终止询价'
+  10: '终止询价',
+  11: '整单流标',
+  12: 'ceo退回负责人',
+  13: '通知预审人会签',
+  14: '预审供应商',
+  15: '预审后提交询价单'
 }
 const statusMap1 = {
   0: '询价',
   1: '签收',
-  2: '制作报价单',
+  2: '等待开标',
   3: '提交报价单',
   4: '取消报价',
   5: '报价',
@@ -553,7 +638,8 @@ const statusMap1 = {
   8: '流标',
   9: '中标',
   10: '重新询价',
-  11: '终止询价'
+  11: '终止询价',
+  12: '签收重新询价'
 }
 const statusMap2 = {
   0: '中标',
@@ -593,6 +679,8 @@ export default {
     return {
       show: false,
       ceoShow: false,
+      preApproveShow: false,
+      editDisplay: false,
       dutyShow: false,
       signShow: false,
       adminShow: false,
@@ -616,6 +704,7 @@ export default {
       multipleSelection2: [],
       multipleSelection3: [],
       multipleSelection4: [],
+      generalRequote: 0,
 
       userid: 0,
       url: '',
@@ -641,6 +730,7 @@ export default {
         status: undefined,
         dutyChoice: undefined,
         ceoChoice: undefined,
+        preApprove: undefined,
         isCeo: undefined,
         isReapprove: undefined
       },
@@ -719,6 +809,8 @@ export default {
   methods: {
     getList() {
       const Id = this.$route.query.row.id
+      this.reload()
+
       readquote(Id).then(response => {
         console.log(response)
         this.current = Object.assign({}, response.data.data.currentUser)
@@ -737,7 +829,7 @@ export default {
           this.approve = response.data.data.ApproveInfoList
           this.getApprove(this.$route.query.row)
           console.log(JSON.stringify(response))
-        }).catch(() => { this.$notify.error('审批数据没取出来') })
+        })
 
         sessionStorage.setItem('userid', this.current.id)
         if (this.dataForm.status === 3 || this.dataForm.status === 5) {
@@ -788,8 +880,14 @@ export default {
       this.getList()
     },
     checkboxT(row, index) {
-      if (this.dataForm.status === 2 || this.dataForm.status === 3 || this.dataForm.status === 5 || this.dataForm.status === 7) {
-        if (row.status === 5 || row.status === 9) {
+      if (this.dataForm.status === 3 || this.dataForm.status === 5) {
+        return false
+      }
+     if (this.dataForm.status === 9) {
+       if (row.status <=4 && row.status !== 3) { return false } else { return true }
+     }
+      if (this.dataForm.status === 2 || this.dataForm.status === 7 ) {
+        if (row.status === 5 || row.status === 6 || row.status === 9) {
           return true
         } else {
           return false
@@ -799,9 +897,16 @@ export default {
       // return true
       // if (this.dataForm.status === 9) { return false } else { if (row.status === 5) { return true } else { return false } }
     },
+    reload() {
+      this.editDisplay = false
+      this.$nextTick(() => (this.editDisplay = true))
+    },
     showDetail(row) {
+      this.editDisplay = false
+      this.$nextTick(function() { this.goodsDetail = row; this.editDisplay = true; })
+      // tinyMCE.activeEditor.setContent(row)
       this.DialogVisiable = true
-      this.goodsDetail = row
+
       // const modelId = this.dataForm.modelName
       // find(id, modelId)
       //   .then(response => {
@@ -828,7 +933,7 @@ export default {
       if (row.dutyCode === parseInt(sessionStorage.getItem('userid'))) { this.dutyShow = true }
       if (row.adminId === parseInt(sessionStorage.getItem('userid'))) { this.adminShow = true }
       if (row.status === 9 && this.dutyShow === true) { this.chkgroup = false }
-      if (row.status === 7 && this.adminShow === true && this.dutyShow === false) {
+      if ((row.status === 7 || row.status === 8 || row.status === 11 || row.status === 9 || row.status === 10) && this.adminShow === true && this.dutyShow === false) {
         this.server = this.reDetail.filter(item => item.status === 2);
         this.chksenver = true
       } else { this.chksenver = false }
@@ -839,9 +944,24 @@ export default {
         let count1 = 0
         for (let i = 0; i < this.approve.length; i++) {
           if (this.approve[i].action === '负责人提交会签') { count++ }
-          if (this.approve[i].action === '会审' && this.approve[i].adminId=== parseInt(sessionStorage.getItem('userid'))) { count1++ }
+          if (this.approve[i].action === '会审' && this.approve[i].adminId === parseInt(sessionStorage.getItem('userid'))) { count1++ }
         }
         if (count1 >= count) { this.signShow = false }
+      }
+
+      if ((row.preApprove).toString().indexOf(sessionStorage.getItem('userid')) >= 0) { this.preApproveShow = true }
+      if (this.preApproveShow === true) {
+        let count = 0
+        let count1 = 0
+        for (let i = 0; i < this.approve.length; i++) {
+          if (this.approve[i].action === '预审供应商' && this.approve[i].adminId === parseInt(sessionStorage.getItem('userid'))) { count1++ }
+        }
+        if (count1 > 0) { this.preApproveShow = false }
+
+        for (let i = 0; i < this.approve.length; i++) {
+          if (this.approve[i].action === '预审供应商') { count++ }
+        }
+        if (count + 1 === row.preApprove.length) { this.generalRequote = 1 }
       }
       this.quoteDialogVisible = true
       this.getQuery.quoteId = row.id
@@ -857,8 +977,16 @@ export default {
       if (modelId === 4) { this.dieCastingCardVisiable = true }
       if (modelId === 5) { this.hardwareCardVisiable = true }
       if (modelId === 6) { this.electronicCardVisiable = true }
-      this.quote.isReapprove = true
-      this.quote.isCeo = false
+      if (this.quote.status === 3 || this.quote.status === 5) {
+        this.quote.isReapprove = false
+        this.quote.isCeo = true
+      } else {
+        this.quote.isReapprove = true
+        this.quote.isCeo = false
+      }
+      if (this.quote.status === 9) {
+        this.quote.isReapprove = false
+      }
     },
     formatAdmin(roleId) {
       for (let i = 0; i < this.listAdmin.length; i++) {
@@ -926,7 +1054,7 @@ export default {
       return ''
     },
     openExcel(url, name) {
-      openExcel(url, name)
+      readkey(url).then(response => { openExcel(url, name+'_'+ response.data.data.name) }).catch(response => { this.$notify.error({ title: '失败', message: response.data.errmsg }) })
     },
     handleFilter() {
       this.listQuery.page = 1
@@ -946,21 +1074,21 @@ export default {
 
     handleSubmit(row, approveNote, action, billcode, billname, nextaction, setstatus, choiceid, choicevalue) {
       console.log(JSON.stringify(row))
+      if (this.dataForm.quoteSupplyCode.length<=0) {
+        this.$notify.error({ title: '失败', message: '请至少选择一个供应商,才能[' + action + '],重新输入' })
+        return false
+      }
       if (setstatus === 1 && this.detail.length === 0) {
         this.$notify.error({ title: '失败', message: '请至少输入一个产品,才能[' + action + '],重新输入' })
         return false
       }
       if (this.multipleSelection.length === 0) {
-        if ((this.chkgroup === false || row.status === 6) && row.status !== 7 && row.status !== 0) {
+        if ((this.chkgroup === false || row.status === 6) && row.status !== 7 && row.status !== 0 && setstatus !== 12  && setstatus !== 13 && setstatus !== 14) {
           this.$notify.error({ title: '失败', message: '请选择至少勾选一条记录,才能[' + action + '],重新选择' })
-
-          // const gg = this.$confirm('请选择至少一条记录,确定重新选择吗？', '提示', {
-          //   confirmButtonText: '确定',
-          //   cancelButtonText: '取消',
-          //   type: 'warning' })
-          // }).then(() => {
-          //   return
-          // })
+        }
+        if (setstatus === 3 || setstatus === 5) {
+          this.$notify.error({ title: '失败', message: '请选择至少勾选一条记录,才能[' + action + '],重新选择' })
+          return false
         }
       }
       const ids = []
@@ -978,42 +1106,48 @@ export default {
         //   this.$notify.success({ title: '失败', message: '必须存在Excel询价单' })
         //   return false
         // }
-
         if (row.quoteSupplyCode === undefined || row.quoteSupplyCode === null) {
           this.$notify.error({ title: '失败', message: '必须指定接收询价的供应商' })
           return false
         }
-        if (row.dutyCode !== parseInt(sessionStorage.getItem('userid'))) {
-          for (let i = 0; i < this.listAdmin.length; i++) {
-            if (row.quoteSupplyCode.indexOf(this.listAdmin[i].value) >= 0) {
-              if (this.listAdmin[i].capacity.indexOf('A') < 0 && this.listAdmin[i].capacity.indexOf('B') < 0) {
-                this.$notify.error({ title: '你不能提交审批', message: this.listAdmin[i].deptname + ':不是AB类供应商,需要[' + this.formatRole(row.dutyCode) + ']提交询价,并钉钉通知其本人' })
-                var uid = ''
-                if (row.dutyCode === row.adminId) {
-                  uid = this.formatdd(row.dutyCode)
-                } else {
-                  uid = this.formatdd(row.dutyCode) + ',' + this.formatdd(parseInt(sessionStorage.getItem('userid')))
-                }
-                var infoSend = {
-                  userid_list: uid,
-                  agent_id: '1231569276',
-                  msg: {
-                    'msgtype': 'markdown',
-                    'markdown': {
-                      'title': 'LUTEC询价单提交',
-                      'text': '询价单[' + (row.id).toString() + '号,' + this.listAdmin[i].deptname + ']:不是AB类供应商,需要[' + this.formatRole(row.dutyCode) + ']提交询价\n\n\n通知人:' + this.current.nickname
-                    }
-                  }
-                }
-                dingtalkSend(infoSend)
-                this.quoteDialogVisible = false
-                return false
-              }
-            }
-          }
-        }
+        // if (row.dutyCode !== parseInt(sessionStorage.getItem('userid'))) {
+        //   for (let i = 0; i < this.listAdmin.length; i++) {
+        //     if (row.quoteSupplyCode.indexOf(this.listAdmin[i].value) >= 0) {
+        //       if (this.listAdmin[i].capacity.indexOf('A') < 0 && this.listAdmin[i].capacity.indexOf('B') < 0) {
+        //         let count = 0
+        //         let count1 = 0
+        //         for (let i = 0; i < this.approve.length; i++) {
+        //           if (this.approve[i].action === '负责人提交会签') { count++ }
+        //           if (this.approve[i].action === '会审' && this.approve[i].adminId=== parseInt(sessionStorage.getItem('userid'))) { count1++ }
+        //         }
+        //         if (count1 >= count) { this.signShow = false }
+        //         this.$notify.error({ title: '你不能提交询价单', message: this.listAdmin[i].deptname + ':不是AB类供应商,需要[' + this.formatRole(row.dutyCode) + ']提交询价,并钉钉通知其本人' })
+        //         var uid = ''
+        //         if (row.dutyCode === row.adminId) {
+        //           uid = this.formatdd(row.dutyCode)
+        //         } else {
+        //           uid = this.formatdd(row.dutyCode) + ',' + this.formatdd(parseInt(sessionStorage.getItem('userid')))
+        //         }
+        //         var infoSend = {
+        //           userid_list: uid,
+        //           agent_id: '1231569276',
+        //           msg: {
+        //             'msgtype': 'markdown',
+        //             'markdown': {
+        //               'title': 'LUTEC询价单提交',
+        //               'text': '询价单[' + (row.id).toString() + '号,' + this.listAdmin[i].deptname + ']:不是AB类供应商,需要[' + this.formatRole(row.dutyCode) + ']提交询价\n\n\n通知人:' + this.current.nickname
+        //             }
+        //           }
+        //         }
+        //         dingtalkSend(infoSend)
+        //         this.quoteDialogVisible = false
+        //         return false
+        //       }
+        //     }
+        //   }
+        // }
       }
-      if (row.status === 0 && row.adminId !== parseInt(sessionStorage.getItem('userid'))) {
+      if (row.status === 0 && row.isAb === true && row.adminId !== parseInt(sessionStorage.getItem('userid'))) {
         this.$notify.error('需要制单人[' + this.formatRole(row.adminId) + ']提交询价')
         return false
       }
@@ -1039,13 +1173,58 @@ export default {
           choiceid: choiceid,
           choicevalue: choicevalue,
           ids: ids
-        }).then(response => { this.$notify.success({ title: '成功', message: '发放成功' }); this.$store.dispatch('tagsView/delView', this.$route); this.$router.push({ path: '/quoteManage/quotebill' }) })
+        }).then(response => {
+          if (this.generalRequote === 1 && (row.status === 14 || row.status === 13) && this.preApproveShow === true) {
+              var infoSend = {
+                userid_list: this.formatdd(row.adminId),
+                agent_id: '1231569276',
+                msg: {
+                  'msgtype': 'markdown',
+                  'markdown': {
+                    'title': 'LUTEC询价单提交',
+                    'text': '询价单[' + (row.id).toString() + '已经预审完毕，请提交询价单\n\n\n通知人:' + this.current.nickname
+                  }
+                }
+              }
+              dingtalkSend(infoSend)
+              this.quoteDialogVisible = false
+            submitQuote({
+              id: row.id,
+              quoteId: row.id,
+              approveNote: approveNote,
+              excel: row.quoteModelExcel,
+              action: '预审后提交询价单',
+              billcode: billcode,
+              billname: billname,
+              nextaction: '提交询价单',
+              adminId: parseInt(sessionStorage.getItem('userid')),
+              adminName: this.formatRole(row.adminId),
+              setstatus: 15,
+              idcard: 1,
+              receiver: 0,
+              choiceid: choiceid,
+              choicevalue: choicevalue,
+              ids: ids
+            }).then(response => {
+              this.$notify.success({title: '成功', message: '已经通知供应商报价,通知在钉钉 待办任务 里面'});
+            })
+              .catch(response => {
+                this.$notify.error({title: '失败', message: response.data.errmsg})
+              })
+          }
+          this.$store.dispatch('tagsView/delView', this.$route);
+          this.$router.push({path: '/quoteManage/quotebill'})
+          this.$notify.success({ title: '成功', message: '发放成功' }); this.$store.dispatch('tagsView/delView', this.$route); this.$router.push({ path: '/quoteManage/quotebill' }) })
           .catch(response => { this.$notify.error({ title: '失败', message: response.data.errmsg }) })
         console.log('submit row:' + JSON.stringify(row))
-        this.$message.success({ title: '询价单审批', message: '已经通知供应商报价,通知在钉钉 待办任务 里面' })
 
+
+        // this.$message.success({ title: '询价单审批', message: '已经通知供应商报价,通知在钉钉 待办任务 里面' })
+        this.$store.dispatch('tagsView/delView', this.$route)
+        this.$router.push({ path: '/quoteManage/quotebill' })
         // this.list.status = setstatus
       })
+
 
       for (var i = 0; i < this.detail.length; i++) {
         const v = this.detail[i]

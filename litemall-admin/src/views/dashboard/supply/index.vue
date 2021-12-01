@@ -118,7 +118,8 @@ export default {
         this.purOverCount = response.data.data.value.purOverCount
 
         this.current = Object.assign({}, response.data.data.currentUser)
-        this.name = this.current.dept + ':' + this.current.nickname + ':' + this.current.id + '(' + this.current.capacity + ')'
+        this.name = this.current.dept + ':' + this.current.nickname
+          // + ':' + this.current.id + '(' + this.current.capacity + ')'
         this.avatar = this.current.avatar
         sessionStorage.removeItem('currentRole')
       })

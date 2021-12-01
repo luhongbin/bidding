@@ -1,6 +1,13 @@
 
 <template>
   <div class="app-container">
+    <el-dialog :visible.sync="DialogVisiable" title="查看备注">
+      <el-form status-icon label-position="left" style="margin-left:0px;">
+        <el-form-item>
+          <editor v-if="editDisplay" v-model="goodsDetail" :init="editorInit" />
+        </el-form-item>
+      </el-form>
+    </el-dialog>
     <el-form ref="dataForm" :rules="rules" :model="dataForm" status-icon label-position="left" label-width="200px">
       <el-card v-show="rubberCardVisiable" class="box-card">
         <h3>塑料橡胶类商品信息</h3>
@@ -8,16 +15,20 @@
           <el-table-column type="expand">
             <template slot-scope="props">
               <el-form label-position="left" class="table-expand">
-                <el-form-item label="单号">
-                  <span>(产品序号单号){{ props.row.id }} (报价单单号) {{ props.row.quoteId }} (产品状态) {{ props.row.status | quoteStatus2Filter }} </span>
-                </el-form-item>
                 <el-form-item label="报价产品">
                   <span>(产品状态) {{ props.row.status | quoteStatus2Filter }} (品号){{ props.row.code }}  (规格) {{ props.row.spec }}  (材质) {{ detailForm.material }}</span>
                 </el-form-item>
                 <el-form-item label="数量">
-                  <span>(理论重量){{ props.row.weight }} (年预估量){{ props.row.weight }}</span>
+                  <span>(理论重量){{ props.row.weight }} g (年预估量){{ props.row.weight }} 万PCS</span>
+                  <el-button type="danger" size="mini" @click="showDetail(props.row.appendix)">查看备注</el-button>
                 </el-form-item>
               </el-form>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
+            <template slot-scope="scope">
+              <el-button v-if="(scope.row.status === 3 || scope.row.status === 5 || scope.row.status === 8) && dataForm.status !== 12" type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
+              <el-button v-if="(scope.row.status === 8 || scope.row.status === 9) & dataForm.status === 12" type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
             </template>
           </el-table-column>
           <el-table-column property="name" label="品名" width="200" />
@@ -29,11 +40,6 @@
           <el-table-column property="processingCostSingle" label="单个产品加工费(元/克)" />
           <el-table-column property="pieceWeight" label="单个产品克重价格(元/克)" />
           <el-table-column property="mouldCharge" label="模具费" />
-          <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
-            <template slot-scope="scope">
-              <el-button v-if="scope.row.status === 3 || scope.row.status === 5 || scope.row.status === 8" type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
-            </template>
-          </el-table-column>
         </el-table>
       </el-card>
       <el-card v-show="electronicCardVisiable" class="box-card">
@@ -42,20 +48,25 @@
           <el-table-column type="expand">
             <template slot-scope="props">
               <el-form label-position="left" class="table-expand">
-                <el-form-item label="单号">
-                  <span>(产品序号单号){{ props.row.id }} (报价单单号) {{ props.row.quoteId }} (产品状态) {{ props.row.status | quoteStatus2Filter }} </span>
-                </el-form-item>
                 <el-form-item label="报价产品">
                   <span>(产品状态) {{ props.row.status | quoteStatus2Filter }} (品名){{ props.row.name }}  (规格) {{ props.row.spec }} </span>
-                  <el-button v-if="props.row.requoteExcel !== undefined && props.row.requoteExcel !== null && props.row.requoteExcel.length !== 0" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(props.row.requoteExcel, '报价ID'+(props.row.id).toString()+'.xlsx')">下载报价单附件</el-button>
+                  <el-button v-if="props.row.requoteExcel !== undefined && props.row.requoteExcel !== null && props.row.requoteExcel.length !== 0" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(props.row.requoteExcel, '报价ID'+(props.row.quoteId).toString())">下载报价单附件</el-button>
                 </el-form-item>
                 <el-form-item label="数量">
-                  <span>(年预估量){{ props.row.quantityYear }}</span>
+                  <span>(年预估量){{ props.row.quantityYear }} 万PCS</span>
+                  <el-button type="danger" size="mini" @click="showDetail(props.row.appendix)">查看备注</el-button>
                 </el-form-item>
-                <el-form-item>
-                  <editor v-model="props.row.appendix" :init="editorInit" />
-                </el-form-item>
+<!--                <el-form-item>-->
+<!--                  <el-button type="primary" size="mini" @click="showDetail(props.row.appendix)">查看备注</el-button>-->
+<!--                  <editor v-if="editDisplay" v-model="props.row.appendix" :init="editorInit" />-->
+<!--                </el-form-item>-->
               </el-form>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
+            <template slot-scope="scope">
+              <el-button v-if="(scope.row.status === 3 || scope.row.status === 5 || scope.row.status === 8) && dataForm.status !== 12" type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
+              <el-button v-if="(scope.row.status === 8 || scope.row.status === 9) & dataForm.status === 12" type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
             </template>
           </el-table-column>
           <el-table-column property="code" label="品号" />
@@ -66,11 +77,6 @@
           <el-table-column property="packageSize" label="包装方式" />
           <el-table-column property="brand" label="品牌'" />
           <el-table-column property="certificate" label="证书情况" />
-          <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
-            <template slot-scope="scope">
-              <el-button v-if="scope.row.status === 3 || scope.row.status === 5 || scope.row.status === 8" type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
-            </template>
-          </el-table-column>
         </el-table>
       </el-card>
       <el-card v-show="hardwareCardVisiable" class="box-card">
@@ -79,20 +85,21 @@
           <el-table-column type="expand">
             <template slot-scope="props">
               <el-form label-position="left" class="table-expand">
-                <el-form-item label="单号">
-                  <span>(产品序号单号){{ props.row.id }} (报价单单号) {{ props.row.quoteId }} (产品状态) {{ props.row.status | quoteStatus2Filter }} </span>
-                </el-form-item>
                 <el-form-item label="产品">
                   <span>(产品状态) {{ props.row.status | quoteStatus2Filter }} (品名){{ props.row.name }}  (规格) {{ props.row.spec }} </span>
-                  <el-button v-if="props.row.requoteExcel !== undefined && props.row.requoteExcel !== null && props.row.requoteExcel.length !== 0" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(props.row.requoteExcel, '报价ID'+(props.row.id).toString()+'.xlsx')">下载报价单附件</el-button>
+                  <el-button v-if="props.row.requoteExcel !== undefined && props.row.requoteExcel !== null && props.row.requoteExcel.length !== 0" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(props.row.requoteExcel, '报价ID'+(props.row.quoteId).toString())">下载报价单附件</el-button>
                 </el-form-item>
                 <el-form-item label="数量">
-                  <span>(材质){{ props.row.material }} (产品理论重量(克)){{ weight }} (年预估量){{ quantityYear }}</span>
-                </el-form-item>
-                <el-form-item>
-                  <editor v-model="props.row.appendix" :init="editorInit" />
+                  <span>(材质){{ props.row.material }} (产品理论重量(克)){{ weight }} (年预估量){{ quantityYear }} 万PCS</span>
+                  <el-button type="danger" size="mini" @click="showDetail(props.row.appendix)">查看备注</el-button>
                 </el-form-item>
               </el-form>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
+            <template slot-scope="scope">
+              <el-button v-if="(scope.row.status === 3 || scope.row.status === 5 || scope.row.status === 8) && dataForm.status !== 12" type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
+              <el-button v-if="(scope.row.status === 8 || scope.row.status === 9) & dataForm.status === 12" type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
             </template>
           </el-table-column>
           <el-table-column property="code" label="品号" />
@@ -102,11 +109,6 @@
           <el-table-column property="electroplateCharge" label="电镀费" />
           <el-table-column property="otherCharge" label="其它费用" />
           <el-table-column property="price" label="产品报价" />
-          <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
-            <template slot-scope="scope">
-              <el-button v-if="scope.row.status === 3 || scope.row.status === 5 || scope.row.status === 8" type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
-            </template>
-          </el-table-column>
         </el-table>
       </el-card>
       <el-card v-show="dieCastingCardVisiable" class="box-card">
@@ -115,20 +117,21 @@
           <el-table-column type="expand">
             <template slot-scope="props">
               <el-form label-position="left" class="table-expand">
-                <el-form-item label="单号">
-                  <span>(产品序号单号){{ props.row.id }} (报价单单号)  {{ props.row.quoteId }} (产品状态) {{ props.row.status | quoteStatus2Filter }} </span>
-                </el-form-item>
                 <el-form-item label="产品">
                   <span>(产品状态) {{ props.row.status | quoteStatus2Filter }} (品名){{ props.row.name }}  (规格) {{ props.row.spec }} </span>
-                  <el-button v-if="props.row.requoteExcel !== undefined && props.row.requoteExcel !== null && props.row.requoteExcel.length !== 0" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(props.row.requoteExcel, '报价ID'+(props.row.id).toString()+'.xlsx')">下载报价单附件</el-button>
+                  <el-button v-if="props.row.requoteExcel !== undefined && props.row.requoteExcel !== null && props.row.requoteExcel.length !== 0" size="mini" type="info" icon="el-icon-download" plain @click="openExcel(props.row.requoteExcel, '报价ID'+(props.row.quoteId).toString())">下载报价单附件</el-button>
                 </el-form-item>
                 <el-form-item label="数量">
-                  <span>(产品尺寸(长宽高)){{ props.row.size }} (产品理论重量(克)){{ weight }} (年预估量){{ quantityYear }}</span>
-                </el-form-item>
-                <el-form-item>
-                  <editor v-model="props.row.appendix" :init="editorInit" />
+                  <span>(产品尺寸(长宽高)){{ props.row.size }} (产品理论重量(克)){{ weight }} (年预估量){{ quantityYear }} 万PCS</span>
+                  <el-button type="danger" size="mini" @click="showDetail(props.row.appendix)">查看备注</el-button>
                 </el-form-item>
               </el-form>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
+            <template slot-scope="scope">
+              <el-button v-if="(scope.row.status === 3 || scope.row.status === 5 || scope.row.status === 8) && dataForm.status !== 12" type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
+              <el-button v-if="(scope.row.status === 8 || scope.row.status === 9) & dataForm.status === 12" type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
             </template>
           </el-table-column>
           <el-table-column property="code" label="品号" />
@@ -143,26 +146,21 @@
           <el-table-column property="note1" label="备注" />
           <el-table-column property="material" label="产品材料" />
           <el-table-column property="processingCharge" label="产品加工费" />
-          <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
-            <template slot-scope="scope">
-              <el-button v-if="scope.row.status === 3 || scope.row.status === 5 || scope.row.status === 8" type="primary" size="mini" @click="handleAttributeShow(scope.row)">编辑</el-button>
-            </template>
-          </el-table-column>
         </el-table>
       </el-card>
       <el-card class="box-card">
         <h3>上传附件</h3>
         <el-form-item v-if="dataForm.requoteExcel !== '' && dataForm.requoteExcel !== null" label="上传报价单" prop="requoteExcel">
-          <el-upload :headers="headers" :limit="1" :action="uploadPath" :on-success="uploadUrl" :file-list="fileList" :before-upload="checkFileSize" accept=".xlsx">
+          <el-upload :headers="headers" :limit="1" :action="uploadPath" :on-success="uploadUrl" :file-list="fileList" :before-upload="checkFileSize">
             <el-button style="margin-left: 10px;" size="small" type="success">重新上传报价单</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传一个xlsx文件，且不超过20M</div>
+            <div slot="tip" class="el-upload__tip">只能上传一个,不超过20M</div>
           </el-upload>
         </el-form-item>
 
         <el-form-item v-if="dataForm.requoteExcel === '' || dataForm.requoteExcel === null" label="上传报价单" prop="requoteExcel">
-          <el-upload :headers="headers" :limit="1" :action="uploadPath" :on-success="uploadUrl" :file-list="fileList" :before-upload="checkFileSize" accept=".xlsx">
+          <el-upload :headers="headers" :limit="1" :action="uploadPath" :on-success="uploadUrl" :file-list="fileList" :before-upload="checkFileSize">
             <el-button style="margin-left: 10px;" size="small" type="success">开始上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传一个xlsx文件，且不超过20M</div>
+            <div slot="tip" class="el-upload__tip">只能上传一个,不超过20M</div>
           </el-upload>
         </el-form-item>
         <label>
@@ -229,8 +227,10 @@ export default {
       show: false,
       uploadPath,
       setstatus: 0,
+      editDisplay: false,
       quoteDialogVisible: false,
       userid: 0,
+      goodsDetail: '',
       DialogVisiable: false,
       detailDialogVisible: false,
       rubberCardVisiable: false,
@@ -271,15 +271,15 @@ export default {
         fileList: [{ required: true, message: '必须长传询价单的Excel文件', trigger: 'blur' }],
         quoteSupplyCode: [{ required: true, message: '采购员必须选择报价的供应商', trigger: 'blur' }],
         ceoChoice: [{ required: true, message: 'ceo必须供应商', trigger: 'blur' }],
-        price: [{ required: true, message: '必须价格', trigger: 'blur' }],
         code: [{ required: true, message: '必须输入品号', trigger: 'blur' }],
-        name: [{ required: true, message: '必须输入品名', trigger: 'blur' }],
-        mouldCharge: [{ required: true, message: '必须输入模具费', trigger: 'blur' }],
-        processingCharge: [{ required: true, message: '必须输入产品加工费', trigger: 'blur' }],
-        processingCostSingle: [{ required: true, message: '必须输入单个产品加工费', trigger: 'blur' }],
-        moldNumber: [{ required: true, message: '必须输入模穴数', trigger: 'blur' }],
-        looseCore: [{ required: true, message: '必须输入抽芯数', trigger: 'blur' }],
-        materialPrice: [{ required: true, message: '必须输入材料价', trigger: 'blur' }]
+        name: [{ required: true, message: '必须输入品名', trigger: 'blur' }]
+        // price: [{ required: true, message: '必须价格', trigger: 'blur' }],
+        // mouldCharge: [{ required: true, message: '必须输入模具费', trigger: 'blur' }],
+        // processingCharge: [{ required: true, message: '必须输入产品加工费', trigger: 'blur' }],
+        // processingCostSingle: [{ required: true, message: '必须输入单个产品加工费', trigger: 'blur' }],
+        // moldNumber: [{ required: true, message: '必须输入模穴数', trigger: 'blur' }],
+        // looseCore: [{ required: true, message: '必须输入抽芯数', trigger: 'blur' }],
+        // materialPrice: [{ required: true, message: '必须输入材料价', trigger: 'blur' }]
       },
       shipDialogVisible: false,
       downloadLoading: false,
@@ -332,7 +332,8 @@ export default {
       this.editid = this.$route.query.id
 
       myRead(Id).then(response => {
-        // console.log('myRead:' + JSON.stringify(response))
+        this.reload()
+        console.log('myRead:' + JSON.stringify(response))
         this.current = Object.assign({}, response.data.data.currentUser)
         let newArr = response.data.data.redetail.filter(item => item.status !== 2);
         this.detail = newArr
@@ -352,6 +353,10 @@ export default {
         })
         sessionStorage.setItem('userid', this.current.id)
       }).catch(() => { this.list = []; this.total = 0; this.$notify.error({ title: '失败', message: '基础数据没取出来数据' }) })
+    },
+    reload() {
+      this.editDisplay = false
+      this.$nextTick(() => (this.editDisplay = true))
     },
     trueCard(modelId) {
       this.rubberCardVisiable = false
@@ -375,7 +380,13 @@ export default {
       }
       return true
     },
-
+    showDetail(row) {
+      this.reload()
+      this.goodsDetail = row
+      this.reload()
+      this.goodsDetail = row
+      this.DialogVisiable = true
+    },
     handleInput(e) {
       const a = e.key.replace(/[^\d]/g, '')
       if (!a) { e.preventDefault() }

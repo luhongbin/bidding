@@ -8,7 +8,7 @@
         <el-input v-model="dataForm.version" maxlength="10" /><span class="info">同样的类别存在不同样式单可能，用版本分开</span>
       </el-form-item>
       <el-form-item label="excel源文件" prop="excel">
-        <el-upload :headers="headers" :limit="1" :action="uploadPath" :on-success="uploadUrl" :file-list="fileList" :before-upload="checkFileSize" accept=".xlsx">
+        <el-upload :headers="headers" :limit="1" :action="uploadPath" :on-success="uploadUrl" :file-list="fileList" :before-upload="checkFileSize">
           <el-button style="margin-left: 10px;" size="small" type="success">上传到服务器</el-button>
           <div slot="tip" class="el-upload__tip">xlsx/xls文件，且不超过5M</div>
         </el-upload>
@@ -25,6 +25,12 @@
         </el-select>
         <el-button style="float:left;" size="mini" type="primary" @click="purchaseCreate('code')">创建常用供应商</el-button>
         <span class="info">常用供应商，会在制作询价单时 自动填写到询价供应商中 作为默认值</span>
+      </el-form-item>
+      <el-form-item label="预审人员" prop="preApprove">
+        <el-select v-model="dataForm.preApprove" multiple placeholder="请选择">
+          <el-option v-for="item in UserList" :key="item.value" :label="item.deptname" :value="item.value" />
+        </el-select>
+        <span class="info">非AB类供应商，提交询价单之前的审批人员</span>
       </el-form-item>
       <el-form-item label="终审负责人" prop="ceoCode">
         <el-select v-model="dataForm.ceoCode" placeholder="请选择">
@@ -88,12 +94,12 @@
 
 <script>
 import { read, update } from '@/api/quotemodel'
-import { uploadPath } from '@/api/storage'
+import {createStorage, uploadPath} from '@/api/storage'
 import { getToken } from '@/utils/auth'
 import Pagination from '@/components/Pagination'
 import { optionsAdmin, listAdmin } from '@/api/admin'
 import { openExcel } from '@/utils/quoteSubmit'
-import Editor from '_@tinymce_tinymce-vue@3.0.1@@tinymce/tinymce-vue'
+import Editor from '@tinymce/tinymce-vue'
 
 export default {
   name: 'QuoteModelEdit',
@@ -128,6 +134,7 @@ export default {
         ceoCode: '',
         notice: [],
         approveCode: [],
+        preApprove: [],
         code: [],
         status: 1,
         creator: 0,
@@ -160,6 +167,9 @@ export default {
         notice: [
           { required: true, message: '通知人员不能为空', trigger: 'blur' }
         ],
+        preApprove: [
+          { required: true, message: '預審人員不能为空', trigger: 'blur' }
+        ],
         approveCode: [
           { required: true, message: '核价小组不能为空', trigger: 'blur' }
         ]
@@ -175,7 +185,18 @@ export default {
         toolbar: [
           'searchreplace bold italic underline strikethrough alignleft aligncenter alignright outdent indent  blockquote undo redo removeformat subscript superscript code codesample',
           'hr bullist numlist link image charmap preview anchor pagebreak insertdatetime media table emoticons forecolor backcolor fullscreen'
-        ]
+        ],
+        images_upload_handler: function(blobInfo, success, failure) {
+          const formData = new FormData()
+          formData.append('file', blobInfo.blob())
+          createStorage(formData)
+            .then(res => {
+              success(res.data.data.url)
+            })
+            .catch(() => {
+              failure('上传失败，请重新上传')
+            })
+        }
       }
     }
   },
@@ -378,6 +399,7 @@ export default {
                 message: response.data.errmsg
               })
             })
+          this.$store.dispatch('tagsView/delView', this.$route)
           this.$router.push({ path: '/config/quotemodel' })
         }
       })

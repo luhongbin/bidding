@@ -7,7 +7,6 @@ import org.linlinjava.litemall.db.domain.LitemallAdmin;
 import org.linlinjava.litemall.db.domain.LitemallLog;
 import org.linlinjava.litemall.db.service.LitemallLogService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -84,12 +83,13 @@ public class LogHelper {
 
     public void logAdmin(Integer type, String action, Boolean succeed, String result, String comment) {
         LitemallLog log = new LitemallLog();
-
+        String name = "";
         Subject currentUser = SecurityUtils.getSubject();
         if (currentUser != null) {
             LitemallAdmin admin = (LitemallAdmin) currentUser.getPrincipal();
             if (admin != null) {
                 log.setAdmin(admin.getUsername());
+                name = admin.getDept() + ":" + admin.getNickname();
             } else {
                 log.setAdmin("匿名用户");
             }
@@ -101,13 +101,14 @@ public class LogHelper {
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         if (request != null) {
             log.setIp(IpUtil.getIpAddr(request));
+            log.setComment(name +" [浏览器] " + IpUtil.getBrowserName(request) + " [操作系统] " + IpUtil.getOSname(request));
         }
 
         log.setType(type);
         log.setAction(action);
         log.setStatus(succeed);
         log.setResult(result);
-        log.setComment(comment);
+//        log.setComment(comment);
         logService.add(log);
     }
 
